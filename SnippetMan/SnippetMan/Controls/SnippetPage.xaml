@@ -1,0 +1,82 @@
+﻿<UserControl x:Class="SnippetMan.Controls.SnippetPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:AvalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:Controls="clr-namespace:SnippetMan.Controls"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             mc:Ignorable="d">
+
+    <DockPanel Height="Auto"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+               LastChildFill="True">
+
+        <Controls:ButtonedExGroupBox Height="Auto"
+                                     MinHeight="96px"
+                                     VerticalAlignment="Stretch"
+                                     DockPanel.Dock="Top"
+                                     GroupBox.Foreground="White"
+                                     GroupBox.Header="Details">
+            <Controls:ButtonedExGroupBox.InnerContent>
+                <TextBlock TextWrapping="Wrap">
+                    This is some really creative dummy content
+                </TextBlock>
+            </Controls:ButtonedExGroupBox.InnerContent>
+            <Controls:ButtonedExGroupBox.HeaderRightHand>
+                <ToggleButton Width="Auto"
+                              Margin="0,-16,32,0"
+                              Padding="2"
+                              VerticalAlignment="Top">
+                    <Image Width="16px"
+                           Source="{StaticResource edit_24pxDrawingImage}" />
+                </ToggleButton>
+            </Controls:ButtonedExGroupBox.HeaderRightHand>
+        </Controls:ButtonedExGroupBox>
+
+
+        <Controls:ButtonedExGroupBox Height="Auto"
+                                     MinHeight="164px"
+                                     VerticalAlignment="Stretch"
+                                     DockPanel.Dock="Top"
+                                     GroupBox.Foreground="White"
+                                     GroupBox.Header="Imports">
+            <Controls:ButtonedExGroupBox.InnerContent>
+                <AvalonEdit:TextEditor Uid="ae_imports"
+                                       Background="#BBB" />
+            </Controls:ButtonedExGroupBox.InnerContent>
+            <Controls:ButtonedExGroupBox.HeaderRightHand>
+                <ToggleButton Width="Auto"
+                              Margin="0,-16,32,0"
+                              Padding="2"
+                              VerticalAlignment="Top">
+                    <Image Width="16px"
+                           Source="{StaticResource edit_24pxDrawingImage}" />
+                </ToggleButton>
+            </Controls:ButtonedExGroupBox.HeaderRightHand>
+        </Controls:ButtonedExGroupBox>
+
+        <Controls:ButtonedExGroupBox Height="Auto"
+                                     VerticalAlignment="Stretch"
+                                     DockPanel.Dock="Top"
+                                     GroupBox.Foreground="White"
+                                     GroupBox.Header="Code">
+            <Controls:ButtonedExGroupBox.InnerContent>
+                <AvalonEdit:TextEditor Uid="ae_code"
+                                       Background="#BBB" />
+            </Controls:ButtonedExGroupBox.InnerContent>
+            <Controls:ButtonedExGroupBox.HeaderRightHand>
+                <ToggleButton Width="Auto"
+                              Margin="0,-16,32,0"
+                              Padding="2"
+                              VerticalAlignment="Top">
+                    <Image Width="16px"
+                           Source="{StaticResource edit_24pxDrawingImage}" />
+                </ToggleButton>
+            </Controls:ButtonedExGroupBox.HeaderRightHand>
+        </Controls:ButtonedExGroupBox>
+
+    </DockPanel>
+</UserControl>

@@ -1,12 +1,24 @@
 ﻿<Window x:Class="SnippetMan.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Controls="clr-namespace:SnippetMan.Controls"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnippetMan"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="Snippet Man"
+        Width="800"
+        Height="450"
+        AllowsTransparency="True"
+        Background="#555"
+        ResizeMode="CanResizeWithGrip"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        mc:Ignorable="d">
     <Grid>
-        
+
+        <!--  Content is to be filled with more. Snippet Page is just shown for debugging  -->
+        <Controls:SnippetPage />
+
     </Grid>
+
 </Window>
