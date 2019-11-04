@@ -85,9 +85,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Classes\SnippetCode.cs" />
-    <Compile Include="Classes\SnippetInfo.cs" />
+    <Compile Include="Classes\Snippets\SnippetCode.cs" />
+    <Compile Include="Classes\Snippets\SnippetInfo.cs" />
     <Compile Include="Controls\Utils\UIHelper.cs" />
+    <Compile Include="Interface\IDatabaseDAO.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
