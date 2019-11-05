@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SnippetMan.Classes
 {
-    class SnippetInfo
+    public class SnippetInfo
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string Titel { get; set; }
         public string Beschreibung { get; set; }
         public string Tags { get; set; }
