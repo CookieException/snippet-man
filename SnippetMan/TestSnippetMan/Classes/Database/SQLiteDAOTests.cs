@@ -40,8 +40,30 @@ namespace SnippetMan.Classes.Database.Tests
                 Beschreibung = "Beschreibung"
             };
             int result = db.saveSnippet(snippetInfo);
-            
-            Assert.IsTrue(true,"" +result);
+            // TODO Assert ob snippet gespeichert
+        }
+
+        [TestMethod()]
+        public void GetSnippetMetaByIdTest()
+        {
+            SQLiteDAO db = new SQLiteDAO();
+            db.OpenConnection();
+
+            SnippetInfo snippetInfo = new SnippetInfo
+            {
+                Titel = "Titel",
+                Beschreibung = "Beschreibung"
+            };
+            int result = db.saveSnippet(snippetInfo);
+
+            SnippetInfo dbSnippetInfo = db.GetSnippetMetaById(result);
+            //Assert.AreSame(snippetInfo,db.GetSnippetMetaById(result));
+            Assert.IsNotNull(dbSnippetInfo);
+            Assert.AreEqual(snippetInfo.Titel,dbSnippetInfo.Titel);
+            Assert.AreEqual(snippetInfo.Beschreibung,dbSnippetInfo.Beschreibung);
+            Assert.IsNotNull(dbSnippetInfo.Id);
+            Assert.IsNotNull(dbSnippetInfo.CreationDate);
+            Assert.IsNotNull(dbSnippetInfo.LastEditDate);
         }
     }
 }
