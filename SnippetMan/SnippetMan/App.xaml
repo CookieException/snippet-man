@@ -7,12 +7,53 @@
     StartupUri="MainWindow.xaml">
     <Application.Resources>
 
+        <!--  Styles  -->
         <Style TargetType="{x:Type GroupBox}">
             <Setter Property="Foreground" Value="White" />
         </Style>
 
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="#2C2C2C" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#888888"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
-        <!--  Style der Combobox  -->
+        <Style TargetType="{x:Type ToggleButton}">
+            <Setter Property="Background" Value="#2C2C2C" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#888888"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" Value="#555"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <Style TargetType="{x:Type ComboBox}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -91,7 +132,6 @@
             <Style.Triggers />
         </Style>
 
-
         <Style TargetType="{x:Type AvalonEdit:TextEditor}">
             <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
             <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
@@ -107,12 +147,12 @@
         <!--  Icons  -->
         <Geometry x:Key="edit_24pxGeometry">F1 M24,24z M0,0z M14.06,9.02L14.98,9.94 5.92,19 5,19 5,18.08 14.06,9.02 M17.66,3C17.41,3,17.15,3.1,16.96,3.29L15.13,5.12 18.88,8.87 20.71,7.04C21.1,6.65,21.1,6.02,20.71,5.63L18.37,3.29C18.17,3.09,17.92,3,17.66,3z M14.06,6.19L3,17.25 3,21 6.75,21 17.81,9.94 14.06,6.19z</Geometry>
         <DrawingGroup x:Key="edit_24pxDrawingGroup" ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-            <GeometryDrawing Brush="#FF000000" Geometry="{StaticResource edit_24pxGeometry}" />
+            <GeometryDrawing Brush="White" Geometry="{StaticResource edit_24pxGeometry}" />
         </DrawingGroup>
         <DrawingImage x:Key="edit_24pxDrawingImage" Drawing="{StaticResource edit_24pxDrawingGroup}" />
         <Geometry x:Key="file_copy_24pxGeometry">F1 M24,24z M0,0z M16,1L4,1C2.9,1,2,1.9,2,3L2,17 4,17 4,3 16,3 16,1z M15,5L8,5C6.9,5,6.01,5.9,6.01,7L6,21C6,22.1,6.89,23,7.99,23L19,23C20.1,23,21,22.1,21,21L21,11 15,5z M8,21L8,7 14,7 14,12 19,12 19,21 8,21z</Geometry>
         <DrawingGroup x:Key="file_copy_24pxDrawingGroup" ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-            <GeometryDrawing Brush="#FF000000" Geometry="{StaticResource file_copy_24pxGeometry}" />
+            <GeometryDrawing Brush="White" Geometry="{StaticResource file_copy_24pxGeometry}" />
         </DrawingGroup>
         <DrawingImage x:Key="file_copy_24pxDrawingImage" Drawing="{StaticResource file_copy_24pxDrawingGroup}" />
 

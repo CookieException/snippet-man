@@ -16,6 +16,7 @@
         VerticalAlignment="Stretch"
         LastChildFill="True">
 
+        <!--  Details  -->
         <Controls:ButtonedExGroupBox
             Height="Auto"
             MinHeight="96px"
@@ -32,21 +33,26 @@
                         Beschreibung
                     </TextBlock>
                     <WrapPanel>
-                        <ComboBox Width="60" Margin="0,5,0,0">
+                        <ComboBox Uid="combx_ProgLang" Width="60" Margin="0,5,10,0" Foreground="White">
                             <ComboBoxItem Content="C#" />
                             <ComboBoxItem Content="C++" />
                         </ComboBox>
-                        <ComboBox Width="60" Margin="10,5,0,0">
+                        <ComboBox Uid="combx_Tag1" Width="60" Margin="0,5,10,0" Foreground="White">
                             <ComboBoxItem Content="Tag" />
                             <ComboBoxItem Content="Tag2" />
                         </ComboBox>
+                        <Button 
+                            Width="20"
+                            Margin="0, 5, 10, 0"
+                            Padding="2">
+                        </Button>
                     </WrapPanel>
                 </StackPanel>
             </Controls:ButtonedExGroupBox.InnerContent>
             <Controls:ButtonedExGroupBox.HeaderRightHand>
                 <ToggleButton
                     Width="Auto"
-                    Margin="0,-16,32,0"
+                    Margin="0,-14,32,0"
                     Padding="2"
                     VerticalAlignment="Top">
                     <Image Width="16px" Source="{StaticResource edit_24pxDrawingImage}" />
@@ -54,6 +60,7 @@
             </Controls:ButtonedExGroupBox.HeaderRightHand>
         </Controls:ButtonedExGroupBox>
 
+        <!--  Imports  -->
         <Controls:ButtonedExGroupBox
             Height="Auto"
             MinHeight="164px"
@@ -65,12 +72,13 @@
                 <AvalonEdit:TextEditor
                     Uid="ae_imports"
                     Background="#555"
+                    Foreground="White"
                     IsReadOnly="True" />
             </Controls:ButtonedExGroupBox.InnerContent>
             <Controls:ButtonedExGroupBox.HeaderRightHand>
                 <Grid
                     Height="Auto"
-                    Margin="0,-16,32,0"
+                    Margin="0,-14,32,0"
                     VerticalAlignment="Top">
                     <ToggleButton
                         Uid="btn_edit_import"
@@ -95,6 +103,7 @@
             </Controls:ButtonedExGroupBox.HeaderRightHand>
         </Controls:ButtonedExGroupBox>
 
+        <!--  Code  -->
         <Controls:ButtonedExGroupBox
             Height="Auto"
             VerticalAlignment="Stretch"
@@ -105,12 +114,13 @@
                 <AvalonEdit:TextEditor
                     Uid="ae_code"
                     Background="#555"
+                    Foreground="White"
                     IsReadOnly="True" />
             </Controls:ButtonedExGroupBox.InnerContent>
             <Controls:ButtonedExGroupBox.HeaderRightHand>
                 <Grid
                     Height="Auto"
-                    Margin="0,-16,32,0"
+                    Margin="0,-14,32,0"
                     VerticalAlignment="Top">
                     <ToggleButton
                         Uid="btn_edit_code"
