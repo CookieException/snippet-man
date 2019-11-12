@@ -11,6 +11,12 @@ using SnippetMan.Classes.Database;
 using SnippetMan.Classes;
 using System.Windows.Media;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+using Button = System.Windows.Controls.Button;
+using Clipboard = System.Windows.Clipboard;
+using ComboBox = System.Windows.Controls.ComboBox;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace SnippetMan.Controls
 {
@@ -19,38 +25,36 @@ namespace SnippetMan.Controls
     /// </summary>
     public partial class SnippetPage : UserControl
     {
-        public TextEditor importEditor;
-        public TextEditor codeEditor;
-        public ToggleButton btn_edit_details;
-        public ToggleButton btn_edit_import;
-        public ToggleButton btn_edit_code;
-        public Button btn_copy_import;
-        public Button btn_copy_code;
-        public Button btn_add_cmbx;
-        public ComboBox combx_ProgLang;
-        public ComboBox combx_Tag0;
-        public WrapPanel wrapP_combx;
+        //TODO: To be replaced by the snippets' actual tags
+        private readonly string[] languages = { "C", "C++", "C#", "Java", "Python", "Javascript" };
 
-        public List<ComboBox> comboBoxes = new List<ComboBox>();
-        public List<Button> del_btns = new List<Button>();
-        
+        private TextEditor importEditor;
+        private TextEditor codeEditor;
+        private ToggleButton btn_edit_details;
+        private ToggleButton btn_edit_import;
+        private ToggleButton btn_edit_code;
+        private Button btn_copy_import;
+        private Button btn_copy_code;
+        private Button btn_add_cmbx;
+        private Button btn_del_cmbx;
+        private WrapPanel wrapP_combx;
+
+        private List<ComboBox> comboBoxes = new List<ComboBox>();
+
         IThemedHighlightingManager hlManager = ThemedHighlightingManager.Instance;
         public SnippetPage()
         {
             InitializeComponent();
-            importEditor = ((TextEditor)UIHelper.GetByUid(this, "ae_imports"));
-            codeEditor = ((TextEditor)UIHelper.GetByUid(this, "ae_code"));
-            btn_edit_details = ((ToggleButton)UIHelper.GetByUid(this, "btn_copy_details"));
-            btn_edit_import = ((ToggleButton)UIHelper.GetByUid(this, "btn_edit_import"));
-            btn_edit_code = ((ToggleButton)UIHelper.GetByUid(this, "btn_edit_code"));
-            btn_copy_import = ((Button)UIHelper.GetByUid(this, "btn_copy_import"));
-            btn_copy_code = ((Button)UIHelper.GetByUid(this, "btn_copy_code"));
-            btn_add_cmbx = ((Button)UIHelper.GetByUid(this, "btn_add_cmbx"));
-            combx_ProgLang = ((ComboBox)UIHelper.GetByUid(this, "combx_ProgLang"));
-            combx_Tag0 = ((ComboBox)UIHelper.GetByUid(this, "combx_Tag0"));
-            wrapP_combx = ((WrapPanel)UIHelper.GetByUid(this, "wrapP_combx"));
-
-            comboBoxes.Add(combx_Tag0);
+            importEditor = (TextEditor) UIHelper.GetByUid(this, "ae_imports");
+            codeEditor = (TextEditor) UIHelper.GetByUid(this, "ae_code");
+            btn_edit_details = (ToggleButton) UIHelper.GetByUid(this, "btn_copy_details");
+            btn_edit_import = (ToggleButton) UIHelper.GetByUid(this, "btn_edit_import");
+            btn_edit_code = (ToggleButton) UIHelper.GetByUid(this, "btn_edit_code");
+            btn_copy_import = (Button) UIHelper.GetByUid(this, "btn_copy_import");
+            btn_copy_code = (Button) UIHelper.GetByUid(this, "btn_copy_code");
+            btn_add_cmbx = (Button) UIHelper.GetByUid(this, "btn_add_cmbx");
+            btn_del_cmbx = (Button) UIHelper.GetByUid(this, "btn_del_cmbx");
+            wrapP_combx = (WrapPanel) UIHelper.GetByUid(this, "wrapP_combx");
 
             hlManager.SetCurrentTheme("VS2019_Dark"); // TODO "{ }" einfärben
 
@@ -85,32 +89,37 @@ namespace SnippetMan.Controls
 
         private void Button_Add_Combx_Clicked(object sender, RoutedEventArgs e)
         {
-            ComboBox comboTag = new ComboBox();
-            comboTag.Uid = "combx_Tag" + comboBoxes.Count;
-            comboTag.Items.Add("Tag1");
-            comboTag.Items.Add("Tag2");
+            ComboBox comboTag = new ComboBox
+            {
+                Uid = "combx_Tag" + comboBoxes.Count,
+                IsReadOnly = false,
+                IsEditable = true,
+                Width = 60
+            };
+
+            foreach (string language in languages)
+            {
+                comboTag.Items.Add(language);
+            }
             comboBoxes.Add(comboTag);
 
-            Button btn_del_combx = new Button();
-            btn_del_combx.Uid = "btn_del_combxTag" + del_btns.Count;
-            btn_del_combx.Margin = new Thickness(-5, 10, 10, 5);
-            btn_del_combx.Width = 10;
-            btn_del_combx.Click += Button_Del_Combx_Clicked;
-            del_btns.Add(btn_del_combx);
+            if (comboBoxes.Count > 0)
+                btn_del_cmbx.Visibility = Visibility.Visible;
 
             wrapP_combx.Children.Remove(btn_add_cmbx);
-            wrapP_combx.Children.Add(comboBoxes[comboBoxes.Count - 1]);
-            wrapP_combx.Children.Add(del_btns[del_btns.Count - 1]);
+            wrapP_combx.Children.Remove(btn_del_cmbx);
+            wrapP_combx.Children.Add(comboTag);
+            wrapP_combx.Children.Add(btn_del_cmbx);
             wrapP_combx.Children.Add(btn_add_cmbx);
         }
 
         private void Button_Del_Combx_Clicked(object sender, RoutedEventArgs e)
         {
-            wrapP_combx.Children.Remove(del_btns[del_btns.Count - 1]);
-            wrapP_combx.Children.Remove(comboBoxes[comboBoxes.Count - 1]);
+            wrapP_combx.Children.Remove(comboBoxes.Last());
+            comboBoxes.Remove(comboBoxes.Last());
 
-            del_btns.Remove(del_btns[del_btns.Count - 1]);
-            comboBoxes.Remove(comboBoxes[comboBoxes.Count - 1]);
+            if (comboBoxes.Count == 0)
+                btn_del_cmbx.Visibility = Visibility.Collapsed;
         }
         #endregion
 
@@ -120,8 +129,7 @@ namespace SnippetMan.Controls
             IDatabaseDAO database = new SQLiteDAO();
             database.OpenConnection();
             SnippetInfo si = database.GetSnippetMetaById(1);
-            combx_ProgLang.Text = si.Tags;
-            combx_Tag0.Text = si.Tags;
+            //TODO: Add as many comboboxes as required by the tag list
             database.CloseConnection();
         }
 
@@ -140,7 +148,8 @@ namespace SnippetMan.Controls
         {
             IDatabaseDAO database = new SQLiteDAO();
             database.OpenConnection();
-            snippetInfo.Tags = combx_ProgLang.Text += combx_Tag0.Text;
+
+            snippetInfo.Tags = comboBoxes.Select(c => c.SelectionBoxItem.ToString()).ToArray();
 
             database.saveSnippet(snippetInfo);
             database.CloseConnection();
