@@ -14,10 +14,69 @@
         WindowStyle="None"
         mc:Ignorable="d">
     <Grid>
+        <TabControl x:Name="tbc_pages"
+                    Background="Transparent">
+            <TabControl.Resources>
+                <Style BasedOn="{StaticResource {x:Type TabItem}}"
+                       TargetType="{x:Type TabItem}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TabItem}">
+                                <Grid>
+                                    <Border Name="Border"
+                                            Width="Auto"
+                                            Height="30"
+                                            MaxWidth="222"
+                                            Margin="2,0,0,0"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Bottom"
+                                            Background="#444"
+                                            CornerRadius="8, 8, 0, 0">
+                                        <ContentPresenter x:Name="ContentSite"
+                                                          Width="Auto"
+                                                          Margin="8,2,8,2"
+                                                          HorizontalAlignment="Left"
+                                                          VerticalAlignment="Center"
+                                                          ContentSource="Header"
+                                                          RecognizesAccessKey="True">
 
-        <!--  Content is to be filled with more. Snippet Page is just shown for debugging  -->
-        <Controls:SnippetPage />
-
+                                            <ContentPresenter.Resources>
+                                                <Style TargetType="{x:Type TextBlock}">
+                                                    <Setter Property="Foreground" Value="White" />
+                                                    <Setter Property="FontSize" Value="14px" />
+                                                </Style>
+                                            </ContentPresenter.Resources>
+                                        </ContentPresenter>
+                                    </Border>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Border" Property="Background" Value="Gray" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Border" Property="Background" Value="#727272" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
+            <TabItem Header="SnippetName">
+                <!--  Content is to be filled with more. Snippet Page is just shown for debugging  -->
+                <Controls:SnippetPage />
+            </TabItem>
+            <TabItem Header="SnippetNameDerWirklichGanzLangIst">
+                <!--  Content is to be filled with more. Snippet Page is just shown for debugging  -->
+                <Controls:SnippetPage />
+            </TabItem>
+            <TabItem IsEnabled="False">
+                <TabItem.Header>
+                    <Image Width="24px"
+                           Source="{StaticResource add_24pxDrawingImage}" />
+                </TabItem.Header>
+            </TabItem>
+        </TabControl>
     </Grid>
 
 </Window>
