@@ -15,6 +15,25 @@
                           Background="{TemplateBinding Background}" />
         </ControlTemplate>
 
+        <Style TargetType="{x:Type TextBox}">
+            <Style.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="3" />
+                </Style>
+            </Style.Resources>
+            <Setter Property="Background" Value="#555" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Padding" Value="4" />
+        </Style>
+
+        <Style TargetType="{x:Type AvalonEdit:TextEditor}">
+            <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="Background" Value="#555" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Padding" Value="4" />
+        </Style>
+
         <Style TargetType="{x:Type GroupBox}">
             <Setter Property="Foreground" Value="White" />
         </Style>
@@ -143,11 +162,6 @@
             <Style.Triggers />
         </Style>
 
-        <Style TargetType="{x:Type AvalonEdit:TextEditor}">
-            <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
-            <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
-        </Style>
-
         <Style x:Key="ExpanderHeader"
                TargetType="{x:Type TextBlock}">
             <Setter Property="Height" Value="22" />
@@ -155,7 +169,6 @@
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Top" />
         </Style>
-
         <!--  Icons  -->
         <DrawingImage x:Key="edit_24pxDrawingImage">
             <DrawingImage.Drawing>

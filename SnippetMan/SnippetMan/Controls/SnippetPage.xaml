@@ -4,31 +4,42 @@
              xmlns:AvalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:Controls="clr-namespace:SnippetMan.Controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SnippetMan.Controls.Utils"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
-
-    <DockPanel Height="Auto"
-               HorizontalAlignment="Stretch"
-               VerticalAlignment="Stretch"
-               LastChildFill="True">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <local:MaxHeightConverter x:Key="MaxHeightConverter" />
+            <sys:Double x:Key="importHeightRatio">0.3</sys:Double>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid x:Name="gridSnippet">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
         <!--  Details  -->
-        <Controls:ButtonedExGroupBox Height="Auto"
-                                     MinHeight="96px"
+        <Controls:ButtonedExGroupBox Grid.Row="0"
+                                     Height="Auto"
                                      VerticalAlignment="Stretch"
-                                     DockPanel.Dock="Top"
                                      GroupBox.Foreground="White"
                                      GroupBox.Header="Details">
             <Controls:ButtonedExGroupBox.InnerContent>
                 <StackPanel>
-                    <TextBlock>
-                        Titel
-                    </TextBlock>
-                    <TextBlock TextWrapping="Wrap">
-                        Beschreibung
-                    </TextBlock>
+                    <TextBox HorizontalAlignment="Stretch"
+                             MaxLines="1"
+                             Text="Some default snippet title"
+                             TextWrapping="NoWrap" />
+                    <TextBox Margin="0,8"
+                             HorizontalAlignment="Stretch"
+                             AcceptsReturn="True"
+                             Text="Beschreibung"
+                             TextWrapping="Wrap" />
                     <WrapPanel Uid="wrapP_combx">
                         <Button Uid="btn_del_cmbx"
                                 Width="16"
@@ -63,16 +74,15 @@
         </Controls:ButtonedExGroupBox>
 
         <!--  Imports  -->
-        <Controls:ButtonedExGroupBox Height="Auto"
-                                     MinHeight="164px"
+        <Controls:ButtonedExGroupBox Grid.Row="1"
+                                     Height="Auto"
+                                     MaxHeight="{Binding ElementName=gridSnippet, Path=ActualHeight, Converter={StaticResource MaxHeightConverter}, ConverterParameter={StaticResource importHeightRatio}}"
                                      VerticalAlignment="Stretch"
-                                     DockPanel.Dock="Top"
                                      GroupBox.Foreground="White"
                                      GroupBox.Header="Imports">
             <Controls:ButtonedExGroupBox.InnerContent>
                 <AvalonEdit:TextEditor Uid="ae_imports"
-                                       Background="#555"
-                                       Foreground="White"
+                                       MinHeight="128px"
                                        IsReadOnly="True" />
             </Controls:ButtonedExGroupBox.InnerContent>
             <Controls:ButtonedExGroupBox.HeaderRightHand>
@@ -103,15 +113,13 @@
         </Controls:ButtonedExGroupBox>
 
         <!--  Code  -->
-        <Controls:ButtonedExGroupBox Height="Auto"
+        <Controls:ButtonedExGroupBox Grid.Row="2"
+                                     Height="Auto"
                                      VerticalAlignment="Stretch"
-                                     DockPanel.Dock="Top"
                                      GroupBox.Foreground="White"
                                      GroupBox.Header="Code">
             <Controls:ButtonedExGroupBox.InnerContent>
                 <AvalonEdit:TextEditor Uid="ae_code"
-                                       Background="#555"
-                                       Foreground="White"
                                        IsReadOnly="True" />
             </Controls:ButtonedExGroupBox.InnerContent>
             <Controls:ButtonedExGroupBox.HeaderRightHand>
@@ -140,6 +148,5 @@
                 </Grid>
             </Controls:ButtonedExGroupBox.HeaderRightHand>
         </Controls:ButtonedExGroupBox>
-
-    </DockPanel>
+    </Grid>
 </UserControl>
