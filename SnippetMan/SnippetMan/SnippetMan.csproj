@@ -130,8 +130,10 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Icons\add-24px.svg" />
+    <Content Include="Icons\close-24px.svg" />
     <Content Include="Icons\edit-24px.svg" />
     <Content Include="Icons\file_copy-24px.svg" />
+    <Content Include="Icons\minimize-24px.svg" />
     <Content Include="Icons\remove-24px.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

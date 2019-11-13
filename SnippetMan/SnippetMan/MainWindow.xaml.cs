@@ -24,5 +24,22 @@ namespace SnippetMan
         {
             InitializeComponent();
         }
+
+        private void Btn_minapp_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void Btn_closeapp_Click(object sender, RoutedEventArgs e)
+        {
+            //TODO: Save unsaved changes
+            Application.Current.Shutdown();
+        }
+
+        private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
+        }
     }
 }
