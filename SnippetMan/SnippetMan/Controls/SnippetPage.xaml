@@ -41,15 +41,6 @@
                              Text="Beschreibung"
                              TextWrapping="Wrap" />
                     <WrapPanel Uid="wrapP_combx">
-                        <Button Uid="btn_del_cmbx"
-                                Width="16"
-                                Height="16"
-                                Margin="0,10,10,5"
-                                Click="Button_Del_Combx_Clicked"
-                                Visibility="Collapsed">
-                            <Image Width="16px"
-                                   Source="{StaticResource remove_24pxDrawingImage}" />
-                        </Button>
                         <Button Uid="btn_add_cmbx"
                                 Width="16"
                                 Height="16"

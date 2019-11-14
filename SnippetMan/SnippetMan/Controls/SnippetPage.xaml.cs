@@ -45,16 +45,16 @@ namespace SnippetMan.Controls
         public SnippetPage()
         {
             InitializeComponent();
-            importEditor = (TextEditor) UIHelper.GetByUid(this, "ae_imports");
-            codeEditor = (TextEditor) UIHelper.GetByUid(this, "ae_code");
-            btn_edit_details = (ToggleButton) UIHelper.GetByUid(this, "btn_copy_details");
-            btn_edit_import = (ToggleButton) UIHelper.GetByUid(this, "btn_edit_import");
-            btn_edit_code = (ToggleButton) UIHelper.GetByUid(this, "btn_edit_code");
-            btn_copy_import = (Button) UIHelper.GetByUid(this, "btn_copy_import");
-            btn_copy_code = (Button) UIHelper.GetByUid(this, "btn_copy_code");
-            btn_add_cmbx = (Button) UIHelper.GetByUid(this, "btn_add_cmbx");
-            btn_del_cmbx = (Button) UIHelper.GetByUid(this, "btn_del_cmbx");
-            wrapP_combx = (WrapPanel) UIHelper.GetByUid(this, "wrapP_combx");
+            importEditor = (TextEditor)UIHelper.GetByUid(this, "ae_imports");
+            codeEditor = (TextEditor)UIHelper.GetByUid(this, "ae_code");
+            btn_edit_details = (ToggleButton)UIHelper.GetByUid(this, "btn_copy_details");
+            btn_edit_import = (ToggleButton)UIHelper.GetByUid(this, "btn_edit_import");
+            btn_edit_code = (ToggleButton)UIHelper.GetByUid(this, "btn_edit_code");
+            btn_copy_import = (Button)UIHelper.GetByUid(this, "btn_copy_import");
+            btn_copy_code = (Button)UIHelper.GetByUid(this, "btn_copy_code");
+            btn_add_cmbx = (Button)UIHelper.GetByUid(this, "btn_add_cmbx");
+            btn_del_cmbx = (Button)UIHelper.GetByUid(this, "btn_del_cmbx");
+            wrapP_combx = (WrapPanel)UIHelper.GetByUid(this, "wrapP_combx");
 
             hlManager.SetCurrentTheme("VS2019_Dark"); // TODO "{ }" einfärben
 
@@ -97,30 +97,37 @@ namespace SnippetMan.Controls
                 Width = 60
             };
 
+            Button btn_delete = new Button()
+            {
+                Width = 16,
+                Height = 16,
+                Margin = new Thickness(0, 10, 10, 5),
+                Tag = comboTag,
+                Foreground = new SolidColorBrush(Colors.White),
+                Content = new Image { Source = (DrawingImage)System.Windows.Application.Current.Resources["remove_24pxDrawingImage"] }
+            };
+
+            btn_delete.Click += Btn_delete_Click;
+
             foreach (string language in languages)
             {
                 comboTag.Items.Add(language);
             }
             comboBoxes.Add(comboTag);
 
-            if (comboBoxes.Count > 0)
-                btn_del_cmbx.Visibility = Visibility.Visible;
-
             wrapP_combx.Children.Remove(btn_add_cmbx);
-            wrapP_combx.Children.Remove(btn_del_cmbx);
             wrapP_combx.Children.Add(comboTag);
-            wrapP_combx.Children.Add(btn_del_cmbx);
+            wrapP_combx.Children.Add(btn_delete);
             wrapP_combx.Children.Add(btn_add_cmbx);
         }
 
-        private void Button_Del_Combx_Clicked(object sender, RoutedEventArgs e)
+        private void Btn_delete_Click(object sender, RoutedEventArgs e)
         {
-            wrapP_combx.Children.Remove(comboBoxes.Last());
-            comboBoxes.Remove(comboBoxes.Last());
+            wrapP_combx.Children.Remove((ComboBox)((Button)sender).Tag);
 
-            if (comboBoxes.Count == 0)
-                btn_del_cmbx.Visibility = Visibility.Collapsed;
+            wrapP_combx.Children.Remove((Button)sender);
         }
+
         #endregion
 
         #region Funktionen zum Interagieren mit der Datenbank
@@ -161,7 +168,7 @@ namespace SnippetMan.Controls
             database.OpenConnection();
             snippetCode.Imports = importEditor.Text;
             snippetCode.Code = codeEditor.Text;
-            database.saveSnippetCode(snippetCode);
+            //database.saveSnippetCode(snippetCode);
             database.CloseConnection();
         }
         #endregion
