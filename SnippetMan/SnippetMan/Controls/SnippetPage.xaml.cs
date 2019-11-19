@@ -17,6 +17,7 @@ using Button = System.Windows.Controls.Button;
 using Clipboard = System.Windows.Clipboard;
 using ComboBox = System.Windows.Controls.ComboBox;
 using UserControl = System.Windows.Controls.UserControl;
+using TextBox = System.Windows.Controls.TextBox;
 using System.Windows.Media.Animation;
 
 namespace SnippetMan.Controls
@@ -28,9 +29,12 @@ namespace SnippetMan.Controls
     {
         //TODO: To be replaced by the snippets' actual tags
         private readonly string[] languages = { "C", "C++", "C#", "Java", "Python", "Javascript" };
+        private readonly string[] tags = { "Windows", "Linux", "App", "Android App","Gaming", "Cybersecurity", "Malware", "Bildverarbeitung", "EinTagNameDerWirklichGanzLangIst"};
 
         private TextEditor importEditor;
         private TextEditor codeEditor;
+        private TextBox tb_title;
+        private TextBox tb_description;
         private ToggleButton btn_edit_details;
         private ToggleButton btn_edit_import;
         private ToggleButton btn_edit_code;
@@ -53,6 +57,8 @@ namespace SnippetMan.Controls
             importEditor.TextArea.Caret.CaretBrush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
             codeEditor = (TextEditor)UIHelper.GetByUid(this, "ae_code");
             codeEditor.TextArea.Caret.CaretBrush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+            tb_title = (TextBox)UIHelper.GetByUid(this, "tb_title");
+            tb_description = (TextBox)UIHelper.GetByUid(this, "tb_description");
             btn_edit_details = (ToggleButton)UIHelper.GetByUid(this, "btn_copy_details");
             btn_edit_import = (ToggleButton)UIHelper.GetByUid(this, "btn_edit_import");
             btn_edit_code = (ToggleButton)UIHelper.GetByUid(this, "btn_edit_code");
@@ -78,7 +84,7 @@ namespace SnippetMan.Controls
             codeEditor.SyntaxHighlighting = hlManager.CurrentTheme.GetDefinitionByExtension(".cs");
         }
 
-        #region Events für Buttons
+        #region Button Events
         private void ToggleButton_Edit_CheckChanged(object sender, System.Windows.RoutedEventArgs e)
         {
             if (sender == btn_edit_import)
@@ -130,8 +136,7 @@ namespace SnippetMan.Controls
             {
                 Uid = "combx_Tag" + comboBoxes.Count,
                 IsReadOnly = false,
-                IsEditable = true,
-                Width = 60
+                IsEditable = true
             };
 
             Button btn_delete = new Button()
@@ -146,9 +151,9 @@ namespace SnippetMan.Controls
 
             btn_delete.Click += Btn_delete_Click;
 
-            foreach (string language in languages)
+            foreach (string tag in tags)
             {
-                comboTag.Items.Add(language);
+                comboTag.Items.Add(tag);
             }
             comboBoxes.Add(comboTag);
 
@@ -164,62 +169,17 @@ namespace SnippetMan.Controls
 
             wrapP_combx.Children.Remove((Button)sender);
         }
-
         #endregion
 
-        #region Funktionen zum Interagieren mit der Datenbank
-        private void LoadInfo_Into_Details()
-        {
-            IDatabaseDAO database = new SQLiteDAO();
-            database.OpenConnection();
-            SnippetInfo si = database.GetSnippetMetaById(1);
-            //TODO: Add as many comboboxes as required by the tag list
-            database.CloseConnection();
-        }
-
-        private void LoadData_Into_Editors()
-        {
-            IDatabaseDAO database = new SQLiteDAO();
-            database.OpenConnection();
-            SnippetInfo si = database.GetSnippetMetaById(1);
-            SnippetCode snippetCode = database.GetSnippetCode(si);
-            importEditor.Text = snippetCode.Imports;
-            codeEditor.Text = snippetCode.Code;
-            database.CloseConnection();
-        }
-
-        private void SaveInfo_Into_Database(SnippetInfo snippetInfo)
-        {
-            IDatabaseDAO database = new SQLiteDAO();
-            database.OpenConnection();
-
-            snippetInfo.Tags = comboBoxes.Select(c => c.SelectionBoxItem.ToString()).ToArray();
-
-            database.saveSnippet(snippetInfo);
-            database.CloseConnection();
-        }
-
-        private void SaveCode_Into_Database(SnippetCode snippetCode)
-        {
-            IDatabaseDAO database = new SQLiteDAO();
-            database.OpenConnection();
-            snippetCode.Imports = importEditor.Text;
-            snippetCode.Code = codeEditor.Text;
-            //database.saveSnippetCode(snippetCode);
-            database.CloseConnection();
-        }
-
-        #endregion
-
-        // Probleme nachdem die Animation ausgeführt wurde: Button wird gefreezed
-        private void TextEditor_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        #region Keyboard Events
+        private void CodeEditor_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (!e.KeyboardDevice.IsKeyDown(System.Windows.Input.Key.LeftCtrl))
             {
                 if (btn_edit_code.IsChecked == false)
                 {
                     SolidColorBrush grayBrush = new SolidColorBrush(Color.FromRgb(44,44,44));
-                    SolidColorBrush blueBrush = new SolidColorBrush(Colors.Blue);
+                    SolidColorBrush blueBrush = new SolidColorBrush(Colors.LightBlue);
                     ColorAnimation animation = new ColorAnimation();
                     animation.From = grayBrush.Color;
                     animation.To = blueBrush.Color;
@@ -237,14 +197,14 @@ namespace SnippetMan.Controls
             }
         }
 
-        private void TextEditor_KeyDown_1(object sender, System.Windows.Input.KeyEventArgs e)
+        private void ImportEditor_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (!e.KeyboardDevice.IsKeyDown(System.Windows.Input.Key.LeftCtrl))
             {
                 if (btn_edit_import.IsChecked == false)
                 {
                     SolidColorBrush grayBrush = new SolidColorBrush(Color.FromRgb(44, 44, 44));
-                    SolidColorBrush blueBrush = new SolidColorBrush(Colors.Blue);
+                    SolidColorBrush blueBrush = new SolidColorBrush(Colors.LightBlue);
                     ColorAnimation animation = new ColorAnimation();
                     animation.From = grayBrush.Color;
                     animation.To = blueBrush.Color;
@@ -261,5 +221,65 @@ namespace SnippetMan.Controls
                 }
             }
         }
+        #endregion
+
+        #region Funktionen zum Interagieren mit der Datenbank
+        private void LoadInfo_Into_Details()
+        {
+            IDatabaseDAO database = new SQLiteDAO();
+            database.OpenConnection();
+            SnippetInfo si = database.GetSnippetMetaById(1);
+            tb_title.Text = si.Titel;
+            tb_description.Text = si.Beschreibung;
+
+            //TODO: Add as many comboboxes as required by the tag list
+            //TODO: DONE?
+            combx_Tag0.Text = si.Tags[0].ToString();
+            for (int i = 1; i < si.Tags.Length; i++)
+            {           
+                ComboBox comboTag = new ComboBox
+                {
+                    Uid = "combx_Tag" + comboBoxes.Count,
+                    IsReadOnly = false,
+                    IsEditable = true
+                };
+                comboTag.Text = si.Tags[i].ToString();
+                comboBoxes.Add(comboTag);
+            }
+
+            database.CloseConnection();
+        }
+
+        private void LoadData_Into_Editors()
+        {
+            IDatabaseDAO database = new SQLiteDAO();
+            database.OpenConnection();
+            SnippetInfo si = database.GetSnippetMetaById(1);
+            SnippetCode snippetCode = database.GetSnippetCode(si);
+            importEditor.Text = snippetCode.Imports;
+            codeEditor.Text = snippetCode.Code;
+            database.CloseConnection();
+        }
+
+        private void SaveInfo_Into_Database(SnippetInfo snippetInfo)
+        {
+            IDatabaseDAO database = new SQLiteDAO();
+            database.OpenConnection();            
+            snippetInfo.Tags = comboBoxes.Select(c => c.SelectionBoxItem.ToString()).ToArray();
+            database.saveSnippet(snippetInfo);
+            database.CloseConnection();
+        }
+
+        private void SaveCode_Into_Database(SnippetCode snippetCode)
+        {
+            IDatabaseDAO database = new SQLiteDAO();
+            database.OpenConnection();
+            //snippetCode.Imports = importEditor.Text;
+            //snippetCode.Code = codeEditor.Text;
+            database.saveSnippetCode(snippetCode);
+            database.CloseConnection();
+        }
+        #endregion
+
     }
 }

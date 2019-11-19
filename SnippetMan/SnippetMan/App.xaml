@@ -1,9 +1,10 @@
-﻿<Application x:Class="SnippetMan.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:AvalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-             xmlns:Controls="clr-namespace:SnippetMan.Controls"
-             StartupUri="MainWindow.xaml">
+﻿<Application
+    x:Class="SnippetMan.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:AvalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+    xmlns:Controls="clr-namespace:SnippetMan.Controls"
+    StartupUri="MainWindow.xaml">
     <Application.Resources>
 
         <!--  Styles  -->
@@ -12,11 +13,11 @@
             <Setter Property="Margin" Value="4" />
         </Style>
 
-        <ControlTemplate x:Key="ComboBoxTextBox"
-                         TargetType="{x:Type TextBox}">
-            <ScrollViewer x:Name="PART_ContentHost"
-                          Margin="0,-18,-10,0"
-                          Background="{TemplateBinding Background}" />
+        <ControlTemplate x:Key="ComboBoxTextBox" TargetType="{x:Type TextBox}">
+            <ScrollViewer
+                x:Name="PART_ContentHost"
+                Margin="0,-18,-10,0"
+                Background="{TemplateBinding Background}" />
         </ControlTemplate>
 
         <Style TargetType="{x:Type TextBox}">
@@ -87,31 +88,39 @@
         <Style TargetType="{x:Type ComboBox}">
             <Setter Property="Margin" Value="0,5,10,0" />
             <Setter Property="Foreground" Value="White" />
+            <Setter Property="MinWidth" Value="60" />
+            <Setter Property="Width" Value="Auto" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
                         <Grid>
-                            <ToggleButton Grid.Column="2"
-                                          Focusable="False"
-                                          IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                            <ToggleButton
+                                Grid.Column="2"
+                                Focusable="False"
+                                IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
                                 <ToggleButton.Template>
                                     <ControlTemplate>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="5*" />
+                                                <ColumnDefinition Width="50*" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <Border x:Name="Border"
-                                                    Grid.ColumnSpan="2"
-                                                    Background="#555" />
-                                            <Border Grid.Column="0"
-                                                    Margin="2"
-                                                    Background="#555" />
-                                            <Path x:Name="Arrow"
-                                                  Grid.Column="2"
-                                                  VerticalAlignment="Center"
-                                                  Data="M 0 0 L 4 4 L 8 0 Z"
-                                                  Fill="#2C2C2C" />
+                                            <Border
+                                                x:Name="Border"
+                                                Grid.ColumnSpan="2"
+                                                Background="#555" />
+                                            <Border
+                                                Grid.Column="0"
+                                                Margin="2"
+                                                Background="#555" />
+                                            <Path
+                                                x:Name="Arrow"
+                                                Grid.Column="2"
+                                                Margin="0,0,2,0"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Data="M 0 0 L 4 4 L 8 0 Z"
+                                                Fill="#2C2C2C" />
                                         </Grid>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="ToggleButton.IsMouseOver" Value="true">
@@ -124,36 +133,39 @@
                                     </ControlTemplate>
                                 </ToggleButton.Template>
                             </ToggleButton>
-                            <ContentPresenter Name="ContentSite"
-                                              Margin="3"
-                                              Content="{TemplateBinding SelectionBoxItem}"
-                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                              IsHitTestVisible="False" />
-                            <TextBox x:Name="PART_EditableTextBox"
-                                     Width="Auto"
-                                     Margin="3,3,23,3"
-                                     HorizontalAlignment="Left"
-                                     VerticalAlignment="Bottom"
-                                     Background="Transparent"
-                                     Focusable="True"
-                                     Foreground="{TemplateBinding Foreground}"
-                                     IsReadOnly="{TemplateBinding IsReadOnly}"
-                                     Style="{x:Null}"
-                                     Template="{StaticResource ComboBoxTextBox}"
-                                     Visibility="Visible" />
-                            <Popup Name="Popup"
-                                   AllowsTransparency="True"
-                                   Focusable="False"
-                                   IsOpen="{TemplateBinding IsDropDownOpen}"
-                                   Placement="Bottom"
-                                   PopupAnimation="Slide">
-                                <Grid Name="DropDown"
-                                      MinWidth="{TemplateBinding ActualWidth}"
-                                      MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                                      SnapsToDevicePixels="True">
-                                    <Border x:Name="DropDownBorder"
-                                            Background="#888888" />
+                            <ContentPresenter
+                                Name="ContentSite"
+                                Margin="3"
+                                Content="{TemplateBinding SelectionBoxItem}"
+                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                IsHitTestVisible="False" />
+                            <TextBox
+                                x:Name="PART_EditableTextBox"
+                                Width="Auto"
+                                Margin="3,3,25,3"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom"
+                                Background="Transparent"
+                                Focusable="True"
+                                Foreground="{TemplateBinding Foreground}"
+                                IsReadOnly="{TemplateBinding IsReadOnly}"
+                                Style="{x:Null}"
+                                Template="{StaticResource ComboBoxTextBox}"
+                                Visibility="Visible" />
+                            <Popup
+                                Name="Popup"
+                                AllowsTransparency="True"
+                                Focusable="False"
+                                IsOpen="{TemplateBinding IsDropDownOpen}"
+                                Placement="Bottom"
+                                PopupAnimation="Slide">
+                                <Grid
+                                    Name="DropDown"
+                                    MinWidth="{TemplateBinding ActualWidth}"
+                                    MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                    SnapsToDevicePixels="True">
+                                    <Border x:Name="DropDownBorder" Background="#888888" />
                                     <ScrollViewer SnapsToDevicePixels="True">
                                         <StackPanel IsItemsHost="True" />
                                     </ScrollViewer>
@@ -166,8 +178,7 @@
             <Style.Triggers />
         </Style>
 
-        <Style x:Key="ExpanderHeader"
-               TargetType="{x:Type TextBlock}">
+        <Style x:Key="ExpanderHeader" TargetType="{x:Type TextBlock}">
             <Setter Property="Height" Value="22" />
             <Setter Property="Padding" Value="9,3,0,0" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -178,48 +189,42 @@
         <DrawingImage x:Key="edit_24pxDrawingImage">
             <DrawingImage.Drawing>
                 <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                    <GeometryDrawing Brush="#FFFFFFFF"
-                                     Geometry="F1 M24,24z M0,0z M14.06,9.02L14.98,9.94 5.92,19 5,19 5,18.08 14.06,9.02 M17.66,3C17.41,3,17.15,3.1,16.96,3.29L15.13,5.12 18.88,8.87 20.71,7.04C21.1,6.65,21.1,6.02,20.71,5.63L18.37,3.29C18.17,3.09,17.92,3,17.66,3z M14.06,6.19L3,17.25 3,21 6.75,21 17.81,9.94 14.06,6.19z" />
+                    <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1 M24,24z M0,0z M14.06,9.02L14.98,9.94 5.92,19 5,19 5,18.08 14.06,9.02 M17.66,3C17.41,3,17.15,3.1,16.96,3.29L15.13,5.12 18.88,8.87 20.71,7.04C21.1,6.65,21.1,6.02,20.71,5.63L18.37,3.29C18.17,3.09,17.92,3,17.66,3z M14.06,6.19L3,17.25 3,21 6.75,21 17.81,9.94 14.06,6.19z" />
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
         <DrawingImage x:Key="file_copy_24pxDrawingImage">
             <DrawingImage.Drawing>
                 <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                    <GeometryDrawing Brush="#FFFFFFFF"
-                                     Geometry="F1 M24,24z M0,0z M16,1L4,1C2.9,1,2,1.9,2,3L2,17 4,17 4,3 16,3 16,1z M15,5L8,5C6.9,5,6.01,5.9,6.01,7L6,21C6,22.1,6.89,23,7.99,23L19,23C20.1,23,21,22.1,21,21L21,11 15,5z M8,21L8,7 14,7 14,12 19,12 19,21 8,21z" />
+                    <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1 M24,24z M0,0z M16,1L4,1C2.9,1,2,1.9,2,3L2,17 4,17 4,3 16,3 16,1z M15,5L8,5C6.9,5,6.01,5.9,6.01,7L6,21C6,22.1,6.89,23,7.99,23L19,23C20.1,23,21,22.1,21,21L21,11 15,5z M8,21L8,7 14,7 14,12 19,12 19,21 8,21z" />
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
         <DrawingImage x:Key="add_24pxDrawingImage">
             <DrawingImage.Drawing>
                 <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                    <GeometryDrawing Brush="#FFFFFFFF"
-                                     Geometry="F1 M24,24z M0,0z M19,13L13,13 13,19 11,19 11,13 5,13 5,11 11,11 11,5 13,5 13,11 19,11 19,13z" />
+                    <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1 M24,24z M0,0z M19,13L13,13 13,19 11,19 11,13 5,13 5,11 11,11 11,5 13,5 13,11 19,11 19,13z" />
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
         <DrawingImage x:Key="remove_24pxDrawingImage">
             <DrawingImage.Drawing>
                 <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                    <GeometryDrawing Brush="#FFFFFFFF"
-                                     Geometry="F1 M24,24z M0,0z M19,13L5,13 5,11 19,11 19,13z" />
+                    <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1 M24,24z M0,0z M19,13L5,13 5,11 19,11 19,13z" />
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
         <DrawingImage x:Key="close_24pxDrawingImage">
             <DrawingImage.Drawing>
                 <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                    <GeometryDrawing Brush="#FFFFFFFF"
-                                     Geometry="F1 M24,24z M0,0z M19,6.41L17.59,5 12,10.59 6.41,5 5,6.41 10.59,12 5,17.59 6.41,19 12,13.41 17.59,19 19,17.59 13.41,12 19,6.41z" />
+                    <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1 M24,24z M0,0z M19,6.41L17.59,5 12,10.59 6.41,5 5,6.41 10.59,12 5,17.59 6.41,19 12,13.41 17.59,19 19,17.59 13.41,12 19,6.41z" />
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
         <DrawingImage x:Key="minimize_24pxDrawingImage">
             <DrawingImage.Drawing>
                 <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                    <GeometryDrawing Brush="#FFFFFFFF"
-                                     Geometry="F1 M24,24z M0,0z M6,19L18,19 18,21 6,21 6,19z" />
+                    <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1 M24,24z M0,0z M6,19L18,19 18,21 6,21 6,19z" />
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
