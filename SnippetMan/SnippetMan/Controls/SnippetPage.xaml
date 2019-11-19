@@ -41,10 +41,14 @@
                              Text="Beschreibung"
                              TextWrapping="Wrap" />
                     <WrapPanel Uid="wrapP_combx">
+                        <ComboBox Uid="combx_Tag0"
+                                  IsReadOnly="False"
+                                  IsEditable="True"
+                                  Width="60"/>
                         <Button Uid="btn_add_cmbx"
                                 Width="16"
                                 Height="16"
-                                Margin="0,5,0,0"
+                                Margin="0,10,10,5"
                                 Click="Button_Add_Combx_Clicked">
                             <Image Width="16px"
                                    Source="{StaticResource add_24pxDrawingImage}" />
@@ -74,7 +78,7 @@
             <Controls:ButtonedExGroupBox.InnerContent>
                 <AvalonEdit:TextEditor Uid="ae_imports"
                                        MinHeight="128px"
-                                       IsReadOnly="True" />
+                                       IsReadOnly="True" KeyDown="TextEditor_KeyDown_1"/>
             </Controls:ButtonedExGroupBox.InnerContent>
             <Controls:ButtonedExGroupBox.HeaderRightHand>
                 <Grid Height="Auto"
@@ -96,9 +100,21 @@
                             Padding="2"
                             VerticalAlignment="Top"
                             Click="Button_Copy_Clicked">
-                        <Image Width="16px"
+                        <Image Width="16px" Uid="copy_t"
                                Source="{StaticResource file_copy_24pxDrawingImage}" />
                     </Button>
+                    <Popup Uid="popup_import"
+                           Placement="Mouse"
+                           IsOpen="False"
+                           Width="120"
+                           Height="20"
+                           StaysOpen="False"
+                           AllowsTransparency="True"
+                           HorizontalAlignment="Left">
+                        <Border CornerRadius="5" Background="Wheat" BorderThickness="1" BorderBrush="Wheat">
+                            <TextBlock Text="Copied to Clipboard!" TextAlignment="Center" Background="Transparent" Foreground="Black"/>
+                        </Border>
+                    </Popup>
                 </Grid>
             </Controls:ButtonedExGroupBox.HeaderRightHand>
         </Controls:ButtonedExGroupBox>
@@ -111,7 +127,7 @@
                                      GroupBox.Header="Code">
             <Controls:ButtonedExGroupBox.InnerContent>
                 <AvalonEdit:TextEditor Uid="ae_code"
-                                       IsReadOnly="True" />
+                                       IsReadOnly="True" KeyDown="TextEditor_KeyDown"/>
             </Controls:ButtonedExGroupBox.InnerContent>
             <Controls:ButtonedExGroupBox.HeaderRightHand>
                 <Grid Height="Auto"
@@ -136,6 +152,18 @@
                         <Image Width="16px"
                                Source="{StaticResource file_copy_24pxDrawingImage}" />
                     </Button>
+                    <Popup Uid="popup_code"
+                           Placement="Mouse"
+                           IsOpen="False"
+                           Width="120"
+                           Height="20"
+                           StaysOpen="False"
+                           AllowsTransparency="True"
+                           HorizontalAlignment="Left">
+                        <Border CornerRadius="5" Background="Wheat" BorderThickness="1" BorderBrush="Wheat">
+                            <TextBlock Text="Copied to Clipboard!" TextAlignment="Center" Background="Transparent" Foreground="Black"/>
+                        </Border>
+                    </Popup>
                 </Grid>
             </Controls:ButtonedExGroupBox.HeaderRightHand>
         </Controls:ButtonedExGroupBox>

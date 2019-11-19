@@ -17,6 +17,7 @@ using Button = System.Windows.Controls.Button;
 using Clipboard = System.Windows.Clipboard;
 using ComboBox = System.Windows.Controls.ComboBox;
 using UserControl = System.Windows.Controls.UserControl;
+using System.Windows.Media.Animation;
 
 namespace SnippetMan.Controls
 {
@@ -38,6 +39,9 @@ namespace SnippetMan.Controls
         private Button btn_add_cmbx;
         private Button btn_del_cmbx;
         private WrapPanel wrapP_combx;
+        private ComboBox combx_Tag0;
+        private Popup popup_import;
+        private Popup popup_code;
 
         private List<ComboBox> comboBoxes = new List<ComboBox>();
 
@@ -46,7 +50,9 @@ namespace SnippetMan.Controls
         {
             InitializeComponent();
             importEditor = (TextEditor)UIHelper.GetByUid(this, "ae_imports");
+            importEditor.TextArea.Caret.CaretBrush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
             codeEditor = (TextEditor)UIHelper.GetByUid(this, "ae_code");
+            codeEditor.TextArea.Caret.CaretBrush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
             btn_edit_details = (ToggleButton)UIHelper.GetByUid(this, "btn_copy_details");
             btn_edit_import = (ToggleButton)UIHelper.GetByUid(this, "btn_edit_import");
             btn_edit_code = (ToggleButton)UIHelper.GetByUid(this, "btn_edit_code");
@@ -55,6 +61,16 @@ namespace SnippetMan.Controls
             btn_add_cmbx = (Button)UIHelper.GetByUid(this, "btn_add_cmbx");
             btn_del_cmbx = (Button)UIHelper.GetByUid(this, "btn_del_cmbx");
             wrapP_combx = (WrapPanel)UIHelper.GetByUid(this, "wrapP_combx");
+            combx_Tag0 = (ComboBox)UIHelper.GetByUid(this, "combx_Tag0");
+            popup_import = (Popup)UIHelper.GetByUid(this, "popup_import");
+            popup_code = (Popup)UIHelper.GetByUid(this, "popup_code");
+            
+            //Erste Combobox mit ProgLang
+            foreach (string language in languages)
+            {
+                combx_Tag0.Items.Add(language);
+            }
+            comboBoxes.Add(combx_Tag0);
 
             hlManager.SetCurrentTheme("VS2019_Dark"); // TODO "{ }" einfärben
 
@@ -67,11 +83,30 @@ namespace SnippetMan.Controls
         {
             if (sender == btn_edit_import)
             {
-                importEditor.IsReadOnly = !btn_edit_import.IsChecked == true;
+                if (btn_edit_import.IsChecked == true)
+                {
+                    importEditor.IsReadOnly = false;
+                    importEditor.TextArea.Caret.CaretBrush = null;
+                }
+                else
+                {
+                    importEditor.IsReadOnly = true;
+                    importEditor.TextArea.Caret.CaretBrush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                }
             }
             else if (sender == btn_edit_code)
             {
-                codeEditor.IsReadOnly = !btn_edit_code.IsChecked == true;
+                if (btn_edit_code.IsChecked == true)
+                {
+                    codeEditor.IsReadOnly = false;
+                    codeEditor.TextArea.Caret.CaretBrush = null;
+                }
+                else
+                {
+                    codeEditor.IsReadOnly = true;
+                    codeEditor.TextArea.Caret.CaretBrush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                }
+                
             }
         }   // TODO Farbe des Icons (GeometryDrawing) soll sich ändern
 
@@ -80,10 +115,12 @@ namespace SnippetMan.Controls
             if (sender == btn_copy_import)
             {
                 Clipboard.SetText(importEditor.Text);
+                popup_import.IsOpen = true;
             }
             else if (sender == btn_copy_code)
             {
                 Clipboard.SetText(codeEditor.Text);
+                popup_code.IsOpen = true;
             }
         }
 
@@ -171,7 +208,58 @@ namespace SnippetMan.Controls
             //database.saveSnippetCode(snippetCode);
             database.CloseConnection();
         }
+
         #endregion
 
+        // Probleme nachdem die Animation ausgeführt wurde: Button wird gefreezed
+        private void TextEditor_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (!e.KeyboardDevice.IsKeyDown(System.Windows.Input.Key.LeftCtrl))
+            {
+                if (btn_edit_code.IsChecked == false)
+                {
+                    SolidColorBrush grayBrush = new SolidColorBrush(Color.FromRgb(44,44,44));
+                    SolidColorBrush blueBrush = new SolidColorBrush(Colors.Blue);
+                    ColorAnimation animation = new ColorAnimation();
+                    animation.From = grayBrush.Color;
+                    animation.To = blueBrush.Color;
+                    animation.Duration = new Duration(TimeSpan.FromSeconds(0.25));
+                    animation.AutoReverse = true;
+                    animation.RepeatBehavior = new RepeatBehavior(3);
+                    animation.FillBehavior = FillBehavior.Stop;
+
+                    Storyboard sb = new Storyboard();
+                    Storyboard.SetTarget(animation, btn_edit_code);
+                    Storyboard.SetTargetProperty(animation, new PropertyPath("Background.(SolidColorBrush.Color)"));
+                    sb.Children.Add(animation);
+                    sb.Begin();
+                }
+            }
+        }
+
+        private void TextEditor_KeyDown_1(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (!e.KeyboardDevice.IsKeyDown(System.Windows.Input.Key.LeftCtrl))
+            {
+                if (btn_edit_import.IsChecked == false)
+                {
+                    SolidColorBrush grayBrush = new SolidColorBrush(Color.FromRgb(44, 44, 44));
+                    SolidColorBrush blueBrush = new SolidColorBrush(Colors.Blue);
+                    ColorAnimation animation = new ColorAnimation();
+                    animation.From = grayBrush.Color;
+                    animation.To = blueBrush.Color;
+                    animation.Duration = new Duration(TimeSpan.FromSeconds(0.25));
+                    animation.AutoReverse = true;
+                    animation.RepeatBehavior = new RepeatBehavior(3);
+                    animation.FillBehavior = FillBehavior.Stop;
+
+                    Storyboard sb = new Storyboard();
+                    Storyboard.SetTarget(animation, btn_edit_import);
+                    Storyboard.SetTargetProperty(animation, new PropertyPath("Background.(SolidColorBrush.Color)"));
+                    sb.Children.Add(animation);
+                    sb.Begin();
+                }
+            }
+        }
     }
 }
