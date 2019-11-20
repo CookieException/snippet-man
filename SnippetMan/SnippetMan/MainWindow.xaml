@@ -28,6 +28,7 @@
         </Grid.RowDefinitions>
 
         <!--  Window minimize/close button  -->
+
         <StackPanel Name="TitleBar"
                     Grid.Row="0"
                     Grid.Column="0"
@@ -41,9 +42,20 @@
             <Button Name="btn_closeapp"
                     Width="24"
                     Height="24"
+                    Margin="4, 0, 0, 0"
                     Click="Btn_closeapp_Click">
                 <Image Width="24px"
                        Source="{StaticResource close_24pxDrawingImage}" />
+            </Button>
+
+            <!--  Margin: Set _ to same height as the X  -->
+            <Button Name="btn_toggleapp"
+                    Width="24"
+                    Height="24"
+                    Margin="4,0,0,0" Click="Btn_toggleapp_Click">
+                <Image Width="24px"
+                       Margin="0,0,0,0"
+                       Source="{StaticResource window_maximizeDrawingImage}" />
             </Button>
 
             <!--  Margin: Set _ to same height as the X  -->
