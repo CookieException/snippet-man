@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace SnippetMan.Classes.Snippets
 {
-    enum TagType
+    public enum TagType
     {
         TAG_WITHOUT_TYPE,
         TAG_PROGRAMMING_LANGUAGE
     }
 
-    class Tag
+    public class Tag
     {
         public int Id { get; set; }
         public TagType Type { get; set; }

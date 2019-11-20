@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Data.SQLite;
+using SnippetMan.Classes.Snippets;
 
 namespace SnippetMan.Classes.Database
 {
@@ -113,7 +114,7 @@ namespace SnippetMan.Classes.Database
             return (int)m_dbConnection.LastInsertRowId; // TODO return ist int64
         }
 
-        public int saveSnippetCode(SnippetCode infoToSave) // TODO woher soll ich wissen bei welchem snippetInfo ich das speichern soll?
+        public int saveSnippetCode(SnippetCode infoToSave, SnippetInfo whereToSave) // TODO woher soll ich wissen bei welchem snippetInfo ich das speichern soll?
         {
             // TODO Snippet code Speichern
             //TODO Update snippetInfo Fremdschlüssel
@@ -182,6 +183,21 @@ namespace SnippetMan.Classes.Database
             }
 
             return snippetCodeList;
+        }
+
+        public List<Tag> GetTags(string searchText, TagType tagType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveTag(Tag tag)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveTag(string tag)
+        {
+            throw new NotImplementedException();
         }
     }
 }
