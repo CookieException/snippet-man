@@ -69,6 +69,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\Database\SqLiteDAO.cs" />
+    <Compile Include="Classes\Snippets\Tag.cs" />
     <Compile Include="Controls\ButtonedExGroupBox.xaml.cs">
       <DependentUpon>ButtonedExGroupBox.xaml</DependentUpon>
     </Compile>

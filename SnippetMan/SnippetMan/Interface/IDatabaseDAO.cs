@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SnippetMan.Classes;
+using SnippetMan.Classes.Snippets;
 
 namespace SnippetMan
 {
@@ -64,8 +65,22 @@ namespace SnippetMan
         /// Saves the code a given snippet
         /// </summary>
         /// <param name="infoToSave">Information of the snippet as <see cref="SnippetInfo"/></param>
+        /// <param name="whereToSave">Parent of the Snippet to save</param>
         /// <returns>ID of parent meta info database entry</returns>
-        int saveSnippetCode(SnippetCode infoToSave);
+        int saveSnippetCode(SnippetCode infoToSave, SnippetInfo whereToSave);
 
+        /// <summary>
+        /// Returns already used/ saved Tags for Autocompletion when adding Tags to a Snippet
+        /// </summary>
+        /// <param name="searchText">Searchtext to match</param>
+        /// <param name="tagType">Tag Type to Filter for example for Programming Languages</param>
+        /// <returns>All matching Tags</returns>
+        List<Tag> GetTags(string searchText, TagType tagType);
+        /// <summary>
+        /// Saves a Tag
+        /// </summary>
+        /// <param name="tag">tag to save</param>
+        void SaveTag(Tag tag);
+        void SaveTag(string tag);
     }
 }
