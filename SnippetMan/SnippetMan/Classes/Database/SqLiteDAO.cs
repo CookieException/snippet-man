@@ -28,6 +28,16 @@ namespace SnippetMan.Classes.Database
                 ", creationDate DATETIME, lastEditDate DATETIME, snippetCodeId INTEGER " +
                 ", FOREIGN KEY('snippetCodeId') REFERENCES 'snippetCode' ('id'))"
             );
+            execute(
+                "create table if not exists tag " +
+                "(id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(128), type INTEGER)"
+            );
+            execute(
+                "create table if not exists tag_snippetInfo " +
+                "(id INTEGER PRIMARY KEY AUTOINCREMENT, snippetCodeId INTEGER, tagId INTEGER" +
+                ", FOREIGN KEY('snippetCodeId') REFERENCES 'snippetCode' ('id')" +
+                ", FOREIGN KEY('tagId') REFERENCES 'tag' ('id'))"
+            );
 
             return m_dbConnection.State == System.Data.ConnectionState.Open;
         }
@@ -40,7 +50,7 @@ namespace SnippetMan.Classes.Database
         public SnippetCode GetSnippetCode(SnippetInfo parentInfo)
         {
             List<SnippetCode> result = selectSnippetCode("select * from snippetCode where id=:id",
-                new Dictionary<string, object> {{"id", parentInfo.Id}});
+                new Dictionary<string, object> { { "id", parentInfo.Id } }); //TODO Falsche Id, hier muss erst snippetInfo gelesen werden, um den Fremdschlüssel zu erhalten
 
             if (result.Count > 0)
             {
@@ -55,7 +65,7 @@ namespace SnippetMan.Classes.Database
         public SnippetInfo GetSnippetMetaById(int id)
         {
             List<SnippetInfo> result = selectSnippetInfo("select * from snippetInfo where id=:id",
-                new Dictionary<string, object> {{"id", id}});
+                new Dictionary<string, object> { { "id", id } });
 
             if (result.Count > 0)
             {
@@ -114,11 +124,64 @@ namespace SnippetMan.Classes.Database
             return (int)m_dbConnection.LastInsertRowId; // TODO return ist int64
         }
 
-        public int saveSnippetCode(SnippetCode infoToSave, SnippetInfo whereToSave) // TODO woher soll ich wissen bei welchem snippetInfo ich das speichern soll?
+        public int saveSnippetCode(SnippetCode infoToSave, SnippetInfo whereToSave)
         {
+            SnippetInfo snippetInfo;
+            if (whereToSave.Id.HasValue)
+            {
+                snippetInfo = GetSnippetMetaById(whereToSave.Id.Value);
+            }
+            else
+            {
+                throw new Exception("Save SnippetInfo first");
+            }
+
+            // TODO Fremdschlüssel in SnippetInfo lesen und speichern
+
             // TODO Snippet code Speichern
             //TODO Update snippetInfo Fremdschlüssel
             throw new NotImplementedException();
+        }
+        public List<Tag> GetTags(string searchText, TagType tagType)
+        {
+            string sql = "select * from tag where title like :searchText AND type = :tagType";
+
+            Dictionary<string, object> dict = new Dictionary<string, object> {
+                { "searchText", searchText },
+                { "tagType", tagType }
+            };
+            return selectTag(sql, dict);
+        }
+
+        public Tag GetTagById(int id)
+        {
+            return selectTag("select * from tag where id = :id", new Dictionary<string, object> { { "id", id } }).First();
+        }
+
+        public int saveTag(Tag tag)
+        {
+            string sql;
+            Dictionary<string, object> dict = new Dictionary<string, object>
+            {
+                {"id", tag.Id },
+                {"title", tag.Title },
+                {"type",tag.Type }
+            };
+
+            if (tag.Id.HasValue)
+            { // Update
+                sql = "update tag set" +
+                    " title = :title," +
+                    " type = :type" +
+                    " where id = :id";
+            }
+            else
+            { // Insert
+                sql = "insert into tag (title,type) values (:title, :type)";
+            }
+
+            execute(sql, dict);
+            return (int)m_dbConnection.LastInsertRowId; // TODO return ist int64
         }
 
         private void execute(string sql) => execute(sql, new Dictionary<string, object>());
@@ -185,19 +248,31 @@ namespace SnippetMan.Classes.Database
             return snippetCodeList;
         }
 
-        public List<Tag> GetTags(string searchText, TagType tagType)
+        private List<Tag> selectTag(string sql) => selectTag(sql, new Dictionary<string, object>());
+        private List<Tag> selectTag(string sql, Dictionary<string, object> parameters)
         {
-            throw new NotImplementedException();
+            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+            foreach (KeyValuePair<string, object> kvp in parameters)
+                command.Parameters.Add(new SQLiteParameter(kvp.Key, kvp.Value));
+
+            SQLiteDataReader dr = command.ExecuteReader();
+
+            List<Tag> tagList = new List<Tag>();
+
+            while (dr.Read())
+            {
+                Tag tag = new Tag
+                {
+                    Id = (int)dr.GetInt64(0),
+                    Title = dr.GetString(1),
+                    Type = (TagType)dr.GetInt32(2)
+                };
+
+                tagList.Add(tag);
+            }
+
+            return tagList;
         }
 
-        public void SaveTag(Tag tag)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SaveTag(string tag)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

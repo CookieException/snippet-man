@@ -76,11 +76,19 @@ namespace SnippetMan
         /// <param name="tagType">Tag Type to Filter for example for Programming Languages</param>
         /// <returns>All matching Tags</returns>
         List<Tag> GetTags(string searchText, TagType tagType);
+
         /// <summary>
-        /// Saves a Tag
+        /// Returns a Tag with that Id
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        Tag GetTagById(int id);
+
+        /// <summary>
+        /// Saves a tag
         /// </summary>
         /// <param name="tag">tag to save</param>
-        void SaveTag(Tag tag);
-        void SaveTag(string tag);
+        /// <returns>Id of insertet tag</returns>
+        int saveTag(Tag tag);
     }
 }

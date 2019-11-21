@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Data.SQLite;
+using SnippetMan.Classes.Snippets;
 
 namespace SnippetMan.Classes.Database.Tests
 {
@@ -59,11 +60,53 @@ namespace SnippetMan.Classes.Database.Tests
             SnippetInfo dbSnippetInfo = db.GetSnippetMetaById(result);
             //Assert.AreSame(snippetInfo,db.GetSnippetMetaById(result));
             Assert.IsNotNull(dbSnippetInfo);
-            Assert.AreEqual(snippetInfo.Titel,dbSnippetInfo.Titel);
-            Assert.AreEqual(snippetInfo.Beschreibung,dbSnippetInfo.Beschreibung);
+            Assert.AreEqual(snippetInfo.Titel, dbSnippetInfo.Titel);
+            Assert.AreEqual(snippetInfo.Beschreibung, dbSnippetInfo.Beschreibung);
             Assert.IsNotNull(dbSnippetInfo.Id);
             Assert.IsNotNull(dbSnippetInfo.CreationDate);
             Assert.IsNotNull(dbSnippetInfo.LastEditDate);
+        }
+
+        [TestMethod()]
+        public void GetTagTest()
+        {
+            SQLiteDAO db = new SQLiteDAO();
+            db.OpenConnection();
+
+            Tag tag = new Tag
+            {
+                Title = "TestTag",
+                Type = TagType.TAG_WITHOUT_TYPE
+            };
+            int result = db.saveTag(tag);
+
+            Tag dbTag = db.GetTagById(result);
+
+            Assert.IsNotNull(dbTag);
+            Assert.AreEqual(tag.Title, dbTag.Title);
+            Assert.AreEqual(tag.Type, dbTag.Type);
+            Assert.IsNotNull(dbTag.Id);
+        }
+
+        [TestMethod()]
+        public void GetTagsTest()
+        {
+            SQLiteDAO db = new SQLiteDAO();
+            db.OpenConnection();
+
+            Tag tag = new Tag
+            {
+                Title = "TestTag",
+                Type = TagType.TAG_WITHOUT_TYPE
+            };
+            int result = db.saveTag(tag);
+
+            Tag dbTag = db.GetTags("TestTag",TagType.TAG_WITHOUT_TYPE).First();
+
+            Assert.IsNotNull(dbTag);
+            Assert.AreEqual(tag.Title, dbTag.Title);
+            Assert.AreEqual(tag.Type, dbTag.Type);
+            Assert.IsNotNull(dbTag.Id);
         }
     }
 }
