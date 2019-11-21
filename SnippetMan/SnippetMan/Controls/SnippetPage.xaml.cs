@@ -47,6 +47,9 @@ namespace SnippetMan.Controls
         private Popup popup_import;
         private Popup popup_code;
 
+        public delegate void TitleChangedHandler(string Title);
+        public event TitleChangedHandler TitleChanged;
+
         private List<ComboBox> comboBoxes = new List<ComboBox>();
 
         IThemedHighlightingManager hlManager = ThemedHighlightingManager.Instance;
@@ -59,7 +62,7 @@ namespace SnippetMan.Controls
             codeEditor.TextArea.Caret.CaretBrush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
             tb_title = (TextBox)UIHelper.GetByUid(this, "tb_title");
             tb_description = (TextBox)UIHelper.GetByUid(this, "tb_description");
-            btn_edit_details = (ToggleButton)UIHelper.GetByUid(this, "btn_copy_details");
+            btn_edit_details = (ToggleButton)UIHelper.GetByUid(this, "btn_edit_details");
             btn_edit_import = (ToggleButton)UIHelper.GetByUid(this, "btn_edit_import");
             btn_edit_code = (ToggleButton)UIHelper.GetByUid(this, "btn_edit_code");
             btn_copy_import = (Button)UIHelper.GetByUid(this, "btn_copy_import");
@@ -87,7 +90,20 @@ namespace SnippetMan.Controls
         #region Button Events
         private void ToggleButton_Edit_CheckChanged(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (sender == btn_edit_import)
+            if (sender == btn_edit_details)
+            {
+                if (btn_edit_details.IsChecked == true)
+                {
+                    tb_title.IsReadOnly = false;
+                    tb_description.IsReadOnly = false;
+                }
+                else
+                {
+                    tb_title.IsReadOnly = true;
+                    tb_description.IsReadOnly = true;
+                }
+            }
+            else if (sender == btn_edit_import)
             {
                 if (btn_edit_import.IsChecked == true)
                 {
@@ -143,7 +159,7 @@ namespace SnippetMan.Controls
             {
                 Width = 16,
                 Height = 16,
-                Margin = new Thickness(0, 10, 10, 5),
+                Margin = new Thickness(-8, 5, 10, 5),
                 Tag = comboTag,
                 Foreground = new SolidColorBrush(Colors.White),
                 Content = new Image { Source = (DrawingImage)System.Windows.Application.Current.Resources["remove_24pxDrawingImage"] }
@@ -221,6 +237,31 @@ namespace SnippetMan.Controls
                 }
             }
         }
+
+        private void TB_Details_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (!e.KeyboardDevice.IsKeyDown(System.Windows.Input.Key.LeftCtrl))
+            {
+                if (btn_edit_details.IsChecked == false)
+                {
+                    SolidColorBrush grayBrush = new SolidColorBrush(Color.FromRgb(44, 44, 44));
+                    SolidColorBrush blueBrush = new SolidColorBrush(Colors.LightBlue);
+                    ColorAnimation animation = new ColorAnimation();
+                    animation.From = grayBrush.Color;
+                    animation.To = blueBrush.Color;
+                    animation.Duration = new Duration(TimeSpan.FromSeconds(0.25));
+                    animation.AutoReverse = true;
+                    animation.RepeatBehavior = new RepeatBehavior(3);
+                    animation.FillBehavior = FillBehavior.Stop;
+
+                    Storyboard sb = new Storyboard();
+                    Storyboard.SetTarget(animation, btn_edit_details);
+                    Storyboard.SetTargetProperty(animation, new PropertyPath("Background.(SolidColorBrush.Color)"));
+                    sb.Children.Add(animation);
+                    sb.Begin();
+                }
+            }
+        }
         #endregion
 
         #region Funktionen zum Interagieren mit der Datenbank
@@ -281,5 +322,9 @@ namespace SnippetMan.Controls
         }
         #endregion
 
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TitleChanged?.Invoke(((TextBox)sender).Text);
+        }        
     }
 }

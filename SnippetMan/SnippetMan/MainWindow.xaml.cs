@@ -47,5 +47,30 @@ namespace SnippetMan
             if (e.ChangedButton == MouseButton.Left)
                 this.DragMove();
         }
+
+        private void Ti_add_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            TabItem tabItem = new TabItem();
+            tabItem.Header = "unnamed";
+            Controls.SnippetPage snippetPage = new Controls.SnippetPage();
+            snippetPage.TitleChanged += SnippetPage_TitleChanged;
+            tabItem.Content = snippetPage;
+            tbc_pages.Items.Remove(ti_add);
+            tbc_pages.Items.Add(tabItem);
+            tbc_pages.Items.Add(ti_add);
+            tbc_pages.SelectedIndex = tbc_pages.Items.Count - 2;
+            e.Handled = true;
+        }
+
+        private void SnippetPage_TitleChanged(string Title)
+        {
+            TabItem tabItem = (TabItem)tbc_pages.SelectedItem;
+            tabItem.Header = Title;
+        }
+
+        private void SaveTab()
+        {
+            //TODO: Soll Tab bei z.B. wechsel durch Tabs Speichern
+        }
     }
 }

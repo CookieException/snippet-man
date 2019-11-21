@@ -36,15 +36,20 @@
                     <TextBox
                         Uid="tb_title"
                         HorizontalAlignment="Stretch"
+                        IsReadOnly="True"
+                        KeyDown="TB_Details_KeyDown"
                         MaxLines="1"
-                        Text="Some default snippet title"
+                        Text="unnamed"
+                        TextChanged="TextBox_TextChanged"
                         TextWrapping="NoWrap" />
                     <TextBox
                         Uid="tb_description"
                         Margin="0,8"
                         HorizontalAlignment="Stretch"
                         AcceptsReturn="True"
-                        Text="Beschreibung"
+                        IsReadOnly="True"
+                        KeyDown="TB_Details_KeyDown"
+                        Text="Description"
                         TextWrapping="Wrap" />
                     <WrapPanel Uid="wrapP_combx">
                         <Image
@@ -56,6 +61,23 @@
                             Uid="combx_Tag0"
                             IsEditable="True"
                             IsReadOnly="False" />
+
+                        <!--  TODO: Source soll gegen Trenner Icon getauscht werden  -->
+                        <Separator
+                            Width="25"
+                            Height="10"
+                            Margin="-10,0,0,0"
+                            RenderTransformOrigin="0.5,0.5">
+                            <Separator.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform />
+                                    <SkewTransform />
+                                    <RotateTransform Angle="90" />
+                                    <TranslateTransform />
+                                </TransformGroup>
+                            </Separator.RenderTransform>
+                        </Separator>
+                        <!--  TODO: Source soll gegen Tag Icon ausgetauscht werden  -->
                         <!--  Margin so gewählt, dass Unterschied zwischen ProgLang und Tags eindeutig wird  -->
                         <Image
                             Width="16"
@@ -75,7 +97,7 @@
                             Uid="btn_add_cmbx"
                             Width="16"
                             Height="16"
-                            Margin="0,10,10,5"
+                            Margin="0,5,10,5"
                             Click="Button_Add_Combx_Clicked">
                             <Image Width="16px" Source="{StaticResource add_24pxDrawingImage}" />
                         </Button>
@@ -88,7 +110,9 @@
                     Width="Auto"
                     Margin="0,-14,32,0"
                     Padding="2"
-                    VerticalAlignment="Top">
+                    VerticalAlignment="Top"
+                    Checked="ToggleButton_Edit_CheckChanged"
+                    Unchecked="ToggleButton_Edit_CheckChanged">
                     <Image Width="16px" Source="{StaticResource edit_24pxDrawingImage}" />
                 </ToggleButton>
             </Controls:ButtonedExGroupBox.HeaderRightHand>

@@ -20,15 +20,35 @@
                 Background="{TemplateBinding Background}" />
         </ControlTemplate>
 
-        <Style TargetType="{x:Type TextBox}">
+        <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="{x:Type TextBox}">
+            <Setter Property="Background" Value="#555" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Padding" Value="4" />
             <Style.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="3" />
                 </Style>
+                <VisualBrush
+                    x:Key="CueBannerBrush"
+                    AlignmentX="Left"
+                    AlignmentY="Center"
+                    Stretch="None">
+                    <VisualBrush.Visual>
+                        <Label Content="Titel" Foreground="#555" />
+                    </VisualBrush.Visual>
+                </VisualBrush>
             </Style.Resources>
-            <Setter Property="Background" Value="#555" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="Padding" Value="4" />
+            <Style.Triggers>
+                <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                    <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                </Trigger>
+                <Trigger Property="Text" Value="{x:Null}">
+                    <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                </Trigger>
+                <Trigger Property="IsKeyboardFocused" Value="True">
+                    <Setter Property="Background" Value="#555" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <Style TargetType="{x:Type AvalonEdit:TextEditor}">
@@ -86,7 +106,7 @@
         </Style>
 
         <Style TargetType="{x:Type ComboBox}">
-            <Setter Property="Margin" Value="0,5,10,0" />
+            <Setter Property="Margin" Value="0,0,10,0" />
             <Setter Property="Foreground" Value="White" />
             <Setter Property="MinWidth" Value="60" />
             <Setter Property="Width" Value="Auto" />
