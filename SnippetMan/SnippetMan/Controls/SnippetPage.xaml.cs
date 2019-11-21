@@ -159,7 +159,7 @@ namespace SnippetMan.Controls
             {
                 Width = 16,
                 Height = 16,
-                Margin = new Thickness(-8, 5, 10, 5),
+                Margin = new Thickness(-8, 0, 10, 3),
                 Tag = comboTag,
                 Foreground = new SolidColorBrush(Colors.White),
                 Content = new Image { Source = (DrawingImage)System.Windows.Application.Current.Resources["remove_24pxDrawingImage"] }
@@ -325,6 +325,6 @@ namespace SnippetMan.Controls
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             TitleChanged?.Invoke(((TextBox)sender).Text);
-        }        
+        }
     }
 }
