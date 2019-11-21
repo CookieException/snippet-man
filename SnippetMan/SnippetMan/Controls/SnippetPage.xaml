@@ -47,23 +47,30 @@
                         Text="Beschreibung"
                         TextWrapping="Wrap" />
                     <WrapPanel Uid="wrapP_combx">
-                        <!--  TODO: Source soll gegen ProgLang Icon ausgetauscht werden  -->
                         <Image
                             Width="16"
                             Height="16"
                             Margin="0,10,5,5"
-                            Source="{StaticResource edit_24pxDrawingImage}" />
+                            Source="{StaticResource code_24pxDrawingImage}" />
                         <ComboBox
                             Uid="combx_Tag0"
                             IsEditable="True"
                             IsReadOnly="False" />
-                        <!--  TODO: Source soll gegen Tag Icon ausgetauscht werden  -->
                         <!--  Margin so gewählt, dass Unterschied zwischen ProgLang und Tags eindeutig wird  -->
                         <Image
                             Width="16"
                             Height="16"
                             Margin="10,10,5,5"
-                            Source="{StaticResource edit_24pxDrawingImage}" />
+                            Source="{StaticResource label_24pxDrawingImage}" RenderTransformOrigin="0.5,0.5" >
+                            <Image.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform/>
+                                    <SkewTransform/>
+                                    <RotateTransform Angle="90"/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Image.RenderTransform>
+                        </Image>
                         <Button
                             Uid="btn_add_cmbx"
                             Width="16"

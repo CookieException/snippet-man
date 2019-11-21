@@ -270,13 +270,13 @@ namespace SnippetMan.Controls
             database.CloseConnection();
         }
 
-        private void SaveCode_Into_Database(SnippetCode snippetCode)
+        private void SaveCode_Into_Database(SnippetCode snippetCode, SnippetInfo snippetInfo)
         {
             IDatabaseDAO database = new SQLiteDAO();
             database.OpenConnection();
             //snippetCode.Imports = importEditor.Text;
             //snippetCode.Code = codeEditor.Text;
-            database.saveSnippetCode(snippetCode);
+            database.saveSnippetCode(snippetCode, snippetInfo);
             database.CloseConnection();
         }
         #endregion
