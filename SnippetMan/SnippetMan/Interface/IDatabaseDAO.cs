@@ -59,15 +59,8 @@ namespace SnippetMan
         /// Saves a complete given snippet
         /// </summary>
         /// <param name="infoToSave">Information of the snippet as <see cref="SnippetInfo"/></param>
-        /// <returns>ID of database entry</returns>
-        int saveSnippet(SnippetInfo infoToSave);
-        /// <summary>
-        /// Saves the code a given snippet
-        /// </summary>
-        /// <param name="infoToSave">Information of the snippet as <see cref="SnippetInfo"/></param>
-        /// <param name="whereToSave">Parent of the Snippet to save</param>
-        /// <returns>ID of parent meta info database entry</returns>
-        int saveSnippetCode(SnippetCode infoToSave, SnippetInfo whereToSave);
+        /// <returns>SnippetInfo with all ids set</returns>
+        SnippetInfo saveSnippet(SnippetInfo infoToSave);
 
         /// <summary>
         /// Returns already used/ saved Tags for Autocompletion when adding Tags to a Snippet
@@ -83,12 +76,5 @@ namespace SnippetMan
         /// <param name="tag"></param>
         /// <returns></returns>
         Tag GetTagById(int id);
-
-        /// <summary>
-        /// Saves a tag
-        /// </summary>
-        /// <param name="tag">tag to save</param>
-        /// <returns>Id of insertet tag</returns>
-        int saveTag(Tag tag);
     }
 }

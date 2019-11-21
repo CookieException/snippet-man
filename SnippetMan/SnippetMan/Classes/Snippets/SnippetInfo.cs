@@ -11,7 +11,7 @@ namespace SnippetMan.Classes
         public int? Id { get; set; }
         public string Titel { get; set; }
         public string Beschreibung { get; set; }
-        public string[] Tags { get; set; }
+        public List<Snippets.Tag> Tags { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastEditDate { get; set; }
         public SnippetCode SnippetCode { get; set; }

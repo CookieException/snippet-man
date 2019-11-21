@@ -25,7 +25,7 @@ namespace SnippetMan.Classes.Database
             execute(
                 "create table if not exists snippetInfo " +
                 "(id INTEGER PRIMARY KEY AUTOINCREMENT, titel VARCHAR(128), beschreibung VARCHAR(1024)" +
-                ", creationDate DATETIME, lastEditDate DATETIME, snippetCodeId INTEGER " +
+                ", creationDate DATETIME, lastEditDate DATETIME, snippetCodeId INTEGER" +
                 ", FOREIGN KEY('snippetCodeId') REFERENCES 'snippetCode' ('id'))"
             );
             execute(
@@ -34,8 +34,8 @@ namespace SnippetMan.Classes.Database
             );
             execute(
                 "create table if not exists tag_snippetInfo " +
-                "(id INTEGER PRIMARY KEY AUTOINCREMENT, snippetCodeId INTEGER, tagId INTEGER" +
-                ", FOREIGN KEY('snippetCodeId') REFERENCES 'snippetCode' ('id')" +
+                "(id INTEGER PRIMARY KEY AUTOINCREMENT, snippetInfoId INTEGER, tagId INTEGER" +
+                ", FOREIGN KEY('snippetInfoId') REFERENCES 'snippetInfo' ('id')" +
                 ", FOREIGN KEY('tagId') REFERENCES 'tag' ('id'))"
             );
 
@@ -50,7 +50,7 @@ namespace SnippetMan.Classes.Database
         public SnippetCode GetSnippetCode(SnippetInfo parentInfo)
         {
             List<SnippetCode> result = selectSnippetCode("select * from snippetCode where id=:id",
-                new Dictionary<string, object> { { "id", parentInfo.Id } }); //TODO Falsche Id, hier muss erst snippetInfo gelesen werden, um den Fremdschlüssel zu erhalten
+                new Dictionary<string, object> { { "id", parentInfo.SnippetCode.Id } });
 
             if (result.Count > 0)
             {
@@ -92,22 +92,28 @@ namespace SnippetMan.Classes.Database
             return selectSnippetInfo("select * from snippetInfo");
         }
 
-        public int saveSnippet(SnippetInfo infoToSave)
+        public SnippetInfo saveSnippet(SnippetInfo infoToSave)
         {
+            infoToSave.Tags = saveTags(infoToSave.Tags);
+            infoToSave.SnippetCode = saveSnippetCode(infoToSave.SnippetCode);
+
             Dictionary<string, object> dict = new Dictionary<string, object>
             {
                 { "id", infoToSave.Id },
+                { "snippetCodeId", infoToSave.SnippetCode.Id },
                 { "titel", infoToSave.Titel },
                 { "beschreibung", infoToSave.Beschreibung },
                 { "lastEditDate", DateTime.Now }
             };
+
             if (infoToSave.Id.HasValue)
             {//Update
                 dict.Add("creationDate", infoToSave.CreationDate);
                 execute("update snippetInfo set titel = :titel" +
                         ", beschreibung = :beschreibung" +
                         ", creationDate = :creationDate" +
-                        ", lastEditDate = :lastEditDate " +
+                        ", lastEditDate = :lastEditDate" +
+                        ", snippetCodeId = :snippetCodeId" +
                         "where id = :id"
                     , dict);
             }
@@ -115,33 +121,19 @@ namespace SnippetMan.Classes.Database
             {//Insert
                 dict.Add("creationDate", DateTime.Now);
                 execute("insert into snippetInfo " +
-                        "(titel, beschreibung, creationDate, lastEditDate)" +
+                        "(titel, beschreibung, creationDate, lastEditDate, snippetCodeId)" +
                         " values " +
-                        "(:titel, :beschreibung, :creationDate, :lastEditDate)"
+                        "(:titel, :beschreibung, :creationDate, :lastEditDate, :snippetCodeId)"
                     , dict);
 
+                infoToSave.Id = (int)m_dbConnection.LastInsertRowId; // TODO return ist int64
             }
-            return (int)m_dbConnection.LastInsertRowId; // TODO return ist int64
+
+            saveTagsToSnippetInfo(infoToSave.Tags, infoToSave);
+
+            return infoToSave;
         }
 
-        public int saveSnippetCode(SnippetCode infoToSave, SnippetInfo whereToSave)
-        {
-            SnippetInfo snippetInfo;
-            if (whereToSave.Id.HasValue)
-            {
-                snippetInfo = GetSnippetMetaById(whereToSave.Id.Value);
-            }
-            else
-            {
-                throw new Exception("Save SnippetInfo first");
-            }
-
-            // TODO Fremdschlüssel in SnippetInfo lesen und speichern
-
-            // TODO Snippet code Speichern
-            //TODO Update snippetInfo Fremdschlüssel
-            throw new NotImplementedException();
-        }
         public List<Tag> GetTags(string searchText, TagType tagType)
         {
             string sql = "select * from tag where title like :searchText AND type = :tagType";
@@ -158,9 +150,32 @@ namespace SnippetMan.Classes.Database
             return selectTag("select * from tag where id = :id", new Dictionary<string, object> { { "id", id } }).First();
         }
 
-        public int saveTag(Tag tag)
+        private void saveTagsToSnippetInfo(List<Tag> tags, SnippetInfo snippetInfo) // TODO dont save if link already exists
         {
-            string sql;
+            foreach (Tag tag in tags)
+            {
+                Dictionary<string, object> dict = new Dictionary<string, object>
+                {
+                    {":snippetInfoId", snippetInfo.Id },
+                    {":tagId", tag.Id }
+                };
+
+                execute("insert into tag_snippetInfo (snippetInfoId, tagId) values (:snippetInfoId, :tagId)", dict);
+            }
+        }
+
+        private List<Tag> saveTags(List<Tag> tags)
+        {
+            foreach (Tag tag in tags) // TODO prüfen welche Tags wirklich neu sind
+            {
+                tag.Id = saveTag(tag);
+            }
+
+            return tags;
+        }
+
+        private int saveTag(Tag tag)
+        {
             Dictionary<string, object> dict = new Dictionary<string, object>
             {
                 {"id", tag.Id },
@@ -170,18 +185,47 @@ namespace SnippetMan.Classes.Database
 
             if (tag.Id.HasValue)
             { // Update
-                sql = "update tag set" +
+                execute("update tag set" +
                     " title = :title," +
                     " type = :type" +
-                    " where id = :id";
+                    " where id = :id", dict);
+                return tag.Id.Value;
             }
             else
             { // Insert
-                sql = "insert into tag (title,type) values (:title, :type)";
+                execute("insert into tag (title,type) values (:title, :type)", dict);
+                return (int)m_dbConnection.LastInsertRowId; // TODO return ist int64
             }
+        }
 
-            execute(sql, dict);
-            return (int)m_dbConnection.LastInsertRowId; // TODO return ist int64
+        private SnippetCode saveSnippetCode(SnippetCode infoToSave)
+        {
+            Dictionary<string, object> dict = new Dictionary<string, object>
+            {
+                {"infoId", infoToSave.Id },
+                {"imports", infoToSave.Imports },
+                {"code",infoToSave.Code }
+            };
+
+            if (infoToSave.Id.HasValue)
+            {// Update
+                execute("update snippetCode set" +
+                    " imports = :imports" +
+                    ", code = :code" +
+                    " where id = :id", dict);
+
+                return infoToSave;
+            }
+            else
+            {// Insert
+                execute("insert into snippetCode" +
+                    " (imports, code)" +
+                    " values" +
+                    " (:imports, :code)", dict);
+
+                infoToSave.Id = (int)m_dbConnection.LastInsertRowId; // TODO return ist int64
+                return infoToSave;
+            }
         }
 
         private void execute(string sql) => execute(sql, new Dictionary<string, object>());
@@ -238,6 +282,7 @@ namespace SnippetMan.Classes.Database
             {
                 SnippetCode snippetCode = new SnippetCode
                 {
+                    Id = (int)dr.GetInt64(0),
                     Imports = dr.GetString(1),
                     Code = dr.GetString(2)
                 };

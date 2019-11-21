@@ -2,6 +2,7 @@
 {
     public class SnippetCode
     {
+        public int? Id { get; set; }
         public string Imports { get; set; }
         public string Code { get; set; }
 

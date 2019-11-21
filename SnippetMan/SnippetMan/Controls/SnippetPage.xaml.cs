@@ -275,18 +275,18 @@ namespace SnippetMan.Controls
 
             //TODO: Add as many comboboxes as required by the tag list
             //TODO: DONE?
-            combx_Tag0.Text = si.Tags[0].ToString();
-            for (int i = 1; i < si.Tags.Length; i++)
-            {           
-                ComboBox comboTag = new ComboBox
-                {
-                    Uid = "combx_Tag" + comboBoxes.Count,
-                    IsReadOnly = false,
-                    IsEditable = true
-                };
-                comboTag.Text = si.Tags[i].ToString();
-                comboBoxes.Add(comboTag);
-            }
+            //combx_Tag0.Text = si.Tags[0].ToString();
+            //for (int i = 1; i < si.Tags.Length; i++)
+            //{           
+            //    ComboBox comboTag = new ComboBox
+            //    {
+            //        Uid = "combx_Tag" + comboBoxes.Count,
+            //        IsReadOnly = false,
+            //        IsEditable = true
+            //    };
+            //    comboTag.Text = si.Tags[i].ToString();
+            //    comboBoxes.Add(comboTag);
+            //}
 
             database.CloseConnection();
         }
@@ -306,7 +306,7 @@ namespace SnippetMan.Controls
         {
             IDatabaseDAO database = new SQLiteDAO();
             database.OpenConnection();            
-            snippetInfo.Tags = comboBoxes.Select(c => c.SelectionBoxItem.ToString()).ToArray();
+            //snippetInfo.Tags = comboBoxes.Select(c => c.SelectionBoxItem.ToString()).ToArray();
             database.saveSnippet(snippetInfo);
             database.CloseConnection();
         }
@@ -317,7 +317,7 @@ namespace SnippetMan.Controls
             database.OpenConnection();
             //snippetCode.Imports = importEditor.Text;
             //snippetCode.Code = codeEditor.Text;
-            database.saveSnippetCode(snippetCode, snippetInfo);
+            //database.saveSnippetCode(snippetCode, snippetInfo);
             database.CloseConnection();
         }
         #endregion
