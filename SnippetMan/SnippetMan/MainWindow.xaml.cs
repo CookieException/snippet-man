@@ -77,7 +77,12 @@ namespace SnippetMan
         private void TB_del_Btn_Click(object sender, RoutedEventArgs e)
         {
             TabItem selectedTab = tbc_pages.SelectedItem as TabItem;
-            tbc_pages.Items.Remove(selectedTab);
+            if (tbc_pages.Items.Count - 2 != 0)
+            {
+                tbc_pages.Items.Remove(selectedTab);
+                tbc_pages.SelectedIndex = tbc_pages.Items.Count - 2;
+                e.Handled = true;
+            }
         }
     }
 }

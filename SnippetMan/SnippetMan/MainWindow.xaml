@@ -125,13 +125,22 @@
                                                     </Style>
                                                 </ContentPresenter.Resources>
                                             </ContentPresenter>
-                                            <Button Name="TB_del_Btn" Visibility="Visible" Margin="0,0,2,0" Width="20" Height="20" Click="TB_del_Btn_Click" />
+                                            <Button x:Name="TB_del_Btn"
+                                                    Visibility="Collapsed"
+                                                    Margin="0,0,2,0"
+                                                    Width="20"
+                                                    Height="20"
+                                                    Background="Transparent"
+                                                    Click="TB_del_Btn_Click">
+                                                <Image Width="16px" Source="{StaticResource add_24pxDrawingImage}" />
+                                            </Button>
                                         </StackPanel>
                                     </Border>
                                 </Grid>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
                                         <Setter TargetName="Border" Property="Background" Value="Gray" />
+                                        <Setter TargetName="TB_del_Btn" Property="Visibility" Value="Visible" />
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter TargetName="Border" Property="Background" Value="#727272" />
@@ -142,13 +151,14 @@
                     </Setter>
                 </Style>
             </TabControl.Resources>
-            <TabItem Header="SnippetNameDerWirklichGanzLangIst">
+            <TabItem Header="Welcome">
                 <!--  Content is to be filled with more. Snippet Page is just shown for debugging  -->
                 <Controls:SnippetPage />
             </TabItem>
             <TabItem
                 Name="ti_add"
-                IsEnabled="True">
+                IsEnabled="True"
+                PreviewMouseDown="Ti_add_PreviewMouseDown">
                 <TabItem.Header>
                     <Image Width="24px" Source="{StaticResource add_24pxDrawingImage}" />
                 </TabItem.Header>
