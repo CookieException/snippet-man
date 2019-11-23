@@ -54,6 +54,7 @@ namespace SnippetMan
             tabItem.Header = "unnamed";
             Controls.SnippetPage snippetPage = new Controls.SnippetPage();
             snippetPage.TitleChanged += SnippetPage_TitleChanged;
+            snippetPage.MouseDown += TB_del_Btn_Click;
             tabItem.Content = snippetPage;
             tbc_pages.Items.Remove(ti_add);
             tbc_pages.Items.Add(tabItem);
@@ -71,6 +72,12 @@ namespace SnippetMan
         private void SaveTab()
         {
             //TODO: Soll Tab bei z.B. wechsel durch Tabs Speichern
+        }
+
+        private void TB_del_Btn_Click(object sender, RoutedEventArgs e)
+        {
+            TabItem selectedTab = tbc_pages.SelectedItem as TabItem;
+            tbc_pages.Items.Remove(selectedTab);
         }
     }
 }

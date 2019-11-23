@@ -29,7 +29,8 @@ namespace SnippetMan.Controls
     {
         //TODO: To be replaced by the snippets' actual tags
         private readonly string[] languages = { "C", "C++", "C#", "Java", "Python", "Javascript" };
-        private readonly string[] tags = { "Windows", "Linux", "App", "Android App","Gaming", "Cybersecurity", "Malware", "Bildverarbeitung", "EinTagNameDerWirklichGanzLangIst"};
+
+        private readonly string[] tags = { "Windows", "Linux", "App", "Android App", "Gaming", "Cybersecurity", "Malware", "Bildverarbeitung", "EinTagNameDerWirklichGanzLangIst" };
 
         private TextEditor importEditor;
         private TextEditor codeEditor;
@@ -48,11 +49,13 @@ namespace SnippetMan.Controls
         private Popup popup_code;
 
         public delegate void TitleChangedHandler(string Title);
+
         public event TitleChangedHandler TitleChanged;
 
         private List<ComboBox> comboBoxes = new List<ComboBox>();
 
-        IThemedHighlightingManager hlManager = ThemedHighlightingManager.Instance;
+        private IThemedHighlightingManager hlManager = ThemedHighlightingManager.Instance;
+
         public SnippetPage()
         {
             InitializeComponent();
@@ -73,7 +76,7 @@ namespace SnippetMan.Controls
             combx_Tag0 = (ComboBox)UIHelper.GetByUid(this, "combx_Tag0");
             popup_import = (Popup)UIHelper.GetByUid(this, "popup_import");
             popup_code = (Popup)UIHelper.GetByUid(this, "popup_code");
-            
+
             //Erste Combobox mit ProgLang
             foreach (string language in languages)
             {
@@ -88,6 +91,7 @@ namespace SnippetMan.Controls
         }
 
         #region Button Events
+
         private void ToggleButton_Edit_CheckChanged(object sender, System.Windows.RoutedEventArgs e)
         {
             if (sender == btn_edit_details)
@@ -128,7 +132,6 @@ namespace SnippetMan.Controls
                     codeEditor.IsReadOnly = true;
                     codeEditor.TextArea.Caret.CaretBrush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 }
-                
             }
         }   // TODO Farbe des Icons (GeometryDrawing) soll sich ändern
 
@@ -185,16 +188,18 @@ namespace SnippetMan.Controls
 
             wrapP_combx.Children.Remove((Button)sender);
         }
-        #endregion
+
+        #endregion Button Events
 
         #region Keyboard Events
+
         private void CodeEditor_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (!e.KeyboardDevice.IsKeyDown(System.Windows.Input.Key.LeftCtrl))
             {
                 if (btn_edit_code.IsChecked == false)
                 {
-                    SolidColorBrush grayBrush = new SolidColorBrush(Color.FromRgb(44,44,44));
+                    SolidColorBrush grayBrush = new SolidColorBrush(Color.FromRgb(44, 44, 44));
                     SolidColorBrush blueBrush = new SolidColorBrush(Colors.LightBlue);
                     ColorAnimation animation = new ColorAnimation();
                     animation.From = grayBrush.Color;
@@ -262,9 +267,11 @@ namespace SnippetMan.Controls
                 }
             }
         }
-        #endregion
+
+        #endregion Keyboard Events
 
         #region Funktionen zum Interagieren mit der Datenbank
+
         private void LoadInfo_Into_Details()
         {
             IDatabaseDAO database = new SQLiteDAO();
@@ -275,18 +282,18 @@ namespace SnippetMan.Controls
 
             //TODO: Add as many comboboxes as required by the tag list
             //TODO: DONE?
-            //combx_Tag0.Text = si.Tags[0].ToString();
-            //for (int i = 1; i < si.Tags.Length; i++)
-            //{           
-            //    ComboBox comboTag = new ComboBox
-            //    {
-            //        Uid = "combx_Tag" + comboBoxes.Count,
-            //        IsReadOnly = false,
-            //        IsEditable = true
-            //    };
-            //    comboTag.Text = si.Tags[i].ToString();
-            //    comboBoxes.Add(comboTag);
-            //}
+            combx_Tag0.Text = si.Tags[0].ToString();
+            for (int i = 1; i < si.Tags.Length; i++)
+            {
+                ComboBox comboTag = new ComboBox
+                {
+                    Uid = "combx_Tag" + comboBoxes.Count,
+                    IsReadOnly = false,
+                    IsEditable = true
+                };
+                comboTag.Text = si.Tags[i].ToString();
+                comboBoxes.Add(comboTag);
+            }
 
             database.CloseConnection();
         }
@@ -305,8 +312,8 @@ namespace SnippetMan.Controls
         private void SaveInfo_Into_Database(SnippetInfo snippetInfo)
         {
             IDatabaseDAO database = new SQLiteDAO();
-            database.OpenConnection();            
-            //snippetInfo.Tags = comboBoxes.Select(c => c.SelectionBoxItem.ToString()).ToArray();
+            database.OpenConnection();
+            snippetInfo.Tags = comboBoxes.Select(c => c.SelectionBoxItem.ToString()).ToArray();
             database.saveSnippet(snippetInfo);
             database.CloseConnection();
         }
@@ -320,7 +327,8 @@ namespace SnippetMan.Controls
             //database.saveSnippetCode(snippetCode, snippetInfo);
             database.CloseConnection();
         }
-        #endregion
+
+        #endregion Funktionen zum Interagieren mit der Datenbank
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {

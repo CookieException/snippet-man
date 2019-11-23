@@ -5,6 +5,7 @@
     xmlns:Controls="clr-namespace:SnippetMan.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:WatermarkTextBox="clr-namespace:WatermarkControlsLib.Controls;assembly=WatermarkControlsLib"
     Title="Snippet Man"
     Width="1200"
     Height="800"
@@ -80,11 +81,10 @@
                 <RowDefinition Height="50px" />
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
-            <TextBox
+            <WatermarkTextBox:WatermarkTextBox
                 Grid.Row="0"
                 Margin="12"
-                Text="Search.." />
-
+                Watermark="Search.." />
         </Grid>
         <TabControl
             x:Name="tbc_pages"
@@ -102,28 +102,31 @@
                                         Name="Border"
                                         Width="Auto"
                                         Height="30"
-                                        MaxWidth="222"
                                         Margin="2,0,0,0"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
                                         Background="#444"
                                         CornerRadius="8, 8, 0, 0">
-                                        <ContentPresenter
+                                        <StackPanel Orientation="Horizontal">
+                                            <ContentPresenter
                                             x:Name="ContentSite"
                                             Width="Auto"
+                                            MaxWidth="222"
                                             Margin="8,2,8,2"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             ContentSource="Header"
                                             RecognizesAccessKey="True">
 
-                                            <ContentPresenter.Resources>
-                                                <Style TargetType="{x:Type TextBlock}">
-                                                    <Setter Property="Foreground" Value="White" />
-                                                    <Setter Property="FontSize" Value="14px" />
-                                                </Style>
-                                            </ContentPresenter.Resources>
-                                        </ContentPresenter>
+                                                <ContentPresenter.Resources>
+                                                    <Style TargetType="{x:Type TextBlock}">
+                                                        <Setter Property="Foreground" Value="White" />
+                                                        <Setter Property="FontSize" Value="14px" />
+                                                    </Style>
+                                                </ContentPresenter.Resources>
+                                            </ContentPresenter>
+                                            <Button Name="TB_del_Btn" Visibility="Visible" Margin="0,0,2,0" Width="20" Height="20" Click="TB_del_Btn_Click" />
+                                        </StackPanel>
                                     </Border>
                                 </Grid>
                                 <ControlTemplate.Triggers>
@@ -145,13 +148,11 @@
             </TabItem>
             <TabItem
                 Name="ti_add"
-                IsEnabled="True"
-                PreviewMouseDown="Ti_add_PreviewMouseDown">
+                IsEnabled="True">
                 <TabItem.Header>
                     <Image Width="24px" Source="{StaticResource add_24pxDrawingImage}" />
                 </TabItem.Header>
             </TabItem>
         </TabControl>
     </Grid>
-
 </Window>
