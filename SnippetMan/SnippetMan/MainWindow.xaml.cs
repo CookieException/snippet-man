@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -14,6 +15,8 @@ namespace SnippetMan
         {
             InitializeComponent();
         }
+
+        #region Titlebar
 
         private void Btn_minapp_Click(object sender, RoutedEventArgs e)
         {
@@ -48,6 +51,10 @@ namespace SnippetMan
                 this.DragMove();
         }
 
+        #endregion Titlebar
+
+        #region Tab Control
+
         private void Ti_add_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             TabItem tabItem = new TabItem();
@@ -63,6 +70,20 @@ namespace SnippetMan
             e.Handled = true;
         }
 
+        private void TB_del_Btn_Click(object sender, RoutedEventArgs e)
+        {
+            TabItem selectedTab = tbc_pages.SelectedItem as TabItem;
+            // Mind. 1 offener Tab bleibt da
+            if (tbc_pages.Items.Count - 2 != 0)
+            {
+                tbc_pages.Items.Remove(selectedTab);
+                tbc_pages.SelectedIndex = tbc_pages.Items.Count - 2;
+                e.Handled = true;
+            }
+        }
+
+        #endregion Tab Control
+
         private void SnippetPage_TitleChanged(string Title)
         {
             TabItem tabItem = (TabItem)tbc_pages.SelectedItem;
@@ -74,15 +95,10 @@ namespace SnippetMan
             //TODO: Soll Tab bei z.B. wechsel durch Tabs Speichern
         }
 
-        private void TB_del_Btn_Click(object sender, RoutedEventArgs e)
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
-            TabItem selectedTab = tbc_pages.SelectedItem as TabItem;
-            if (tbc_pages.Items.Count - 2 != 0)
-            {
-                tbc_pages.Items.Remove(selectedTab);
-                tbc_pages.SelectedIndex = tbc_pages.Items.Count - 2;
-                e.Handled = true;
-            }
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
     }
 }

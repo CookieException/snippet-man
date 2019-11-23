@@ -90,6 +90,11 @@ namespace SnippetMan.Controls
             codeEditor.SyntaxHighlighting = hlManager.CurrentTheme.GetDefinitionByExtension(".cs");
         }
 
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TitleChanged?.Invoke(((TextBox)sender).Text);
+        }
+
         #region Button Events
 
         private void ToggleButton_Edit_CheckChanged(object sender, System.Windows.RoutedEventArgs e)
@@ -329,10 +334,5 @@ namespace SnippetMan.Controls
         }
 
         #endregion Funktionen zum Interagieren mit der Datenbank
-
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            TitleChanged?.Invoke(((TextBox)sender).Text);
-        }
     }
 }
