@@ -57,11 +57,13 @@ namespace SnippetMan
 
         private void Ti_add_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            TabItem tabItem = new TabItem();
-            tabItem.Header = "unnamed";
+            TabItem tabItem = new TabItem
+            {
+                Header = "unnamed"
+            };
+
             Controls.SnippetPage snippetPage = new Controls.SnippetPage();
             snippetPage.TitleChanged += SnippetPage_TitleChanged;
-            snippetPage.MouseDown += TB_del_Btn_Click;
             tabItem.Content = snippetPage;
             tbc_pages.Items.Remove(ti_add);
             tbc_pages.Items.Add(tabItem);

@@ -98,7 +98,7 @@
             Margin="4"
             Background="Transparent">
             <TabControl.Resources>
-                <Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="{x:Type TabItem}">
+                <Style TargetType="{x:Type TabItem}">
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TabItem}">
@@ -134,23 +134,23 @@
                                                 x:Name="TB_del_Btn"
                                                 Width="20"
                                                 Height="20"
-                                                Margin="0,0,2,0"
+                                                Margin="-4,0,2,0"
                                                 Background="Transparent"
                                                 Click="TB_del_Btn_Click"
                                                 Visibility="Collapsed">
-                                                <Image Width="16px" Source="{StaticResource add_24pxDrawingImage}" />
+                                                <Image Width="16px" Source="{StaticResource close_24pxDrawingImage}" />
                                             </Button>
                                         </StackPanel>
                                     </Border>
                                 </Grid>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="Border" Property="Background" Value="Gray" />
-                                        <Setter TargetName="TB_del_Btn" Property="Visibility" Value="Visible" />
+                                        <Setter TargetName="Border" Property="Border.Background" Value="#727272" />
+                                        <Setter TargetName="TB_del_Btn" Property="Button.Visibility" Value="Visible" />
                                     </Trigger>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="Border" Property="Background" Value="#727272" />
-                                    </Trigger>
+                                    <DataTrigger Binding="{Binding ElementName=Border, Path=IsMouseOver}" Value="True">
+                                        <Setter TargetName="Border" Property="Border.Background" Value="Gray" />
+                                    </DataTrigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>
