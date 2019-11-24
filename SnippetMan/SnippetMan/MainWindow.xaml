@@ -157,20 +157,30 @@
                     </Setter>
                 </Style>
             </TabControl.Resources>
-            <TabItem Header="Welcome">
-                <!--  Content is to be filled with more. Snippet Page is just shown for debugging  -->
-                <StackPanel>
+            <TabItem
+                x:Name="TB_Welcome"
+                FontStyle="Italic"
+                Header="Welcome">
+                <StackPanel
+                    Width="600"
+                    Height="500"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch">
                     <Label
-                        Margin="200,150,0,0"
                         Content="Snippet Man"
                         FontSize="35"
+                        FontStyle="Normal"
                         Foreground="White" />
                     <Label
-                        Margin="200,-10,0,0"
+                        Margin="0,-10,0,0"
                         Content="Saving evolved"
                         FontSize="25"
+                        FontStyle="Normal"
                         Foreground="Gray" />
-                    <Label Margin="200,20,0,0" FontSize="16">
+                    <Label
+                        Margin="0,20,0,0"
+                        FontSize="16"
+                        FontStyle="Normal">
                         <Hyperlink NavigateUri="https://github.com/Nockiro/snippet-man" RequestNavigate="Hyperlink_RequestNavigate">
                             <Hyperlink.Resources>
                                 <Style TargetType="{x:Type Hyperlink}">
@@ -182,7 +192,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </Hyperlink.Resources>
-                            Whats new?
+                            What's new?
                         </Hyperlink>
                     </Label>
                 </StackPanel>

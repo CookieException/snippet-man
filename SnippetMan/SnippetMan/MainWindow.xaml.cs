@@ -82,6 +82,15 @@ namespace SnippetMan
                 tbc_pages.SelectedIndex = tbc_pages.Items.Count - 2;
                 e.Handled = true;
             }
+            else
+            {
+                tbc_pages.Items.Remove(selectedTab);
+                tbc_pages.Items.Remove(ti_add);
+                tbc_pages.Items.Add(TB_Welcome);
+                tbc_pages.Items.Add(ti_add);
+                tbc_pages.SelectedIndex = tbc_pages.Items.Count - 2;
+                e.Handled = true;
+            }
         }
 
         #endregion Tab Control
