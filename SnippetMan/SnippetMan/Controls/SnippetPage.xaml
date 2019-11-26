@@ -11,7 +11,7 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    mc:Ignorable="d">
+    mc:Ignorable="d" LostFocus="UserControl_LostFocus">
     <UserControl.Resources>
         <ResourceDictionary>
             <local:MaxHeightConverter x:Key="MaxHeightConverter" />
@@ -37,8 +37,6 @@
                     <WatermarkTextBox:WatermarkTextBox
                         Uid="tb_title"
                         HorizontalAlignment="Stretch"
-                        IsReadOnly="True"
-                        KeyDown="TB_Details_KeyDown"
                         MaxLines="1"
                         TextChanged="TextBox_TextChanged"
                         TextWrapping="NoWrap"
@@ -48,8 +46,6 @@
                         Margin="0,8"
                         HorizontalAlignment="Stretch"
                         AcceptsReturn="True"
-                        IsReadOnly="True"
-                        KeyDown="TB_Details_KeyDown"
                         TextWrapping="Wrap"
                         Watermark="Description" />
                     <WrapPanel Uid="wrapP_combx">
@@ -106,18 +102,6 @@
                     </WrapPanel>
                 </StackPanel>
             </Controls:ButtonedExGroupBox.InnerContent>
-            <Controls:ButtonedExGroupBox.HeaderRightHand>
-                <ToggleButton
-                    Uid="btn_edit_details"
-                    Width="Auto"
-                    Margin="0,-14,32,0"
-                    Padding="2"
-                    VerticalAlignment="Top"
-                    Checked="ToggleButton_Edit_CheckChanged"
-                    Unchecked="ToggleButton_Edit_CheckChanged">
-                    <Image Width="16px" Source="{StaticResource edit_24pxDrawingImage}" />
-                </ToggleButton>
-            </Controls:ButtonedExGroupBox.HeaderRightHand>
         </Controls:ButtonedExGroupBox>
 
         <!--  Imports  -->
@@ -131,25 +115,13 @@
             <Controls:ButtonedExGroupBox.InnerContent>
                 <AvalonEdit:TextEditor
                     Uid="ae_imports"
-                    MinHeight="128px"
-                    IsReadOnly="True"
-                    KeyDown="ImportEditor_KeyDown" />
+                    MinHeight="128px" />
             </Controls:ButtonedExGroupBox.InnerContent>
             <Controls:ButtonedExGroupBox.HeaderRightHand>
                 <Grid
                     Height="Auto"
-                    Margin="0,-14,32,0"
+                    Margin="0,-14,5,0"
                     VerticalAlignment="Top">
-                    <ToggleButton
-                        Uid="btn_edit_import"
-                        Width="Auto"
-                        Padding="2"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Checked="ToggleButton_Edit_CheckChanged"
-                        Unchecked="ToggleButton_Edit_CheckChanged">
-                        <Image Width="16px" Source="{StaticResource edit_24pxDrawingImage}" />
-                    </ToggleButton>
                     <Button
                         Uid="btn_copy_import"
                         Width="Auto"
@@ -196,25 +168,13 @@
             GroupBox.Header="Code">
             <Controls:ButtonedExGroupBox.InnerContent>
                 <AvalonEdit:TextEditor
-                    Uid="ae_code"
-                    IsReadOnly="True"
-                    KeyDown="CodeEditor_KeyDown" />
+                    Uid="ae_code" />
             </Controls:ButtonedExGroupBox.InnerContent>
             <Controls:ButtonedExGroupBox.HeaderRightHand>
                 <Grid
                     Height="Auto"
-                    Margin="0,-14,32,0"
+                    Margin="0,-14,5,0"
                     VerticalAlignment="Top">
-                    <ToggleButton
-                        Uid="btn_edit_code"
-                        Width="Auto"
-                        Padding="2"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Checked="ToggleButton_Edit_CheckChanged"
-                        Unchecked="ToggleButton_Edit_CheckChanged">
-                        <Image Width="16px" Source="{StaticResource edit_24pxDrawingImage}" />
-                    </ToggleButton>
                     <Button
                         Uid="btn_copy_code"
                         Width="Auto"
