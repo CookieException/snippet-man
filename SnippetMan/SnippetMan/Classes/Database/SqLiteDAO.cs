@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using System.Data.SQLite;
 using SnippetMan.Classes.Snippets;
+using System.IO;
 
 namespace SnippetMan.Classes.Database
 {
@@ -14,7 +15,9 @@ namespace SnippetMan.Classes.Database
         private SQLiteConnection m_dbConnection;
         public bool OpenConnection()
         {
-            SQLiteConnection.CreateFile("MyDatabase.SQLite");
+            string dbPath = "MyDatabase.SQLite";
+            if (!File.Exists(dbPath))
+                SQLiteConnection.CreateFile(dbPath);
             m_dbConnection = new SQLiteConnection("Data Source=MyDatabase.SQLite;Version=3;");
             m_dbConnection.Open();
 
@@ -38,6 +41,8 @@ namespace SnippetMan.Classes.Database
                 ", FOREIGN KEY('snippetInfoId') REFERENCES 'snippetInfo' ('id')" +
                 ", FOREIGN KEY('tagId') REFERENCES 'tag' ('id'))"
             );
+
+
 
             return m_dbConnection.State == System.Data.ConnectionState.Open;
         }
