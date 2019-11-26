@@ -152,6 +152,10 @@ namespace SnippetMan.Classes.Database
 
         private void saveTagsToSnippetInfo(List<Tag> tags, SnippetInfo snippetInfo) // TODO dont save if link already exists
         {
+            execute("delete from tag_snippetInfo where snippetInfoId = :snippetInfoId",new Dictionary<string, object> {
+                {":snippetInfoId", snippetInfo.Id }
+            });
+
             foreach (Tag tag in tags)
             {
                 Dictionary<string, object> dict = new Dictionary<string, object>
