@@ -42,8 +42,6 @@ namespace SnippetMan.Classes.Database
                 ", FOREIGN KEY('tagId') REFERENCES 'tag' ('id'))"
             );
 
-
-
             return m_dbConnection.State == System.Data.ConnectionState.Open;
         }
         public bool CloseConnection()
@@ -141,7 +139,11 @@ namespace SnippetMan.Classes.Database
 
         public List<Tag> GetTags(string searchText, TagType tagType)
         {
-            string sql = "select * from tag where title like :searchText AND type = :tagType";
+            string sql = "";
+            if (searchText == "")
+                sql = "select * from tag where type = :tagType";
+            else
+                sql = "select * from tag where title like :searchText AND type = :tagType"; 
 
             Dictionary<string, object> dict = new Dictionary<string, object> {
                 { "searchText", searchText },
