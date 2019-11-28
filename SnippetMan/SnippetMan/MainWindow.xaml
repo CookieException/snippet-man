@@ -90,6 +90,57 @@
                 Grid.Row="0"
                 Margin="12"
                 Watermark="Search.." />
+            <TreeView
+                Grid.Row="1"
+                Margin="5"
+                Background="Transparent">
+                <TreeViewItem
+                    Margin="5"
+                    Focusable="False"
+                    Foreground="Gray"
+                    Header="Item1">
+                    <TreeViewItem
+                        Margin="5"
+                        Focusable="False"
+                        Foreground="Gray"
+                        Header="Item1.1">
+                        <StackPanel Orientation="Horizontal">
+                            <MenuItem
+                                Margin="-10,0,0,0"
+                                Focusable="False"
+                                Foreground="Gray"
+                                Header="Item1.1.1" />
+                            <Button
+                                x:Name="btn_like_item"
+                                Width="20"
+                                Height="20"
+                                HorizontalAlignment="Right">
+                                <Image Source="{StaticResource code_24pxDrawingImage}" />
+                            </Button>
+                            <Button
+                                x:Name="btn_delete_item"
+                                Width="20"
+                                Height="20"
+                                HorizontalAlignment="Right">
+                                <Image Source="{StaticResource close_24pxDrawingImage}" />
+                            </Button>
+                        </StackPanel>
+                        <MenuItem
+                            Margin="-10,0,0,0"
+                            Foreground="Gray"
+                            Header="Item1.1.2" />
+                    </TreeViewItem>
+                </TreeViewItem>
+                <TreeViewItem
+                    Margin="5"
+                    Focusable="False"
+                    Foreground="Gray"
+                    Header="Item2">
+                    <TreeViewItem.Items>
+                        <MenuItem Foreground="Gray" Header="Item2.1" />
+                    </TreeViewItem.Items>
+                </TreeViewItem>
+            </TreeView>
         </Grid>
         <TabControl
             x:Name="tbc_pages"
