@@ -61,7 +61,6 @@ namespace SnippetMan
             {
                 Header = "unnamed"
             };
-
             Controls.SnippetPage snippetPage = new Controls.SnippetPage();
             snippetPage.TitleChanged += SnippetPage_TitleChanged;
             tabItem.Content = snippetPage;

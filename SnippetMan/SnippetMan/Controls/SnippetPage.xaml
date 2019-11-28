@@ -11,7 +11,8 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    mc:Ignorable="d" LostFocus="UserControl_LostFocus">
+    LostFocus="UserControl_LostFocus"
+    mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <local:MaxHeightConverter x:Key="MaxHeightConverter" />
@@ -55,7 +56,7 @@
                             Margin="0,0,5,3"
                             Source="{StaticResource code_24pxDrawingImage}" />
                         <ComboBox
-                            Uid="combx_Tag0"
+                            Uid="combx_Lang"
                             IsEditable="True"
                             IsReadOnly="False" />
 
@@ -113,9 +114,7 @@
             GroupBox.Foreground="White"
             GroupBox.Header="Imports">
             <Controls:ButtonedExGroupBox.InnerContent>
-                <AvalonEdit:TextEditor
-                    Uid="ae_imports"
-                    MinHeight="128px" />
+                <AvalonEdit:TextEditor Uid="ae_imports" MinHeight="128px" />
             </Controls:ButtonedExGroupBox.InnerContent>
             <Controls:ButtonedExGroupBox.HeaderRightHand>
                 <Grid
@@ -167,8 +166,7 @@
             GroupBox.Foreground="White"
             GroupBox.Header="Code">
             <Controls:ButtonedExGroupBox.InnerContent>
-                <AvalonEdit:TextEditor
-                    Uid="ae_code" />
+                <AvalonEdit:TextEditor Uid="ae_code" />
             </Controls:ButtonedExGroupBox.InnerContent>
             <Controls:ButtonedExGroupBox.HeaderRightHand>
                 <Grid

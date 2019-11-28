@@ -30,7 +30,7 @@ namespace SnippetMan.Controls
     {
         private IDatabaseDAO database = new SQLiteDAO();
 
-        private List<Tag> tags;
+        private List<Tag> tags;        
 
         private TextEditor importEditor;
         private TextEditor codeEditor;
@@ -41,7 +41,7 @@ namespace SnippetMan.Controls
         private Button btn_add_cmbx;
         private Button btn_del_cmbx;
         private WrapPanel wrapP_combx;
-        private ComboBox combx_Tag0;
+        private ComboBox combx_Lang;
         private Popup popup_import;
         private Popup popup_code;
 
@@ -50,6 +50,7 @@ namespace SnippetMan.Controls
         public event TitleChangedHandler TitleChanged;
 
         private List<ComboBox> comboBoxes = new List<ComboBox>();
+        private List<ComboBox> comboBoxesLang = new List<ComboBox>();
 
         private IThemedHighlightingManager hlManager = ThemedHighlightingManager.Instance;
 
@@ -65,7 +66,7 @@ namespace SnippetMan.Controls
             btn_add_cmbx = (Button)UIHelper.GetByUid(this, "btn_add_cmbx");
             btn_del_cmbx = (Button)UIHelper.GetByUid(this, "btn_del_cmbx");
             wrapP_combx = (WrapPanel)UIHelper.GetByUid(this, "wrapP_combx");
-            combx_Tag0 = (ComboBox)UIHelper.GetByUid(this, "combx_Tag0");
+            combx_Lang = (ComboBox)UIHelper.GetByUid(this, "combx_Lang");
             popup_import = (Popup)UIHelper.GetByUid(this, "popup_import");
             popup_code = (Popup)UIHelper.GetByUid(this, "popup_code");
 
@@ -78,10 +79,10 @@ namespace SnippetMan.Controls
             //Erste Combobox mit ProgLang
             foreach (Tag language in languages)
             {
-                combx_Tag0.Items.Add(language.Title);
+                combx_Lang.Items.Add(language.Title);
             }
 
-            comboBoxes.Add(combx_Tag0);
+            comboBoxesLang.Add(combx_Lang);
 
             hlManager.SetCurrentTheme("VS2019_Dark"); // TODO "{ }" einfärben
 
@@ -154,7 +155,7 @@ namespace SnippetMan.Controls
 
         #region Funktionen zum Interagieren mit der Datenbank
 
-        private void LoadInfo_Into_Details()
+        private void LoadInfo_Into_Control()
         {
             IDatabaseDAO database = new SQLiteDAO();
             database.OpenConnection();
@@ -162,32 +163,22 @@ namespace SnippetMan.Controls
             tb_title.Text = si.Titel;
             tb_description.Text = si.Beschreibung;
 
-            //TODO: Add as many comboboxes as required by the tag list
-            //TODO: DONE?
-            //combx_Tag0.Text = si.Tags[0].ToString();
-            //for (int i = 1; i < si.Tags.Length; i++)
-            //{
-            //    ComboBox comboTag = new ComboBox
-            //    {
-            //        Uid = "combx_Tag" + comboBoxes.Count,
-            //        IsReadOnly = false,
-            //        IsEditable = true
-            //    };
-            //    comboTag.Text = si.Tags[i].ToString();
-            //    comboBoxes.Add(comboTag);
-            //}
+            for (int i = 1; i < si.Tags.Count; i++)
+            {
+                ComboBox comboTag = new ComboBox
+                {
+                    Uid = "combx_Tag" + comboBoxes.Count,
+                    IsReadOnly = false,
+                    IsEditable = true
+                };
+                comboTag.Text = si.Tags[i].ToString();
+                comboBoxes.Add(comboTag);
+            }
 
-            database.CloseConnection();
-        }
-
-        private void LoadData_Into_Editors()
-        {
-            IDatabaseDAO database = new SQLiteDAO();
-            database.OpenConnection();
-            SnippetInfo si = database.GetSnippetMetaById(1);
             SnippetCode snippetCode = database.GetSnippetCode(si);
             importEditor.Text = snippetCode.Imports;
             codeEditor.Text = snippetCode.Code;
+
             database.CloseConnection();
         }
 
@@ -197,7 +188,8 @@ namespace SnippetMan.Controls
             database.OpenConnection();
             snippetInfo.Titel = tb_title.Text;
             snippetInfo.Beschreibung = tb_description.Text;
-            snippetInfo.Tags = comboBoxes.Select(c => new Tag() { Title = c.Text, Type = TagType.TAG_WITHOUT_TYPE }).ToList();
+            snippetInfo.Tags = comboBoxesLang.Select(c => new Tag() { Title = c.Text, Type = TagType.TAG_PROGRAMMING_LANGUAGE }).ToList();
+            snippetInfo.Tags.AddRange(comboBoxes.Select(c => new Tag() { Title = c.Text, Type = TagType.TAG_WITHOUT_TYPE }));
             snippetInfo.SnippetCode = new SnippetCode() { Imports = importEditor.Text, Code = codeEditor.Text };
             database.saveSnippet(snippetInfo);
             database.CloseConnection();
