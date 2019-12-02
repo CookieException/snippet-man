@@ -94,51 +94,128 @@
                 Grid.Row="1"
                 Margin="5"
                 Background="Transparent">
+                <TreeView.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="Black" />
+                    <Style TargetType="TreeViewItem">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TreeView.Resources>
                 <TreeViewItem
                     Margin="5"
                     Focusable="False"
                     Foreground="Gray"
-                    Header="Item1">
-                    <TreeViewItem
-                        Margin="5"
-                        Focusable="False"
-                        Foreground="Gray"
-                        Header="Item1.1">
-                        <StackPanel Orientation="Horizontal">
-                            <MenuItem
-                                Margin="-10,0,0,0"
-                                Focusable="False"
-                                Foreground="Gray"
-                                Header="Item1.1.1" />
-                            <Button
-                                x:Name="btn_like_item"
-                                Width="20"
-                                Height="20"
-                                HorizontalAlignment="Right">
-                                <Image Source="{StaticResource code_24pxDrawingImage}" />
-                            </Button>
-                            <Button
-                                x:Name="btn_delete_item"
-                                Width="20"
-                                Height="20"
-                                HorizontalAlignment="Right">
-                                <Image Source="{StaticResource close_24pxDrawingImage}" />
-                            </Button>
-                        </StackPanel>
-                        <MenuItem
-                            Margin="-10,0,0,0"
+                    Header="Item1"
+                    IsExpanded="True">
+                    <StackPanel
+                        Width="210"
+                        Margin="-20,5,0,0"
+                        Orientation="Horizontal">
+                        <TreeViewItem
+                            Width="170"
+                            MaxWidth="170"
                             Foreground="Gray"
-                            Header="Item1.1.2" />
-                    </TreeViewItem>
+                            Header="Item1.1" />
+                        <Button
+                            x:Name="btn_like_item"
+                            Width="20"
+                            Height="20"
+                            HorizontalAlignment="Right">
+                            <Image Source="{StaticResource code_24pxDrawingImage}" />
+                        </Button>
+                        <Button
+                            x:Name="btn_delete_item"
+                            Width="20"
+                            Height="20"
+                            HorizontalAlignment="Right">
+                            <Image Source="{StaticResource close_24pxDrawingImage}" />
+                        </Button>
+                    </StackPanel>
+                    <StackPanel
+                        Width="210"
+                        Margin="-20,5,0,0"
+                        Orientation="Horizontal">
+                        <TreeViewItem
+                            Width="170"
+                            MaxWidth="170"
+                            Foreground="Gray"
+                            Header="Item1.2" />
+                        <Button
+                            x:Name="btn_like_item2"
+                            Width="20"
+                            Height="20"
+                            HorizontalAlignment="Right">
+                            <Image Source="{StaticResource code_24pxDrawingImage}" />
+                        </Button>
+                        <Button
+                            x:Name="btn_delete_item2"
+                            Width="20"
+                            Height="20"
+                            HorizontalAlignment="Right">
+                            <Image Source="{StaticResource close_24pxDrawingImage}" />
+                        </Button>
+                    </StackPanel>
                 </TreeViewItem>
                 <TreeViewItem
                     Margin="5"
                     Focusable="False"
                     Foreground="Gray"
-                    Header="Item2">
-                    <TreeViewItem.Items>
-                        <MenuItem Foreground="Gray" Header="Item2.1" />
-                    </TreeViewItem.Items>
+                    Header="GanzLangerItemName"
+                    IsExpanded="True">
+                    <StackPanel
+                        Width="210"
+                        Margin="-20,5,0,0"
+                        Orientation="Horizontal">
+                        <TreeViewItem
+                            Width="170"
+                            MaxWidth="170"
+                            Foreground="Gray"
+                            Header="EinGanzLangerItemName2.0" />
+                        <Button
+                            x:Name="btn_like_item3"
+                            Width="20"
+                            Height="20"
+                            HorizontalAlignment="Right">
+                            <Image Source="{StaticResource code_24pxDrawingImage}" />
+                        </Button>
+                        <Button
+                            x:Name="btn_delete_item3"
+                            Width="20"
+                            Height="20"
+                            HorizontalAlignment="Right">
+                            <Image Source="{StaticResource close_24pxDrawingImage}" />
+                        </Button>
+                    </StackPanel>
+                    <StackPanel
+                        Width="210"
+                        Margin="-20,5,0,0"
+                        Orientation="Horizontal">
+                        <TreeViewItem
+                            Width="170"
+                            MaxWidth="170"
+                            Foreground="Gray"
+                            Header="Item2.2" />
+                        <Button
+                            x:Name="btn_like_item4"
+                            Width="20"
+                            Height="20"
+                            HorizontalAlignment="Right">
+                            <Image Source="{StaticResource code_24pxDrawingImage}" />
+                        </Button>
+                        <Button
+                            x:Name="btn_delete_item4"
+                            Width="20"
+                            Height="20"
+                            HorizontalAlignment="Right">
+                            <Image Source="{StaticResource close_24pxDrawingImage}" />
+                        </Button>
+                    </StackPanel>
                 </TreeViewItem>
             </TreeView>
         </Grid>
