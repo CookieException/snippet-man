@@ -52,8 +52,8 @@ namespace SnippetMan.Classes.Database
 
         public SnippetCode GetSnippetCode(SnippetInfo parentInfo)
         {
-            List<SnippetCode> result = selectSnippetCode("select * from snippetCode where id=:id",
-                new Dictionary<string, object> { { "id", parentInfo.SnippetCode.Id } });
+            List<SnippetCode> result = selectSnippetCode("select * from snippetCode c inner join snippetInfo i on i.id = c.id where i.id=:id",
+                new Dictionary<string, object> { { "id", parentInfo.Id } });
 
             if (result.Count > 0)
             {
@@ -112,6 +112,8 @@ namespace SnippetMan.Classes.Database
 
         public SnippetInfo saveSnippet(SnippetInfo infoToSave)
         {
+            // if we save a whole snippet with a code linked to it, we assume they belong together
+            infoToSave.SnippetCode.Id = infoToSave.Id;
             infoToSave.Tags = saveTags(infoToSave.Tags);
             infoToSave.SnippetCode = saveSnippetCode(infoToSave.SnippetCode);
 
@@ -132,7 +134,7 @@ namespace SnippetMan.Classes.Database
                         ", creationDate = :creationDate" +
                         ", lastEditDate = :lastEditDate" +
                         ", snippetCodeId = :snippetCodeId" +
-                        "where id = :id"
+                        " where id = :id"
                     , dict);
             }
             else
@@ -230,7 +232,7 @@ namespace SnippetMan.Classes.Database
         {
             Dictionary<string, object> dict = new Dictionary<string, object>
             {
-                {"infoId", infoToSave.Id },
+                {"id", infoToSave.Id },
                 {"imports", infoToSave.Imports },
                 {"code",infoToSave.Code }
             };
@@ -286,7 +288,8 @@ namespace SnippetMan.Classes.Database
                     Titel = dr.GetString(1),
                     Beschreibung = dr.GetString(2),
                     CreationDate = dr.GetDateTime(3),
-                    LastEditDate = dr.GetDateTime(4)
+                    LastEditDate = dr.GetDateTime(4),
+                    Tags = new List<Tag>() //TODO: fill with real values
                 };
 
                 snippetInfoList.Add(snippetInfo);
