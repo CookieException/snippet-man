@@ -1,24 +1,20 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using HL.Interfaces;
 using HL.Manager;
 using SnippetMan.Controls.Utils;
 using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Highlighting;
 using System.Windows.Controls.Primitives;
 using SnippetMan.Classes.Database;
 using SnippetMan.Classes;
 using System.Windows.Media;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using Button = System.Windows.Controls.Button;
 using Clipboard = System.Windows.Clipboard;
 using ComboBox = System.Windows.Controls.ComboBox;
 using UserControl = System.Windows.Controls.UserControl;
 using TextBox = System.Windows.Controls.TextBox;
-using System.Windows.Media.Animation;
 using SnippetMan.Classes.Snippets;
 
 namespace SnippetMan.Controls
@@ -30,7 +26,7 @@ namespace SnippetMan.Controls
     {
         private IDatabaseDAO database = new SQLiteDAO();
 
-        private List<Tag> tags;        
+        private List<Tag> tags;
 
         private TextEditor importEditor;
         private TextEditor codeEditor;
@@ -45,14 +41,27 @@ namespace SnippetMan.Controls
         private Popup popup_import;
         private Popup popup_code;
 
-        public delegate void TitleChangedHandler(string Title);
-
-        public event TitleChangedHandler TitleChanged;
-
         private List<ComboBox> comboBoxes = new List<ComboBox>();
         private List<ComboBox> comboBoxesLang = new List<ComboBox>();
 
         private IThemedHighlightingManager hlManager = ThemedHighlightingManager.Instance;
+
+        public delegate void TitleChangedHandler(string Title);
+        public event TitleChangedHandler TitleChanged;
+
+        private SnippetInfo shownSnippet;
+        public SnippetInfo ShownSnippet
+        {
+            get {
+                // if no snippet is currently loaded (aka. tab is empty), create a new one
+                if (shownSnippet == null)
+                    shownSnippet = new SnippetInfo();
+
+                return shownSnippet;
+            }
+
+            set => shownSnippet = value;
+        }
 
         public SnippetPage()
         {
@@ -88,6 +97,15 @@ namespace SnippetMan.Controls
 
             importEditor.SyntaxHighlighting = hlManager.CurrentTheme.GetDefinitionByExtension(".cs");
             codeEditor.SyntaxHighlighting = hlManager.CurrentTheme.GetDefinitionByExtension(".cs");
+
+
+			// PREVIEW: On any new tab, load the first saved snippet
+            database.OpenConnection();
+            SnippetInfo si = database.GetSnippetMetaById(1)?.withSnippetCodeUpdate();
+            database.CloseConnection();
+
+            if (si != null)
+                LoadInfo_Into_Control(si);
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -155,11 +173,8 @@ namespace SnippetMan.Controls
 
         #region Funktionen zum Interagieren mit der Datenbank
 
-        private void LoadInfo_Into_Control()
+        private void LoadInfo_Into_Control(SnippetInfo si)
         {
-            IDatabaseDAO database = new SQLiteDAO();
-            database.OpenConnection();
-            SnippetInfo si = database.GetSnippetMetaById(1);
             tb_title.Text = si.Titel;
             tb_description.Text = si.Beschreibung;
 
@@ -175,32 +190,31 @@ namespace SnippetMan.Controls
                 comboBoxes.Add(comboTag);
             }
 
-            SnippetCode snippetCode = database.GetSnippetCode(si);
-            importEditor.Text = snippetCode.Imports;
-            codeEditor.Text = snippetCode.Code;
+            importEditor.Text = si.SnippetCode.Imports;
+            codeEditor.Text = si.SnippetCode.Code;
 
-            database.CloseConnection();
+            ShownSnippet = si;
         }
 
         private void SaveInfo_Into_Database(SnippetInfo snippetInfo)
         {
-            IDatabaseDAO database = new SQLiteDAO();
             database.OpenConnection();
             snippetInfo.Titel = tb_title.Text;
             snippetInfo.Beschreibung = tb_description.Text;
             snippetInfo.Tags = comboBoxesLang.Select(c => new Tag() { Title = c.Text, Type = TagType.TAG_PROGRAMMING_LANGUAGE }).ToList();
             snippetInfo.Tags.AddRange(comboBoxes.Select(c => new Tag() { Title = c.Text, Type = TagType.TAG_WITHOUT_TYPE }));
             snippetInfo.SnippetCode = new SnippetCode() { Imports = importEditor.Text, Code = codeEditor.Text };
-            database.saveSnippet(snippetInfo);
+
+            // override current page-local snippet info with potentially new info from the db (e.g. id), but not if something went wrong
+            snippetInfo = database.saveSnippet(snippetInfo) ?? snippetInfo;
             database.CloseConnection();
         }
 
         private void UserControl_LostFocus(object sender, RoutedEventArgs e)
         {
-            SnippetInfo snippetInfo = new SnippetInfo();
             if (tb_title.Text != "")
             {
-                SaveInfo_Into_Database(snippetInfo);
+                SaveInfo_Into_Database(ShownSnippet);
             }
         }
 
