@@ -82,12 +82,27 @@ namespace SnippetMan.Classes.Database
 
         public List<SnippetInfo> GetSnippetMetaByTag(List<string> seachTags)
         {
-            throw new NotImplementedException();
+            List<SnippetInfo> result = new List<SnippetInfo>();
+            foreach (string tag in seachTags)
+            {
+                result.AddRange(selectSnippetInfo(
+                    "SELECT snippetInfo.* from tag " +
+                    "join tag_snippetInfo on tag.id = tag_snippetInfo.tagId " +
+                    "join snippetInfo on tag_snippetInfo.snippetInfoId = snippetInfo.id " +
+                    "where tag.title like '%:tag%';",
+                    new Dictionary<string, object> {
+                        {"tag",tag }
+                    }));
+            }
+
+            return result;
         }
 
         public List<SnippetInfo> GetSnippetMetaByText(string searchText)
         {
-            throw new NotImplementedException();
+            return selectSnippetInfo("select * from snippetInfo where titel like '%:searchText%' or beschreibung like '%:searchText%'", new Dictionary<string, object> {
+                { "searchText", searchText }
+            });
         }
 
         public List<SnippetInfo> GetSnippetMetaList()
@@ -143,7 +158,7 @@ namespace SnippetMan.Classes.Database
             if (searchText == "")
                 sql = "select * from tag where type = :tagType";
             else
-                sql = "select * from tag where title like :searchText AND type = :tagType"; 
+                sql = "select * from tag where title like :searchText AND type = :tagType";
 
             Dictionary<string, object> dict = new Dictionary<string, object> {
                 { "searchText", searchText },
@@ -159,10 +174,12 @@ namespace SnippetMan.Classes.Database
 
         private void saveTagsToSnippetInfo(List<Tag> tags, SnippetInfo snippetInfo) // TODO dont save if link already exists
         {
-            execute("delete from tag_snippetInfo where snippetInfoId = :snippetInfoId",new Dictionary<string, object> {
+            // Delete the existing Tag <-> snippetInfo connections
+            execute("delete from tag_snippetInfo where snippetInfoId = :snippetInfoId", new Dictionary<string, object> {
                 {":snippetInfoId", snippetInfo.Id }
             });
 
+            // Save connection between tags and snippetInfo
             foreach (Tag tag in tags)
             {
                 Dictionary<string, object> dict = new Dictionary<string, object>
