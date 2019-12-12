@@ -88,15 +88,8 @@ namespace SnippetMan.Controls
             popup_import = (Popup)UIHelper.GetByUid(this, "popup_import");
             popup_code = (Popup)UIHelper.GetByUid(this, "popup_code");
 
-            List<Tag> languages = SQLiteDAO.Instance.GetTags("", TagType.TAG_PROGRAMMING_LANGUAGE);
-            tags = SQLiteDAO.Instance.GetTags("", TagType.TAG_WITHOUT_TYPE);
+            combx_Lang.ItemsSource = SQLiteDAO.Instance.GetTags("", TagType.TAG_PROGRAMMING_LANGUAGE);
 
-
-            //Erste Combobox mit ProgLang
-            foreach (Tag language in languages)
-            {
-                combx_Lang.Items.Add(language.Title);
-            }
 
             comboBoxesLang.Add(combx_Lang);
 
@@ -151,10 +144,8 @@ namespace SnippetMan.Controls
 
             btn_delete.Click += Btn_delete_Click;
 
-            foreach (Tag tag in tags)
-            {
-                comboTag.Items.Add(tag.Title);
-            }
+            comboTag.ItemsSource = SQLiteDAO.Instance.GetTags("", TagType.TAG_WITHOUT_TYPE);
+
             comboBoxes.Add(comboTag);
 
             wrapP_combx.Children.Remove(btn_add_cmbx);
@@ -187,9 +178,34 @@ namespace SnippetMan.Controls
                     IsReadOnly = false,
                     IsEditable = true
                 };
-                comboTag.Text = si.Tags[i].ToString();
+
+                comboTag.ItemsSource = SQLiteDAO.Instance.GetTags("", TagType.TAG_WITHOUT_TYPE);
+                comboTag.SelectedItem = si.Tags[i];
+
                 comboBoxes.Add(comboTag);
+
+
+                Button btn_delete = new Button()
+                {
+                    Width = 16,
+                    Height = 16,
+                    Margin = new Thickness(-8, 0, 10, 3),
+                    Tag = comboTag,
+                    Foreground = new SolidColorBrush(Colors.White),
+                    Content = new Image { Source = (DrawingImage)System.Windows.Application.Current.Resources["remove_24pxDrawingImage"] }
+                };
+
+                btn_delete.Click += Btn_delete_Click;
+
+                wrapP_combx.Children.Remove(btn_add_cmbx);
+                wrapP_combx.Children.Add(comboTag);
+                wrapP_combx.Children.Add(btn_delete);
+                wrapP_combx.Children.Add(btn_add_cmbx);
             }
+
+            if (si.Tags.Count != 0)
+                combx_Lang.SelectedItem = si.Tags.First(t => t.Type == TagType.TAG_PROGRAMMING_LANGUAGE);
+
 
             importEditor.Text = si.SnippetCode.Imports;
             codeEditor.Text = si.SnippetCode.Code;

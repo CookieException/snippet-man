@@ -198,6 +198,8 @@ namespace SnippetMan.Classes.Database
             // Save connection between tags and snippetInfo
             foreach (Tag tag in tags)
             {
+                if (tag.Title == "")
+                    continue;
                 Dictionary<string, object> dict = new Dictionary<string, object>
                 {
                     {":snippetInfoId", snippetInfo.Id },
@@ -220,6 +222,8 @@ namespace SnippetMan.Classes.Database
 
         private int saveTag(Tag tag)
         {
+            if (tag.Title == "")
+                return -1;
             Dictionary<string, object> dict = new Dictionary<string, object>
             {
                 {"id", tag.Id },

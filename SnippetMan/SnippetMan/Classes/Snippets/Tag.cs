@@ -25,5 +25,17 @@ namespace SnippetMan.Classes.Snippets
         {
             Title = title;
         }
+        public override string ToString()
+        {
+            return Title;
+        }
+        public override bool Equals(object obj)
+        {
+            return this.Id == (obj as Tag)?.Id;
+        }
+        public override int GetHashCode()
+        {
+            return this.Id?.GetHashCode() ?? 0;
+        }
     }
 }
