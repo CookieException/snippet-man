@@ -109,10 +109,8 @@ namespace SnippetMan.Classes.Database
         }
 
         public List<SnippetInfo> GetSnippetMetaList()
-        {
-            return selectSnippetInfo("select * from snippetInfo " +
-                    "left join tag_snippetInfo on snippetInfo.id = tag_snippetInfo.tagId " +
-                    "left join tag on tag_snippetInfo.snippetInfoId = tag.id ");
+        { 
+            return selectSnippetInfo("select * from snippetInfo").Select((x) => { x.Tags = GetTagsFromSnippetInfo(x); return x; }).ToList();
         }
 
         public SnippetInfo saveSnippet(SnippetInfo infoToSave)
@@ -171,6 +169,17 @@ namespace SnippetMan.Classes.Database
                 { "searchText", searchText },
                 { "tagType", tagType }
             };
+            return selectTag(sql, dict);
+        }
+
+        public List<Tag> GetTagsFromSnippetInfo(SnippetInfo snippetInfo)
+        {
+            string sql = "select tag.id, tag.title, tag.type from tag_snippetInfo left join tag on tag_snippetInfo.tagId = tag.id where tag_snippetInfo.snippetInfoId = :snippetId";
+
+            Dictionary<string, object> dict = new Dictionary<string, object> {
+                { "snippetId", snippetInfo.Id }
+            };
+
             return selectTag(sql, dict);
         }
 

@@ -164,7 +164,7 @@ namespace SnippetMan
 
         private void Tv_snippetList_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (e.NewValue != null) // can happen e.g. on clearing the list
+            if (e.NewValue != null && !((SnippetNode)e.NewValue).IsGroup) // can happen e.g. on clearing the list
                 addSnippetPage(((SnippetNode)e.NewValue).Tag.withSnippetCodeUpdate());
         }
 
