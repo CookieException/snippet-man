@@ -18,10 +18,7 @@ namespace SnippetMan.Classes
 
         public SnippetInfo withSnippetCodeUpdate()
         {
-            IDatabaseDAO database = new SQLiteDAO();
-            database.OpenConnection();
-            SnippetCode = database.GetSnippetCode(this);
-            database.CloseConnection();
+            SnippetCode = SQLiteDAO.Instance.GetSnippetCode(this);
 
             return this;
         }

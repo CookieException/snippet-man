@@ -8,7 +8,7 @@ using SnippetMan.Classes.Snippets;
 
 namespace SnippetMan
 {
-    interface IDatabaseDAO
+    public interface IDatabaseDAO
     {
         /// <summary>
         /// Open database connection

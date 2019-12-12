@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Linq;
 using System.Windows.Media;
 using SnippetMan.Controls;
+using System.Threading.Tasks;
 
 namespace SnippetMan
 {
@@ -19,22 +20,27 @@ namespace SnippetMan
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly IDatabaseDAO database = new SQLiteDAO();
-        private readonly ObservableCollection<ITreeNode> shownSnippetMetaListGroups = new ObservableCollection<ITreeNode>();
+        private ObservableCollection<ITreeNode> shownSnippetMetaListGroups = new ObservableCollection<ITreeNode>();
 
         public MainWindow()
         {
             InitializeComponent();
 
+            // Initialize and open database
+            SQLiteDAO.Instance.OpenConnection();
+
             // bind list to tree view 
             tv_snippetList.ItemsSource = shownSnippetMetaListGroups;
+
+            // bind click event on tree item
+            tv_snippetList.SelectedItemChanged += Tv_snippetList_SelectedItemChanged;
 
             // set automatic refresh after sorts
             tv_snippetList.Items.IsLiveSorting = true;
             tv_snippetList.Items.IsLiveFiltering = true;
 
             // initialize with unfiltered values
-            refreshNodes();
+            refreshNodesAsync().ConfigureAwait(false);
         }
 
         #region Titlebar
@@ -78,19 +84,34 @@ namespace SnippetMan
 
         private void Ti_add_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            addSnippetPage();
+            e.Handled = true;
+        }
+
+        /// <summary>
+        /// Adds a new tab with the given snippet to the tabs
+        /// </summary>
+        /// <param name="si">Snippet that is to be opened. If this is null, a new one gets created by the SnippetPage</param>
+        /// <param name="switchTo">If true, the new tab gets focused immediately</param>
+        private void addSnippetPage(SnippetInfo si = null, bool switchTo = true)
+        {
             TabItem tabItem = new TabItem
             {
-                Header = "unnamed"
+                Header = si?.Titel ?? "Unnamed"
             };
-            Controls.SnippetPage snippetPage = new Controls.SnippetPage();
+
+            SnippetPage snippetPage = new SnippetPage(si);
             snippetPage.TitleChanged += SnippetPage_TitleChanged;
+            snippetPage.SnippetSaved += SnippetPage_SnippetSaved;
             tabItem.Content = snippetPage;
             tbc_pages.Items.Remove(ti_add);
             tbc_pages.Items.Add(tabItem);
             tbc_pages.Items.Add(ti_add);
-            tbc_pages.SelectedIndex = tbc_pages.Items.Count - 2;
-            e.Handled = true;
+
+            if (switchTo)
+                tbc_pages.SelectedIndex = tbc_pages.Items.Count - 2;
         }
+
 
         private void TB_del_Btn_Click(object sender, RoutedEventArgs e)
         {
@@ -121,6 +142,13 @@ namespace SnippetMan
             tabItem.Header = Title;
         }
 
+        private void SnippetPage_SnippetSaved(SnippetInfo snippetInfo)
+        {
+            // in case it was the title of a new snippet that was changed, refresh the tree view
+            // TODO: Only refresh the new group or sth. like that for performance
+            refreshNodesAsync().ConfigureAwait(false);
+        }
+
         private void SaveTab()
         {
             //TODO: Soll Tab bei z.B. wechsel durch Tabs Speichern
@@ -133,9 +161,16 @@ namespace SnippetMan
         }
 
         #region searchBar and TreeView
-        private bool shouldNodeHide(SnippetInfo s)
+
+        private void Tv_snippetList_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            return tb_search.Text == "" || s.Titel.Contains(tb_search.Text);
+            if (e.NewValue != null) // can happen e.g. on clearing the list
+                addSnippetPage(((SnippetNode)e.NewValue).Tag.withSnippetCodeUpdate());
+        }
+
+        private bool shouldNodeHide(SnippetInfo s, String filter = "")
+        {
+            return filter == "" || s.Titel.Contains(filter);
         }
 
         private void Tb_search_TextChanged(object sender, TextChangedEventArgs e)
@@ -153,35 +188,44 @@ namespace SnippetMan
             }
 
             foreach (SnippetNode node in shownSnippetMetaListGroups)
-                node.setVisibility(n => n.IsGroup || shouldNodeHide(n.Tag));
+                node.setVisibility(n => n.IsGroup || shouldNodeHide(n.Tag, tb_search.Text));
         }
 
         /// <summary>
         /// build treeview and its inner groups
         /// //TODO: Also call this if there was a database call. Maybe over a custom event?
         /// </summary>
-        private void refreshNodes()
+        private async Task refreshNodesAsync()
         {
-            // clear bound list before
+            string filter = tb_search.Text;
+
+            // Maybe a bit of wait time for the database - thus: asynchronous
+            ObservableCollection<ITreeNode> newList = await Task.Run(() =>
+            {
+                newList = new ObservableCollection<ITreeNode>();
+                foreach (SnippetInfo s in SQLiteDAO.Instance.GetSnippetMetaList())
+                {
+                    ITreeNode currentGroup = newList.FirstOrDefault(n => n.Title == s.ProgrammingLanguage);
+                    // if a top node contains programming language..
+                    if (currentGroup == null)
+                    {
+                        currentGroup = new SnippetNode() { Title = s.ProgrammingLanguage, IsGroup = true };
+                        newList.Add(currentGroup);
+                    }
+
+                    // add the new node to that one if it shouldn't be hidden
+                    currentGroup.ChildNodes.Add(new SnippetNode() { Title = s.Titel, Tag = s, IsVisible = shouldNodeHide(s, filter) });
+                }
+                return newList;
+            });
+
+            // clear bound list before refreshing it
             shownSnippetMetaListGroups.Clear();
 
-            database.OpenConnection();
+            // refresh it - assignment wouldn't work since the data binding would break
+            foreach (ITreeNode n in newList)
+                shownSnippetMetaListGroups.Add(n);
 
-            foreach (SnippetInfo s in database.GetSnippetMetaList())
-            {
-                ITreeNode currentGroup = shownSnippetMetaListGroups.FirstOrDefault(n => n.Title == s.ProgrammingLanguage);
-                // if a top node contains programming language..
-                if (currentGroup == null)
-                {
-                    currentGroup = new SnippetNode() { Title = s.ProgrammingLanguage, IsGroup = true };
-                    shownSnippetMetaListGroups.Add(currentGroup);
-                }
-
-                // add the new node to that one if it shouldn't be hidden
-                currentGroup.ChildNodes.Add(new SnippetNode() { Title = s.Titel, Tag = s, IsVisible = shouldNodeHide(s) });
-            }
-
-            database.CloseConnection();
         }
 
         private void Btn_eraseInput_Click(object sender, RoutedEventArgs e)

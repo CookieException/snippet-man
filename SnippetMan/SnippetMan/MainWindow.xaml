@@ -112,18 +112,19 @@
 
                             <TreeViewItem HorizontalAlignment="Stretch"
                                           Foreground="LightGray"
-                                          Header="{Binding Path=Title}" />
-                            <Button x:Name="btn_like_item"
-                                    Width="20"
-                                    Height="20"
-                                    Margin="0,0,24,0"
-                                    HorizontalAlignment="Right"
-                                    Background="Transparent">
+                                          Header="{Binding Path=Title}"
+                                          IsHitTestVisible="False" />
+                            <ToggleButton x:Name="btn_like_item"
+                                          Width="20"
+                                          Height="20"
+                                          Margin="0,0,24,0"
+                                          HorizontalAlignment="Right"
+                                          Background="Transparent">
 
-                                <Image Source="{StaticResource code_24pxDrawingImage}" />
+                                <Image Source="{StaticResource star_border_24pxDrawingImage}" />
 
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}">
+                                <ToggleButton.Style>
+                                    <Style TargetType="{x:Type ToggleButton}">
                                         <Setter Property="Visibility" Value="Visible" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsGroup}"
@@ -132,8 +133,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Button.Style>
-                            </Button>
+                                </ToggleButton.Style>
+                            </ToggleButton>
                             <Button x:Name="btn_delete_item"
                                     Width="20"
                                     Height="20"

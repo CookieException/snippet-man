@@ -4,6 +4,7 @@
              xmlns:AvalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:Controls="clr-namespace:SnippetMan.Controls"
              xmlns:WatermarkTextBox="clr-namespace:WatermarkControlsLib.Controls;assembly=WatermarkControlsLib"
+             Exit="Application_Exit"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
 
@@ -257,6 +258,14 @@
                 <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
                     <GeometryDrawing Brush="#FFFFFFFF"
                                      Geometry="F1 M24,24z M0,0z M4,4L20,4 20,20 4,20 4,4 M6,8L6,18 18,18 18,8 6,8z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="star_border_24pxDrawingImage">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="#FFFFFFFF"
+                                     Geometry="F1 M24,24z M0,0z M22,9.24L14.81,8.62 12,2 9.19,8.63 2,9.24 7.46,13.97 5.82,21 12,17.27 18.18,21 16.55,13.97 22,9.24z M12,15.4L8.24,17.67 9.24,13.39 5.92,10.51 10.3,10.13 12,6.1 13.71,10.14 18.09,10.52 14.77,13.4 15.77,17.68 12,15.4z" />
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>

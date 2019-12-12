@@ -13,6 +13,9 @@ namespace SnippetMan.Classes.Database
     public class SQLiteDAO : IDatabaseDAO
     {
         private SQLiteConnection m_dbConnection;
+
+        public static SQLiteDAO Instance { get; set; } = new SQLiteDAO();
+
         public bool OpenConnection()
         {
             string dbPath = "MyDatabase.SQLite";

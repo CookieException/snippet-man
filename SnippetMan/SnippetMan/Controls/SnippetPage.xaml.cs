@@ -16,6 +16,7 @@ using ComboBox = System.Windows.Controls.ComboBox;
 using UserControl = System.Windows.Controls.UserControl;
 using TextBox = System.Windows.Controls.TextBox;
 using SnippetMan.Classes.Snippets;
+using System.Threading.Tasks;
 
 namespace SnippetMan.Controls
 {
@@ -49,10 +50,14 @@ namespace SnippetMan.Controls
         public delegate void TitleChangedHandler(string Title);
         public event TitleChangedHandler TitleChanged;
 
+        public delegate void SnippetSavedHandler(SnippetInfo snippetInfo);
+        public event SnippetSavedHandler SnippetSaved;
+
         private SnippetInfo shownSnippet;
         public SnippetInfo ShownSnippet
         {
-            get {
+            get
+            {
                 // if no snippet is currently loaded (aka. tab is empty), create a new one
                 if (shownSnippet == null)
                     shownSnippet = new SnippetInfo();
@@ -63,7 +68,11 @@ namespace SnippetMan.Controls
             set => shownSnippet = value;
         }
 
-        public SnippetPage()
+        /// <summary>
+        /// Constructor for the snippet page
+        /// </summary>
+        /// <param name="si">If not null, the page gets initialized with this snippet. Otherwise it creates a new one</param>
+        public SnippetPage(SnippetInfo si = null)
         {
             InitializeComponent();
             importEditor = (TextEditor)UIHelper.GetByUid(this, "ae_imports");
@@ -79,11 +88,9 @@ namespace SnippetMan.Controls
             popup_import = (Popup)UIHelper.GetByUid(this, "popup_import");
             popup_code = (Popup)UIHelper.GetByUid(this, "popup_code");
 
-            database.OpenConnection();
-            List<Tag> languages = database.GetTags("", TagType.TAG_PROGRAMMING_LANGUAGE);
-            tags = database.GetTags("", TagType.TAG_WITHOUT_TYPE);
+            List<Tag> languages = SQLiteDAO.Instance.GetTags("", TagType.TAG_PROGRAMMING_LANGUAGE);
+            tags = SQLiteDAO.Instance.GetTags("", TagType.TAG_WITHOUT_TYPE);
 
-            database.CloseConnection();
 
             //Erste Combobox mit ProgLang
             foreach (Tag language in languages)
@@ -97,12 +104,6 @@ namespace SnippetMan.Controls
 
             importEditor.SyntaxHighlighting = hlManager.CurrentTheme.GetDefinitionByExtension(".cs");
             codeEditor.SyntaxHighlighting = hlManager.CurrentTheme.GetDefinitionByExtension(".cs");
-
-
-			// PREVIEW: On any new tab, load the first saved snippet
-            database.OpenConnection();
-            SnippetInfo si = database.GetSnippetMetaById(1)?.withSnippetCodeUpdate();
-            database.CloseConnection();
 
             if (si != null)
                 LoadInfo_Into_Control(si);
@@ -194,28 +195,34 @@ namespace SnippetMan.Controls
             codeEditor.Text = si.SnippetCode.Code;
 
             ShownSnippet = si;
+
+            // notify the tab control that we have changed the title automatically
+            TextBox_TextChanged(tb_title, null);
         }
 
-        private void SaveInfo_Into_Database(SnippetInfo snippetInfo)
+        private async Task SaveInfo_Into_DatabaseAsync(SnippetInfo snippetInfo)
         {
-            database.OpenConnection();
             snippetInfo.Titel = tb_title.Text;
             snippetInfo.Beschreibung = tb_description.Text;
             snippetInfo.Tags = comboBoxesLang.Select(c => new Tag() { Title = c.Text, Type = TagType.TAG_PROGRAMMING_LANGUAGE }).ToList();
             snippetInfo.Tags.AddRange(comboBoxes.Select(c => new Tag() { Title = c.Text, Type = TagType.TAG_WITHOUT_TYPE }));
             snippetInfo.SnippetCode = new SnippetCode() { Imports = importEditor.Text, Code = codeEditor.Text };
 
-            // override current page-local snippet info with potentially new info from the db (e.g. id), but not if something went wrong
-            snippetInfo = database.saveSnippet(snippetInfo) ?? snippetInfo;
-            database.CloseConnection();
+            // Async because database access can make the gui be stuck for a moment
+            snippetInfo = await Task.Run(() =>
+            {
+                // override current page-local snippet info with potentially new info from the db (e.g. id), but not if something went wrong
+                snippetInfo = SQLiteDAO.Instance.saveSnippet(snippetInfo) ?? snippetInfo;
+                return snippetInfo;
+            });
+
+            SnippetSaved?.Invoke(snippetInfo);
         }
 
         private void UserControl_LostFocus(object sender, RoutedEventArgs e)
         {
             if (tb_title.Text != "")
-            {
-                SaveInfo_Into_Database(ShownSnippet);
-            }
+                SaveInfo_Into_DatabaseAsync(ShownSnippet).ConfigureAwait(false);
         }
 
         #endregion Funktionen zum Interagieren mit der Datenbank
