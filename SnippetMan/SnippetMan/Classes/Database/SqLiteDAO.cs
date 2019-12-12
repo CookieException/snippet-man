@@ -107,7 +107,9 @@ namespace SnippetMan.Classes.Database
 
         public List<SnippetInfo> GetSnippetMetaList()
         {
-            return selectSnippetInfo("select * from snippetInfo");
+            return selectSnippetInfo("select * from snippetInfo " +
+                    "left join tag_snippetInfo on snippetInfo.id = tag_snippetInfo.tagId " +
+                    "left join tag on tag_snippetInfo.snippetInfoId = tag.id ");
         }
 
         public SnippetInfo saveSnippet(SnippetInfo infoToSave)
@@ -289,7 +291,7 @@ namespace SnippetMan.Classes.Database
                     Beschreibung = dr.GetString(2),
                     CreationDate = dr.GetDateTime(3),
                     LastEditDate = dr.GetDateTime(4),
-                    Tags = new List<Tag>() //TODO: fill with real values
+                    Tags = new List<Tag>() { new Tag() { Title = "C#", Type = TagType.TAG_PROGRAMMING_LANGUAGE } } //TODO: fill with real values
                 };
 
                 snippetInfoList.Add(snippetInfo);

@@ -1,9 +1,7 @@
 ﻿using SnippetMan.Classes.Database;
+using SnippetMan.Classes.Snippets;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnippetMan.Classes
 {
@@ -12,7 +10,8 @@ namespace SnippetMan.Classes
         public int? Id { get; set; }
         public string Titel { get; set; }
         public string Beschreibung { get; set; }
-        public List<Snippets.Tag> Tags { get; set; }
+        public string ProgrammingLanguage { get { return Tags.Find(t => t.Type == TagType.TAG_PROGRAMMING_LANGUAGE)?.Title ?? ""; } }
+        public List<Tag> Tags { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastEditDate { get; set; }
         public SnippetCode SnippetCode { get; set; }
