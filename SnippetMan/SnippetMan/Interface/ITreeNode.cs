@@ -9,8 +9,9 @@ namespace SnippetMan.Interface
         string Title { get; set; }
         bool IsGroup { get; set; }
         bool IsVisible { get; set; }
+        bool IsSelected { get; set; }
         ObservableCollection<ITreeNode> ChildNodes { get; set; }
 
-
+        void deselectAll();
     }
 }

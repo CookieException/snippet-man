@@ -22,5 +22,34 @@ namespace SnippetMan.Classes
 
             return this;
         }
+
+        public override bool Equals(object obj)
+        {
+            return this.Id == ((SnippetInfo)obj).Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Id.GetHashCode();
+        }
+
+        public static bool operator ==(SnippetInfo lhs, SnippetInfo rhs)
+        {
+            if (Object.ReferenceEquals(lhs, rhs))
+            {
+                return true;
+            }
+            else if ((lhs is null) || (rhs is null))
+            {
+                // if both are null, reference equals already returns true
+                return false;
+            }
+            else
+            {
+                return lhs.Equals(rhs);
+            }
+        }
+
+        public static bool operator !=(SnippetInfo lhs, SnippetInfo rhs) => !(lhs == rhs);
     }
 }

@@ -25,10 +25,6 @@ namespace SnippetMan.Controls
     /// </summary>
     public partial class SnippetPage : UserControl
     {
-        private IDatabaseDAO database = new SQLiteDAO();
-
-        private List<Tag> tags;
-
         private TextEditor importEditor;
         private TextEditor codeEditor;
         private TextBox tb_title;

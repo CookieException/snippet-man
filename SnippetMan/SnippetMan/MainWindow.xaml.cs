@@ -20,7 +20,7 @@ namespace SnippetMan
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ObservableCollection<ITreeNode> shownSnippetMetaListGroups = new ObservableCollection<ITreeNode>();
+        private readonly ObservableCollection<ITreeNode> shownSnippetMetaListGroups = new ObservableCollection<ITreeNode>();
 
         public MainWindow()
         {
@@ -32,12 +32,14 @@ namespace SnippetMan
             // bind list to tree view 
             tv_snippetList.ItemsSource = shownSnippetMetaListGroups;
 
-            // bind click event on tree item
             tv_snippetList.SelectedItemChanged += Tv_snippetList_SelectedItemChanged;
 
             // set automatic refresh after sorts
             tv_snippetList.Items.IsLiveSorting = true;
             tv_snippetList.Items.IsLiveFiltering = true;
+
+            // connect event handler on switching tabs to update the tree view selection
+            tbc_pages.SelectionChanged += Tbc_pages_SelectionChanged;
 
             // initialize with unfiltered values
             refreshNodesAsync().ConfigureAwait(false);
@@ -81,6 +83,38 @@ namespace SnippetMan
         #endregion Titlebar
 
         #region Tab Control
+        private void Tbc_pages_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            TabItem selectedTab = tbc_pages.SelectedItem as TabItem;
+
+            // due to a bug in wpf, we have to unselect the current item here already
+            if (tv_snippetList.SelectedItem != null)
+                (tv_snippetList.SelectedItem as SnippetNode).IsSelected = false;
+
+            if (selectedTab?.Content is SnippetPage p)
+            {
+                SnippetNode snippetPosInTree = null;
+
+                // search for snippet in deeper levels
+                foreach (SnippetNode searchIn in shownSnippetMetaListGroups)
+                {
+                    snippetPosInTree = searchIn.FindNode(innernode => innernode.Tag == p.ShownSnippet);
+
+                    if (snippetPosInTree != null)
+                        break;
+                }
+
+                // if snippet was found..
+                if (snippetPosInTree != null)
+                {
+                    // .. and unselect every node
+                    shownSnippetMetaListGroups.ToList().ForEach(node => node.deselectAll());
+                    
+                    // .. and set found node as selected.
+                    snippetPosInTree.IsSelected = true;
+                }
+            }
+        }
 
         private void Ti_add_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -133,9 +167,9 @@ namespace SnippetMan
                 e.Handled = true;
             }
         }
-
         #endregion Tab Control
 
+        #region Changes inside the tab pages
         private void SnippetPage_TitleChanged(string Title)
         {
             TabItem tabItem = (TabItem)tbc_pages.SelectedItem;
@@ -146,12 +180,9 @@ namespace SnippetMan
         {
             // in case it was the title of a new snippet that was changed, refresh the tree view
             // TODO: Only refresh the new group or sth. like that for performance
-            refreshNodesAsync().ConfigureAwait(false);
-        }
 
-        private void SaveTab()
-        {
-            //TODO: Soll Tab bei z.B. wechsel durch Tabs Speichern
+            refreshNodesAsync().ConfigureAwait(false);
+
         }
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
@@ -159,20 +190,36 @@ namespace SnippetMan
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
         }
+        #endregion
 
-        #region searchBar and TreeView
-
+        #region TreeView Nodes
         private void Tv_snippetList_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (e.NewValue != null && !((SnippetNode)e.NewValue).IsGroup) // can happen e.g. on clearing the list
-                addSnippetPage(((SnippetNode)e.NewValue).Tag.withSnippetCodeUpdate());
+            SnippetNode selectedNode = (SnippetNode)e.NewValue;
+
+            if (selectedNode == null)
+                return;
+
+            // check if page is already open, if so: Select it
+            TabItem openTab = tbc_pages.Items.Cast<TabItem>().FirstOrDefault(t => t.Content is SnippetPage p && p.ShownSnippet == selectedNode.Tag);
+            if (openTab != null)
+            {
+                openTab.IsSelected = true;
+                return;
+            }
+
+            if (selectedNode != null && !selectedNode.IsGroup) // can happen e.g. on clearing the list
+                addSnippetPage(selectedNode.Tag.withSnippetCodeUpdate());
         }
 
-        private bool shouldNodeHide(SnippetInfo s, String filter = "")
+        private void Btn_delete_item_Click(object sender, RoutedEventArgs e)
         {
-            return filter == "" || s.Titel.Contains(filter);
+            SnippetNode selectedNode = ((Button)sender).DataContext as SnippetNode;
+            //TODO: Insert Delete call for database here with selectedNode.Tag - also think about tags
         }
+        #endregion
 
+        #region searchBar and TreeView itself
         private void Tb_search_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (String.IsNullOrEmpty(tb_search.Text))
@@ -189,6 +236,11 @@ namespace SnippetMan
 
             foreach (SnippetNode node in shownSnippetMetaListGroups)
                 node.setVisibility(n => n.IsGroup || shouldNodeHide(n.Tag, tb_search.Text));
+        }
+
+        private bool shouldNodeHide(SnippetInfo s, String filter = "")
+        {
+            return filter == "" || s.Titel.Contains(filter);
         }
 
         /// <summary>
@@ -225,7 +277,9 @@ namespace SnippetMan
             // refresh it - assignment wouldn't work since the data binding would break
             foreach (ITreeNode n in newList)
                 shownSnippetMetaListGroups.Add(n);
-
+            
+            // after refreshing, lookup if the currently selected tab needs to get a matching partner in the tree view again since all selections are cleared
+            Tbc_pages_SelectionChanged(tv_snippetList, null);
         }
 
         private void Btn_eraseInput_Click(object sender, RoutedEventArgs e)

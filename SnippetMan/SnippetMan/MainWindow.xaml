@@ -140,7 +140,8 @@
                                     Height="20"
                                     Margin="0,0,0,0"
                                     HorizontalAlignment="Right"
-                                    Background="Transparent">
+                                    Background="Transparent"
+                                    Click="Btn_delete_item_Click">
 
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}">
@@ -167,7 +168,9 @@
                                      Color="Transparent" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
                                      Color="Black" />
+
                     <Style TargetType="TreeViewItem">
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Foreground" Value="White" />
