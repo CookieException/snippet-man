@@ -31,8 +31,8 @@ namespace SnippetMan.Classes.Database
             execute(
                 "create table if not exists snippetInfo " +
                 "(id INTEGER PRIMARY KEY AUTOINCREMENT, titel VARCHAR(128), beschreibung VARCHAR(1024)" +
-                ", creationDate DATETIME, lastEditDate DATETIME, snippetCodeId INTEGER" +
-                ", FOREIGN KEY('snippetCodeId') REFERENCES 'snippetCode' ('id'))"
+                ", creationDate DATETIME, lastEditDate DATETIME, favorite BOOLEAN, snippetCodeId INTEGER" +
+                ", FOREIGN KEY('snippetCodeId') REFERENCES 'snippetCode' ('id') ON DELETE CASCADE)"
             );
             execute(
                 "create table if not exists tag " +
@@ -41,7 +41,7 @@ namespace SnippetMan.Classes.Database
             execute(
                 "create table if not exists tag_snippetInfo " +
                 "(id INTEGER PRIMARY KEY AUTOINCREMENT, snippetInfoId INTEGER, tagId INTEGER" +
-                ", FOREIGN KEY('snippetInfoId') REFERENCES 'snippetInfo' ('id')" +
+                ", FOREIGN KEY('snippetInfoId') REFERENCES 'snippetInfo' ('id') ON DELETE CASCADE" +
                 ", FOREIGN KEY('tagId') REFERENCES 'tag' ('id'))"
             );
 
@@ -126,7 +126,8 @@ namespace SnippetMan.Classes.Database
                 { "snippetCodeId", infoToSave.SnippetCode.Id },
                 { "titel", infoToSave.Titel },
                 { "beschreibung", infoToSave.Beschreibung },
-                { "lastEditDate", DateTime.Now }
+                { "lastEditDate", DateTime.Now },
+                { "favorite", infoToSave.Favorite }
             };
 
             if (infoToSave.Id.HasValue)
@@ -136,6 +137,7 @@ namespace SnippetMan.Classes.Database
                         ", beschreibung = :beschreibung" +
                         ", creationDate = :creationDate" +
                         ", lastEditDate = :lastEditDate" +
+                        ", favorite = :favorite" +
                         ", snippetCodeId = :snippetCodeId" +
                         " where id = :id"
                     , dict);
@@ -144,9 +146,9 @@ namespace SnippetMan.Classes.Database
             {//Insert
                 dict.Add("creationDate", DateTime.Now);
                 execute("insert into snippetInfo " +
-                        "(titel, beschreibung, creationDate, lastEditDate, snippetCodeId)" +
+                        "(titel, beschreibung, creationDate, lastEditDate, favorite, snippetCodeId)" +
                         " values " +
-                        "(:titel, :beschreibung, :creationDate, :lastEditDate, :snippetCodeId)"
+                        "(:titel, :beschreibung, :creationDate, :lastEditDate, :favorite, :snippetCodeId)"
                     , dict);
 
                 infoToSave.Id = (int)m_dbConnection.LastInsertRowId; // TODO return ist int64
@@ -155,6 +157,11 @@ namespace SnippetMan.Classes.Database
             saveTagsToSnippetInfo(infoToSave.Tags, infoToSave);
 
             return infoToSave;
+        }
+
+        public void deleteSnippet(SnippetInfo infoToDelete)
+        {
+            execute("DELETE FROM snippetCode where snippetCode.id = :snippetCodeId",new Dictionary<string, object> { {"snippetCodeId",infoToDelete.SnippetCode.Id } });
         }
 
         public List<Tag> GetTags(string searchText, TagType tagType)
@@ -231,19 +238,37 @@ namespace SnippetMan.Classes.Database
                 {"type",tag.Type }
             };
 
-            if (tag.Id.HasValue)
+            Tag dbTag = null;
+            if (/*tag.Id.HasValue || */(dbTag = doesTagTitleExist(tag)) != null)
             { // Update
                 execute("update tag set" +
                     " title = :title," +
                     " type = :type" +
                     " where id = :id", dict);
-                return tag.Id.Value;
+                return dbTag.Id.Value;
             }
             else
             { // Insert
                 execute("insert into tag (title,type) values (:title, :type)", dict);
                 return (int)m_dbConnection.LastInsertRowId; // TODO return ist int64
             }
+        }
+
+        private Tag doesTagTitleExist(Tag tag)
+        {
+            string sql = "select * from tag where title = :searchText AND type = :tagType";
+
+            Dictionary<string, object> dict = new Dictionary<string, object> {
+                { "searchText", tag.Title },
+                { "tagType", tag.Type }
+            };
+
+            List<Tag> tags = selectTag(sql, dict);
+
+            if (tags.Count > 0)
+                return tags.First();
+            else
+                return null;
         }
 
         private SnippetCode saveSnippetCode(SnippetCode infoToSave)
@@ -307,7 +332,8 @@ namespace SnippetMan.Classes.Database
                     Beschreibung = dr.GetString(2),
                     CreationDate = dr.GetDateTime(3),
                     LastEditDate = dr.GetDateTime(4),
-                    Tags = new List<Tag>() { new Tag() { Title = "C#", Type = TagType.TAG_PROGRAMMING_LANGUAGE } } //TODO: fill with real values
+                    Favorite = dr.GetBoolean(5),
+                    //Tags = new List<Tag>() { new Tag() { Title = "C#", Type = TagType.TAG_PROGRAMMING_LANGUAGE } } //TODO: fill with real values //TODO wird das überhaupt gebraucht?
                 };
 
                 snippetInfoList.Add(snippetInfo);

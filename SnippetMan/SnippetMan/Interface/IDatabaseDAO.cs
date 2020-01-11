@@ -63,6 +63,13 @@ namespace SnippetMan
         SnippetInfo saveSnippet(SnippetInfo infoToSave);
 
         /// <summary>
+        /// Deletes a given Snippet
+        /// </summary>
+        /// <param name="infoToDelete">Information of the snippet as <see cref="SnippetInfo"/></param>
+        /// <returns>void</returns>
+        void deleteSnippet(SnippetInfo infoToDelete);
+
+        /// <summary>
         /// Returns already used/ saved Tags for Autocompletion when adding Tags to a Snippet
         /// </summary>
         /// <param name="searchText">Searchtext to match</param>

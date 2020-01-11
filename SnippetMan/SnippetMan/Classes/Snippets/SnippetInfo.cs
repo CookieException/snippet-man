@@ -14,6 +14,7 @@ namespace SnippetMan.Classes
         public List<Tag> Tags { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastEditDate { get; set; }
+        public bool Favorite { get; set; }
         public SnippetCode SnippetCode { get; set; }
 
         public SnippetInfo withSnippetCodeUpdate()
