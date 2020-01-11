@@ -36,11 +36,11 @@ namespace SnippetMan.Classes.Database
             );
             execute(
                 "create table if not exists tag " +
-                "(id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(128), type INTEGER)"
+                "(id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(128), type INTEGER NOT NULL )"
             );
             execute(
                 "create table if not exists tag_snippetInfo " +
-                "(id INTEGER PRIMARY KEY AUTOINCREMENT, snippetInfoId INTEGER, tagId INTEGER" +
+                "(id INTEGER PRIMARY KEY AUTOINCREMENT, snippetInfoId INTEGER NOT NULL, tagId INTEGER NOT NULL" +
                 ", FOREIGN KEY('snippetInfoId') REFERENCES 'snippetInfo' ('id') ON DELETE CASCADE" +
                 ", FOREIGN KEY('tagId') REFERENCES 'tag' ('id'))"
             );
@@ -205,13 +205,34 @@ namespace SnippetMan.Classes.Database
             // Save connection between tags and snippetInfo
             foreach (Tag tag in tags)
             {
-                if (tag.Title == "")
+                if (tag.Title == "" || !tag.Id.HasValue)
                     continue;
-                Dictionary<string, object> dict = new Dictionary<string, object>
+
+                Dictionary<string, object> dict;
+
+                if (!tag.Id.HasValue)
                 {
-                    {":snippetInfoId", snippetInfo.Id },
-                    {":tagId", tag.Id }
-                };
+                    Tag dbTag = null;
+                    dbTag = doesTagTitleExist(tag);
+
+                    if (dbTag != null)
+                    {
+                        dict = new Dictionary<string, object>
+                        {
+                            {":snippetInfoId", snippetInfo.Id.Value },
+                            {":tagId", dbTag.Id.Value }
+                        };
+                    }
+                    else continue;
+                }
+                else
+                {
+                    dict = new Dictionary<string, object>
+                    {
+                        {":snippetInfoId", snippetInfo.Id.Value },
+                        {":tagId", tag.Id.Value }
+                    };
+                }
 
                 execute("insert into tag_snippetInfo (snippetInfoId, tagId) values (:snippetInfoId, :tagId)", dict);
             }
@@ -231,24 +252,33 @@ namespace SnippetMan.Classes.Database
         {
             if (tag.Title == "")
                 return -1;
-            Dictionary<string, object> dict = new Dictionary<string, object>
-            {
-                {"id", tag.Id },
-                {"title", tag.Title },
-                {"type",tag.Type }
-            };
+
 
             Tag dbTag = null;
             if (/*tag.Id.HasValue || */(dbTag = doesTagTitleExist(tag)) != null)
             { // Update
-                execute("update tag set" +
-                    " title = :title," +
-                    " type = :type" +
-                    " where id = :id", dict);
+                //Dictionary<string, object> dict = new Dictionary<string, object>
+                //{
+                //    {"id", dbTag.Id.Value },
+                //    {"title", tag.Title },
+                //    {"type",tag.Type }
+                //};
+
+                //execute("update tag set" +
+                //    " title = :title," +
+                //    " type = :type" +
+                //    " where id = :id", dict);
                 return dbTag.Id.Value;
             }
             else
             { // Insert
+                Dictionary<string, object> dict = new Dictionary<string, object>
+                {
+                    {"id", tag.Id },
+                    {"title", tag.Title },
+                    {"type",tag.Type }
+                };
+
                 execute("insert into tag (title,type) values (:title, :type)", dict);
                 return (int)m_dbConnection.LastInsertRowId; // TODO return ist int64
             }
