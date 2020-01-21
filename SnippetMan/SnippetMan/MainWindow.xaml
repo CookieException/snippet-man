@@ -19,7 +19,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <!--  Sidebar width  -->
-            <ColumnDefinition Width="256px" />
+            <ColumnDefinition Width="288px" />
             <!--  Content width  -->
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
@@ -107,7 +107,7 @@
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type interface:ITreeNode}"
                                               ItemsSource="{Binding Path=ChildNodes}">
-                        <Grid Width="200"
+                        <Grid Width="216"
                               Margin="-20,5,0,0">
 
                             <TreeViewItem HorizontalAlignment="Stretch"
