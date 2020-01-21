@@ -21,8 +21,9 @@ namespace SnippetMan.Classes.Database
             string dbPath = "MyDatabase.SQLite";
             if (!File.Exists(dbPath))
                 SQLiteConnection.CreateFile(dbPath);
-            m_dbConnection = new SQLiteConnection("Data Source=MyDatabase.SQLite;Version=3;");
+            m_dbConnection = new SQLiteConnection("Data Source="+dbPath+";Version=3;");
             m_dbConnection.Open();
+            execute("PRAGMA foreign_keys = ON;");
 
             execute(
                 "create table if not exists snippetCode " +
