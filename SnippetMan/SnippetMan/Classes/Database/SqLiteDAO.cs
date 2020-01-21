@@ -162,6 +162,13 @@ namespace SnippetMan.Classes.Database
         public void deleteSnippet(SnippetInfo infoToDelete)
         {
             execute("DELETE FROM snippetCode where snippetCode.id = :snippetCodeId", new Dictionary<string, object> { { "snippetCodeId", infoToDelete.SnippetCode.Id } });
+            // Delete the existing Tag <-> snippetInfo connections
+            execute("delete from tag_snippetInfo where snippetInfoId = :snippetInfoId", new Dictionary<string, object> {
+                {":snippetInfoId", infoToDelete.Id }
+            });
+            execute("DELETE FROM snippetInfo where snippetInfo.ID = :snippetInfoId", new Dictionary<string, object> {
+                {":snippetInfoId", infoToDelete.Id }
+            });
         }
 
         public List<Tag> GetTags(string searchText, TagType tagType)
