@@ -8,7 +8,7 @@ namespace SnippetMan.Classes
     public class SnippetInfo
     {
         public int? Id { get; set; }
-        public string Titel { get; set; }
+        public string Titel { get ; set; }
         public string Beschreibung { get; set; }
         public string ProgrammingLanguage { get { return Tags.Find(t => t.Type == TagType.TAG_PROGRAMMING_LANGUAGE)?.Title ?? ""; } }
         public List<Tag> Tags { get; set; }

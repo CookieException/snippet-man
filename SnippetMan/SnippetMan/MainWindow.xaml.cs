@@ -146,6 +146,7 @@ namespace SnippetMan
         private void TB_del_Btn_Click(object sender, RoutedEventArgs e)
         {
             TabItem selectedTab = tbc_pages.SelectedItem as TabItem;
+
             // Mind. 1 offener Tab bleibt da
             if (tbc_pages.Items.Count - 2 != 0)
             {
@@ -225,6 +226,8 @@ namespace SnippetMan
             SnippetNode selectedNode = ((ToggleButton)sender).DataContext as SnippetNode;
             selectedNode.Tag.Favorite = ((ToggleButton)sender).IsChecked ?? false;
             SQLiteDAO.Instance.saveSnippet(selectedNode.Tag);
+
+            refreshNodesAsync().ConfigureAwait(false);
         }
         #endregion
 
@@ -277,6 +280,11 @@ namespace SnippetMan
                     // add the new node to that one if it shouldn't be hidden
                     currentGroup.ChildNodes.Add(new SnippetNode() { Title = s.Titel, Tag = s, IsVisible = shouldNodeHide(s, filter) });
                 }
+
+                // sort all group content
+                foreach (ITreeNode group in newList)
+                    group.ChildNodes = new ObservableCollection<ITreeNode>(group.ChildNodes.OrderByDescending(node => ((SnippetNode)node).Tag?.Favorite).ThenByDescending(node => ((SnippetNode)node).Tag?.LastEditDate));
+
                 return newList;
             });
 
