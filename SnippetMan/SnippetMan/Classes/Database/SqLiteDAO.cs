@@ -21,7 +21,7 @@ namespace SnippetMan.Classes.Database
             string dbPath = "MyDatabase.SQLite";
             if (!File.Exists(dbPath))
                 SQLiteConnection.CreateFile(dbPath);
-            m_dbConnection = new SQLiteConnection("Data Source="+dbPath+";Version=3;");
+            m_dbConnection = new SQLiteConnection("Data Source=" + dbPath + ";Version=3;");
             m_dbConnection.Open();
             execute("PRAGMA foreign_keys = ON;");
 
@@ -117,31 +117,53 @@ namespace SnippetMan.Classes.Database
         public SnippetInfo saveSnippet(SnippetInfo infoToSave)
         {
             // if we save a whole snippet with a code linked to it, we assume they belong together
-            infoToSave.SnippetCode.Id = infoToSave.Id;
             infoToSave.Tags = saveTags(infoToSave.Tags);
-            infoToSave.SnippetCode = saveSnippetCode(infoToSave.SnippetCode);
 
-            Dictionary<string, object> dict = new Dictionary<string, object>
+            Dictionary<string, object> dict;
+            if (infoToSave.SnippetCode != null)
             {
-                { "id", infoToSave.Id },
-                { "snippetCodeId", infoToSave.SnippetCode.Id },
-                { "titel", infoToSave.Titel },
-                { "beschreibung", infoToSave.Beschreibung },
-                { "lastEditDate", DateTime.Now },
-                { "favorite", infoToSave.Favorite }
-            };
+                infoToSave.SnippetCode.Id = infoToSave.Id;
+                infoToSave.SnippetCode = saveSnippetCode(infoToSave.SnippetCode);
+                dict = new Dictionary<string, object>
+                {
+                    { "id", infoToSave.Id },
+                    { "snippetCodeId", infoToSave.SnippetCode.Id },
+                    { "titel", infoToSave.Titel },
+                    { "beschreibung", infoToSave.Beschreibung },
+                    { "lastEditDate", DateTime.Now },
+                    { "favorite", infoToSave.Favorite }
+                };
+            }
+            else
+                dict = new Dictionary<string, object>
+                {
+                    { "id", infoToSave.Id },
+                    { "titel", infoToSave.Titel },
+                    { "beschreibung", infoToSave.Beschreibung },
+                    { "lastEditDate", DateTime.Now },
+                    { "favorite", infoToSave.Favorite }
+                };
 
             if (infoToSave.Id.HasValue)
             {//Update
                 dict.Add("creationDate", infoToSave.CreationDate);
-                execute("update snippetInfo set titel = :titel" +
-                        ", beschreibung = :beschreibung" +
-                        ", creationDate = :creationDate" +
-                        ", lastEditDate = :lastEditDate" +
-                        ", favorite = :favorite" +
-                        ", snippetCodeId = :snippetCodeId" +
-                        " where id = :id"
-                    , dict);
+                if (infoToSave.SnippetCode != null)
+                    execute("update snippetInfo set titel = :titel" +
+                            ", beschreibung = :beschreibung" +
+                            ", creationDate = :creationDate" +
+                            ", lastEditDate = :lastEditDate" +
+                            ", favorite = :favorite" +
+                            ", snippetCodeId = :snippetCodeId" +
+                            " where id = :id"
+                        , dict);
+                else
+                    execute("update snippetInfo set titel = :titel" +
+                            ", beschreibung = :beschreibung" +
+                            ", creationDate = :creationDate" +
+                            ", lastEditDate = :lastEditDate" +
+                            ", favorite = :favorite" +
+                            " where id = :id"
+                        , dict);
             }
             else
             {//Insert
