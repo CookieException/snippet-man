@@ -98,6 +98,7 @@
     <Compile Include="Classes\Snippets\SnippetCode.cs" />
     <Compile Include="Classes\Snippets\SnippetInfo.cs" />
     <Compile Include="Controls\SnippetNode.cs" />
+    <Compile Include="Controls\Utils\LanguageThemeTranslator.cs" />
     <Compile Include="Controls\Utils\UIHelper.cs" />
     <Compile Include="Interface\IDatabaseDAO.cs" />
     <Compile Include="Interface\ITreeNode.cs" />

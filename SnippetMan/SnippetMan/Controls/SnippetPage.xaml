@@ -60,7 +60,6 @@
                             IsEditable="True"
                             IsReadOnly="False" />
 
-                        <!--  TODO: Source soll gegen Trenner Icon getauscht werden  -->
                         <Separator
                             Width="25"
                             Height="10"
@@ -75,7 +74,7 @@
                                 </TransformGroup>
                             </Separator.RenderTransform>
                         </Separator>
-                        <!--  TODO: Source soll gegen Tag Icon ausgetauscht werden  -->
+                        
                         <!--  Margin so gewählt, dass Unterschied zwischen ProgLang und Tags eindeutig wird  -->
                         <Image
                             Width="16"

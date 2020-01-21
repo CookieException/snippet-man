@@ -22,6 +22,9 @@ namespace SnippetMan
     {
         private readonly ObservableCollection<ITreeNode> shownSnippetMetaListGroups = new ObservableCollection<ITreeNode>();
 
+        public delegate void SnippetSavedHandler(SnippetInfo snippetInfo);
+        public static event SnippetSavedHandler AnySnippetSaved;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -178,9 +181,11 @@ namespace SnippetMan
 
         private void SnippetPage_SnippetSaved(SnippetInfo snippetInfo)
         {
+            // Relay event to any handler that is interested in changes
+            AnySnippetSaved.Invoke(snippetInfo);
+
             // in case it was the title of a new snippet that was changed, refresh the tree view
             // TODO: Only refresh the new group or sth. like that for performance
-
             refreshNodesAsync().ConfigureAwait(false);
 
         }

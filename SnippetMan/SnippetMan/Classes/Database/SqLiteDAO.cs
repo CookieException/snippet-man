@@ -109,7 +109,7 @@ namespace SnippetMan.Classes.Database
         }
 
         public List<SnippetInfo> GetSnippetMetaList()
-        { 
+        {
             return selectSnippetInfo("select * from snippetInfo").Select((x) => { x.Tags = GetTagsFromSnippetInfo(x); return x; }).ToList();
         }
 
@@ -161,7 +161,7 @@ namespace SnippetMan.Classes.Database
 
         public void deleteSnippet(SnippetInfo infoToDelete)
         {
-            execute("DELETE FROM snippetCode where snippetCode.id = :snippetCodeId",new Dictionary<string, object> { {"snippetCodeId",infoToDelete.SnippetCode.Id } });
+            execute("DELETE FROM snippetCode where snippetCode.id = :snippetCodeId", new Dictionary<string, object> { { "snippetCodeId", infoToDelete.SnippetCode.Id } });
         }
 
         public List<Tag> GetTags(string searchText, TagType tagType)
@@ -212,8 +212,7 @@ namespace SnippetMan.Classes.Database
 
                 if (!tag.Id.HasValue)
                 {
-                    Tag dbTag = null;
-                    dbTag = doesTagTitleExist(tag);
+                    Tag dbTag = doesTagTitleExist(tag);
 
                     if (dbTag != null)
                     {
@@ -338,7 +337,6 @@ namespace SnippetMan.Classes.Database
             SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
             foreach (KeyValuePair<string, object> kvp in parameters)
                 command.Parameters.Add(new SQLiteParameter(kvp.Key, kvp.Value));
-            Console.WriteLine("Ausgeführter Befehl: " + command.CommandText);
             command.ExecuteNonQuery();
         }
 
