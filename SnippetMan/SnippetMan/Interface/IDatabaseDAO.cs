@@ -63,7 +63,7 @@ namespace SnippetMan
         SnippetInfo saveSnippet(SnippetInfo infoToSave);
 
         /// <summary>
-        /// Deletes a given Snippet
+        /// Deletes a given Snippet, only the ID has to be filled
         /// </summary>
         /// <param name="infoToDelete">Information of the snippet as <see cref="SnippetInfo"/></param>
         /// <returns>void</returns>
