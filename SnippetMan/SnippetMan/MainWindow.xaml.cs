@@ -13,6 +13,7 @@ using System.Windows.Media;
 using SnippetMan.Controls;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
+using BlurMessageBox;
 
 namespace SnippetMan
 {
@@ -213,12 +214,31 @@ namespace SnippetMan
 
         private void Btn_delete_item_Click(object sender, RoutedEventArgs e)
         {
+            // First: Ask the user if he is reaaaally sure
+            if (this.MessageBoxShow("Do you want to delete this snippet?", "Confirmation", Buttons.YesNo, Icons.Warning, AnimateStyle.FadeIn) == System.Windows.Forms.DialogResult.No)
+                return;
+
             SnippetNode selectedNode = ((Button)sender).DataContext as SnippetNode;
-            SQLiteDAO.Instance.deleteSnippet(selectedNode.Tag);
 
-            /* Manually delete snippet from tree instead of refreshing the whole tree */
+            TabItem openTab = tbc_pages.Items.Cast<TabItem>().FirstOrDefault(t => t.Content is SnippetPage p && p.ShownSnippet == selectedNode.Tag);
 
+            if (openTab != null)
+            {
+                /* Check if to-be-deleted tab is currently selected..*/
+                if ((tbc_pages.SelectedContent as SnippetPage).ShownSnippet == selectedNode.Tag)
+                {
+                    /* .. and select the previous one if that is the case */
+                    tbc_pages.SelectedIndex -= 1;
+                }
+
+                /* Afterwards: Remove it */
+                tbc_pages.Items.Remove(openTab);
+            }
+
+            /* .. and manually delete snippet from tree instead of refreshing the whole tree */
             shownSnippetMetaListGroups.FirstOrDefault(node => node.ChildNodes.Contains(selectedNode)).ChildNodes.Remove(selectedNode);
+
+            SQLiteDAO.Instance.deleteSnippet(selectedNode.Tag);
         }
 
         private void btn_like_item_Click(object sender, RoutedEventArgs e)
