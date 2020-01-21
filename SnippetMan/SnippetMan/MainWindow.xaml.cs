@@ -12,6 +12,7 @@ using System.Linq;
 using System.Windows.Media;
 using SnippetMan.Controls;
 using System.Threading.Tasks;
+using System.Windows.Controls.Primitives;
 
 namespace SnippetMan
 {
@@ -96,23 +97,15 @@ namespace SnippetMan
 
             if (selectedTab?.Content is SnippetPage p)
             {
-                SnippetNode snippetPosInTree = null;
-
-                // search for snippet in deeper levels
-                foreach (SnippetNode searchIn in shownSnippetMetaListGroups)
-                {
-                    snippetPosInTree = searchIn.FindNode(innernode => innernode.Tag == p.ShownSnippet);
-
-                    if (snippetPosInTree != null)
-                        break;
-                }
+                // search for snippet in two levels
+                SnippetNode snippetPosInTree = (SnippetNode)shownSnippetMetaListGroups.SelectMany(d => d.ChildNodes).FirstOrDefault(innernode => (innernode as SnippetNode).Tag == p.ShownSnippet);
 
                 // if snippet was found..
                 if (snippetPosInTree != null)
                 {
                     // .. and unselect every node
                     shownSnippetMetaListGroups.ToList().ForEach(node => node.deselectAll());
-                    
+
                     // .. and set found node as selected.
                     snippetPosInTree.IsSelected = true;
                 }
@@ -220,7 +213,18 @@ namespace SnippetMan
         private void Btn_delete_item_Click(object sender, RoutedEventArgs e)
         {
             SnippetNode selectedNode = ((Button)sender).DataContext as SnippetNode;
-            //TODO: Insert Delete call for database here with selectedNode.Tag - also think about tags
+            SQLiteDAO.Instance.deleteSnippet(selectedNode.Tag);
+
+            /* Manually delete snippet from tree instead of refreshing the whole tree */
+
+            shownSnippetMetaListGroups.FirstOrDefault(node => node.ChildNodes.Contains(selectedNode)).ChildNodes.Remove(selectedNode);
+        }
+
+        private void btn_like_item_Click(object sender, RoutedEventArgs e)
+        {
+            SnippetNode selectedNode = ((ToggleButton)sender).DataContext as SnippetNode;
+            selectedNode.Tag.Favorite = ((ToggleButton)sender).IsChecked ?? false;
+            SQLiteDAO.Instance.saveSnippet(selectedNode.Tag);
         }
         #endregion
 
@@ -282,7 +286,7 @@ namespace SnippetMan
             // refresh it - assignment wouldn't work since the data binding would break
             foreach (ITreeNode n in newList)
                 shownSnippetMetaListGroups.Add(n);
-            
+
             // after refreshing, lookup if the currently selected tab needs to get a matching partner in the tree view again since all selections are cleared
             Tbc_pages_SelectionChanged(tv_snippetList, null);
         }

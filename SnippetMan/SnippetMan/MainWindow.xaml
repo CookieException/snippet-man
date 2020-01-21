@@ -119,7 +119,9 @@
                                           Height="20"
                                           Margin="0,0,24,0"
                                           HorizontalAlignment="Right"
-                                          Background="Transparent">
+                                          Background="Transparent"
+                                          IsChecked="{Binding Tag.Favorite}"
+                                          Click="btn_like_item_Click">
 
                                 <Image Source="{StaticResource star_border_24pxDrawingImage}" />
 
@@ -127,8 +129,7 @@
                                     <Style TargetType="{x:Type ToggleButton}">
                                         <Setter Property="Visibility" Value="Visible" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsGroup}"
-                                                         Value="True">
+                                            <DataTrigger Binding="{Binding IsGroup}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>

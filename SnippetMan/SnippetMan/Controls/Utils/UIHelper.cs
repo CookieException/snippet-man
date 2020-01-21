@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace SnippetMan.Controls.Utils
@@ -24,6 +25,7 @@ namespace SnippetMan.Controls.Utils
             return null;
         }
     }
+
     public class MaxHeightConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
