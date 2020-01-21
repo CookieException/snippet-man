@@ -202,6 +202,8 @@ namespace SnippetMan.Classes.Database
                 {":snippetInfoId", snippetInfo.Id }
             });
 
+            execute("BEGIN TRANSACTION");
+
             // Save connection between tags and snippetInfo
             foreach (Tag tag in tags)
             {
@@ -235,6 +237,8 @@ namespace SnippetMan.Classes.Database
 
                 execute("insert into tag_snippetInfo (snippetInfoId, tagId) values (:snippetInfoId, :tagId)", dict);
             }
+
+            execute("COMMIT");
         }
 
         private List<Tag> saveTags(List<Tag> tags)
@@ -253,7 +257,7 @@ namespace SnippetMan.Classes.Database
                 return -1;
 
 
-            Tag dbTag = null;
+            Tag dbTag;
             if (/*tag.Id.HasValue || */(dbTag = doesTagTitleExist(tag)) != null)
             { // Update
                 //Dictionary<string, object> dict = new Dictionary<string, object>
