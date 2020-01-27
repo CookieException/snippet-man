@@ -23,6 +23,7 @@ namespace SnippetMan
     public partial class MainWindow : Window
     {
         private readonly ObservableCollection<ITreeNode> shownSnippetMetaListGroups = new ObservableCollection<ITreeNode>();
+        private const string TITLE_UNNAMED = "Untitled";
 
         public delegate void SnippetSavedHandler(SnippetInfo snippetInfo);
         public static event SnippetSavedHandler AnySnippetSaved;
@@ -45,6 +46,9 @@ namespace SnippetMan
 
             // connect event handler on switching tabs to update the tree view selection
             tbc_pages.SelectionChanged += Tbc_pages_SelectionChanged;
+
+            // trigger snippet tab changed event to get window title adjusted
+            tbc_pages.SelectedIndex = 0;
 
             // initialize with unfiltered values
             refreshNodesAsync().ConfigureAwait(false);
@@ -110,6 +114,15 @@ namespace SnippetMan
                     // .. and set found node as selected.
                     snippetPosInTree.IsSelected = true;
                 }
+
+                if (String.IsNullOrEmpty(p.ShownSnippet.Titel))
+                    lbl_title_snippetName.Content = TITLE_UNNAMED;
+                else
+                    lbl_title_snippetName.Content = p.ShownSnippet.Titel;
+            }
+            else
+            {
+                lbl_title_snippetName.Content = selectedTab?.Header ?? "";
             }
         }
 
@@ -128,7 +141,7 @@ namespace SnippetMan
         {
             TabItem tabItem = new TabItem
             {
-                Header = si?.Titel ?? "Unnamed"
+                Header = si?.Titel ?? TITLE_UNNAMED
             };
 
             SnippetPage snippetPage = new SnippetPage(si);
@@ -172,6 +185,8 @@ namespace SnippetMan
         {
             TabItem tabItem = (TabItem)tbc_pages.SelectedItem;
             tabItem.Header = Title;
+
+            lbl_title_snippetName.Content = Title;
         }
 
         private void SnippetPage_SnippetSaved(SnippetInfo snippetInfo)
