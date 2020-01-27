@@ -49,13 +49,9 @@ namespace SnippetMan.Classes.Database.Tests
 
             List<Tag> tags = new List<Tag> { progTag, tag };
 
-            SnippetCode snippetCode = new SnippetCode
-            {
-                Imports = "Oh schau, ein Import!",
-                Code = "Ein Stück Code\nSogar mit Absatz!!"
-            };
+            SnippetCode snippetCode = new SnippetCode(null, "Oh schau, ein Import!", "Ein Stück Code\nSogar mit Absatz!!");
 
-            SnippetInfo snippetInfo = new SnippetInfo
+            SnippetInfo snippetInfo = new SnippetInfo()
             {
                 Titel = "Test Snippet",
                 Beschreibung = "Na ein Test Snippet halt,\nwie immer ohne viel Inhalt!",
@@ -144,11 +140,8 @@ namespace SnippetMan.Classes.Database.Tests
 
             Tag tag = new Tag { Title = "TestTag", Type = TagType.TAG_WITHOUT_TYPE };
 
-            SnippetCode snippetCode = new SnippetCode { };
-            List<Tag> tags = new List<Tag>
-            {
-                tag
-            };
+            SnippetCode snippetCode = new SnippetCode();
+            List<Tag> tags = new List<Tag> { tag };
 
             SnippetInfo snippetInfo = new SnippetInfo { Tags = tags, SnippetCode = snippetCode };
 

@@ -14,19 +14,19 @@ namespace SnippetMan.Classes.Tests
         [TestMethod()]
         public void CopySnippetTest()
         {
-            SnippetCode sc = new SnippetCode("import", "code");
+            SnippetCode sc = new SnippetCode(null, "import", "code");
             sc.CopySnippet();
 
-            Assert.AreEqual("import"+ Environment.NewLine +"code", System.Windows.Clipboard.GetText());
+            Assert.AreEqual("import" + Environment.NewLine + "code", System.Windows.Clipboard.GetText());
         }
 
         [TestMethod()]
         public void WithEmptyLinesCopySnippetTest()
         {
-            SnippetCode sc = new SnippetCode("import" + Environment.NewLine, "code");
+            SnippetCode sc = new SnippetCode(null, "import" + Environment.NewLine, "code");
             sc.CopySnippet();
 
-            Assert.AreEqual("import" + Environment.NewLine  + Environment.NewLine + "code", System.Windows.Clipboard.GetText());
+            Assert.AreEqual("import" + Environment.NewLine + Environment.NewLine + "code", System.Windows.Clipboard.GetText());
         }
     }
 }

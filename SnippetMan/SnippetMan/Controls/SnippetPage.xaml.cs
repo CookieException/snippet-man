@@ -298,7 +298,7 @@ namespace SnippetMan.Controls
                 snippetInfo.Beschreibung = tb_description.Text;
                 snippetInfo.Tags = comboBoxesLang.Select(c => new Tag() { Title = c.Text, Type = TagType.TAG_PROGRAMMING_LANGUAGE }).ToList();
                 snippetInfo.Tags.AddRange(tagComboBoxes.Select(c => new Tag() { Title = c.Text, Type = TagType.TAG_WITHOUT_TYPE }));
-                snippetInfo.SnippetCode = new SnippetCode() { Imports = importEditor.Text, Code = codeEditor.Text };
+                snippetInfo.SnippetCode = new SnippetCode(null, importEditor.Text, codeEditor.Text);
 
                 // Async because database access can make the gui be stuck for a moment
                 snippetInfo = await Task.Run(() =>

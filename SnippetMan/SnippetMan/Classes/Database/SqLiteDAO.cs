@@ -412,12 +412,7 @@ namespace SnippetMan.Classes.Database
 
             while (dr.Read())
             {
-                SnippetCode snippetCode = new SnippetCode
-                {
-                    Id = (int)dr.GetInt64(0),
-                    Imports = dr.GetString(1),
-                    Code = dr.GetString(2)
-                };
+                SnippetCode snippetCode = new SnippetCode((int)dr.GetInt64(0), dr.GetString(1), dr.GetString(2));
 
                 snippetCodeList.Add(snippetCode);
             }

@@ -5,13 +5,10 @@
         public int? Id { get; set; }
         public string Imports { get; set; }
         public string Code { get; set; }
-
-        public SnippetCode()
+        
+        public SnippetCode(int? id = null, string imports = null, string code = null)
         {
-        }
-
-        public SnippetCode(string imports, string code)
-        {
+            Id = id;
             Imports = imports;
             Code = code;
         }
