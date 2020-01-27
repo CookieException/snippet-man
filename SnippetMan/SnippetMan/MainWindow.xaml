@@ -71,7 +71,20 @@
                        Margin="0,-4,0,0"
                        Source="{StaticResource minimize_24pxDrawingImage}" />
             </Button>
+
         </StackPanel>
+        <!--  Window minimize/close button  -->
+        <StackPanel Name="ProgramIcon"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="1"
+                    HorizontalAlignment="Stretch"
+                    MouseDown="TitleBar_MouseDown"
+                    Orientation="Horizontal">
+
+            <Image Margin="2,0,0,0" Width="24px" Source="{StaticResource icon}" />
+        </StackPanel>
+
         <Grid Name="Sidebar"
               Grid.Row="1"
               Grid.Column="0">
@@ -83,7 +96,7 @@
             </Grid.RowDefinitions>
             <WatermarkTextBox:WatermarkTextBox Name="tb_search"
                                                Grid.Row="0"
-                                               Margin="12"
+                                               Margin="5,12,5,12"
                                                TextChanged="Tb_search_TextChanged"
                                                Watermark="Search.." />
             <TreeView Name="tv_snippetList"

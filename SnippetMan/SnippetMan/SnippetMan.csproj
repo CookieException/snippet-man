@@ -40,6 +40,9 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BlurMessageBox">
       <HintPath>External\BlurMessageBox.dll</HintPath>
@@ -144,6 +147,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Resource Include="1F9B8-1F3FB_color.png" />
+    <Resource Include="icon.ico" />
+    <Content Include="Icons\icon.svg" />
     <Content Include="Icons\add-24px.svg" />
     <Content Include="Icons\close-24px.svg" />
     <Content Include="Icons\code-24px.svg" />
@@ -152,6 +158,7 @@
     <Content Include="Icons\label-24px.svg" />
     <Content Include="Icons\minimize-24px.svg" />
     <Content Include="Icons\remove-24px.svg" />
+    <Content Include="Icons\star_border-24px.svg" />
     <Content Include="Icons\window-maximize.svg" />
     <Content Include="Icons\window-restore.svg" />
   </ItemGroup>
