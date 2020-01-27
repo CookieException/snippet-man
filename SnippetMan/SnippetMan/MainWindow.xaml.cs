@@ -267,12 +267,12 @@ namespace SnippetMan
             }
 
             foreach (SnippetNode node in shownSnippetMetaListGroups)
-                node.setVisibility(n => n.IsGroup || shouldNodeHide(n.Tag, tb_search.Text));
+                node.setVisibility(n => n.IsGroup || shouldNodeShow(n.Tag, tb_search.Text));
         }
 
-        private bool shouldNodeHide(SnippetInfo s, String filter = "")
+        private bool shouldNodeShow(SnippetInfo s, String filter = "")
         {
-            return filter == "" || s.Titel.Contains(filter);
+            return filter == "" || s.Titel.Contains(filter) || s.Tags.Any(t => t.Title.Contains(filter));
         }
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace SnippetMan
                     }
 
                     // add the new node to that one if it shouldn't be hidden
-                    currentGroup.ChildNodes.Add(new SnippetNode() { Title = s.Titel, Tag = s, IsVisible = shouldNodeHide(s, filter) });
+                    currentGroup.ChildNodes.Add(new SnippetNode() { Title = s.Titel, Tag = s, IsVisible = shouldNodeShow(s, filter) });
                 }
 
                 // sort all group content
