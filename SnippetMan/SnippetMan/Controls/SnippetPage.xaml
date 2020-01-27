@@ -162,16 +162,17 @@
                     </Button>
                     <Popup
                         Uid="popup_import"
-                        Width="120"
+                        Width="128"
                         Height="20"
+                        Margin="4"
                         HorizontalAlignment="Left"
                         AllowsTransparency="True"
                         IsOpen="False"
                         Placement="Mouse"
                         StaysOpen="False">
                         <Border
-                            Background="Wheat"
-                            BorderBrush="Wheat"
+                            Background="White"
+                            BorderBrush="White"
                             BorderThickness="1"
                             CornerRadius="5">
                             <TextBlock
@@ -213,14 +214,15 @@
                         Uid="popup_code"
                         Width="120"
                         Height="20"
+                        Margin="4"
                         HorizontalAlignment="Left"
                         AllowsTransparency="True"
                         IsOpen="False"
                         Placement="Mouse"
                         StaysOpen="False">
                         <Border
-                            Background="Wheat"
-                            BorderBrush="Wheat"
+                            Background="White"
+                            BorderBrush="White"
                             BorderThickness="1"
                             CornerRadius="5">
                             <TextBlock
