@@ -147,7 +147,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Resource Include="1F9B8-1F3FB_color.png" />
     <Resource Include="icon.ico" />
     <Content Include="Icons\icon.svg" />
     <Content Include="Icons\add-24px.svg" />
