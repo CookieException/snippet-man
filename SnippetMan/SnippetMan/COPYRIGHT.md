@@ -1,7 +1,7 @@
-#Used Libraries/Code and its Licenses
+# Used Libraries/Code and its Licenses
 
 ## GPLv3
-- BlurMessageBox by Behzad Khosravifar (https://github.com/bezzad/BlurMessageBox)
+- BlurMessageBox by Behzad Khosravifar (https://github.com/bezzad/BlurMessageBox)  
   This was changed, see https://github.com/Nockiro/BlurMessageBox
 
 ## MIT
