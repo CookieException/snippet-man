@@ -29,6 +29,7 @@ namespace SnippetMan.Controls
         private TextEditor codeEditor;
         private TextBox tb_title;
         private TextBox tb_description;
+        private Label lbl_changeDate;
         private Button btn_copy_import;
         private Button btn_copy_code;
         private Button btn_add_cmbx;
@@ -75,6 +76,7 @@ namespace SnippetMan.Controls
             codeEditor = (TextEditor)UIHelper.GetByUid(this, "ae_code");
             tb_title = (TextBox)UIHelper.GetByUid(this, "tb_title");
             tb_description = (TextBox)UIHelper.GetByUid(this, "tb_description");
+            lbl_changeDate = (Label)UIHelper.GetByUid(this, "lbl_date");
             btn_copy_import = (Button)UIHelper.GetByUid(this, "btn_copy_import");
             btn_copy_code = (Button)UIHelper.GetByUid(this, "btn_copy_code");
             btn_add_cmbx = (Button)UIHelper.GetByUid(this, "btn_add_cmbx");
@@ -265,6 +267,9 @@ namespace SnippetMan.Controls
 
             if (si.Tags.Count != 0)
                 combx_Lang.SelectedItem = si.Tags.FirstOrDefault(t => t.Type == TagType.TAG_PROGRAMMING_LANGUAGE);
+
+            
+            lbl_changeDate.Content = si.LastEditDate.ToString("dd.MM.yyyy H:mm");
 
             importEditor.Text = si.SnippetCode.Imports;
             codeEditor.Text = si.SnippetCode.Code;

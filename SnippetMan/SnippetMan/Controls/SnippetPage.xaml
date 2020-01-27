@@ -49,57 +49,85 @@
                         AcceptsReturn="True"
                         TextWrapping="Wrap"
                         Watermark="Description" />
-                    <WrapPanel Uid="wrapP_combx">
-                        <Image
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <!--  Tags  -->
+                            <ColumnDefinition Width="*" />
+                            <!--  Change caption  -->
+                            <ColumnDefinition Width="104px" />
+                            <!--  Change date  -->
+                            <ColumnDefinition Width="100px" />
+                        </Grid.ColumnDefinitions>
+                        <WrapPanel Uid="wrapP_combx"
+                                    HorizontalAlignment="Stretch"
+                                    Orientation="Horizontal"
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="1">
+                            <Image
                             Width="16"
                             Height="16"
                             Margin="0,0,5,3"
                             Source="{StaticResource code_24pxDrawingImage}" />
-                        <ComboBox
+                            <ComboBox
                             Uid="combx_Lang"
                             IsEditable="True"
                             IsReadOnly="False" />
 
-                        <Separator
+                            <Separator
                             Width="25"
                             Height="10"
                             Margin="-10,0,0,3"
                             RenderTransformOrigin="0.5,0.5">
-                            <Separator.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="90" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </Separator.RenderTransform>
-                        </Separator>
-                        
-                        <!--  Margin so gewählt, dass Unterschied zwischen ProgLang und Tags eindeutig wird  -->
-                        <Image
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform />
+                                        <SkewTransform />
+                                        <RotateTransform Angle="90" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+
+                            <!--  Margin so gewählt, dass Unterschied zwischen ProgLang und Tags eindeutig wird  -->
+                            <Image
                             Width="16"
                             Height="16"
                             Margin="10,0,5,3"
                             RenderTransformOrigin="0.5,0.5"
                             Source="{StaticResource label_24pxDrawingImage}">
-                            <Image.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="90" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </Image.RenderTransform>
-                        </Image>
-                        <Button
+                                <Image.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform />
+                                        <SkewTransform />
+                                        <RotateTransform Angle="90" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </Image.RenderTransform>
+                            </Image>
+                            <Button
                             Uid="btn_add_cmbx"
                             Width="16"
                             Height="16"
                             Margin="0,0,10,3"
                             Click="Button_Add_Combx_Clicked">
-                            <Image Width="16px" Source="{StaticResource add_24pxDrawingImage}" />
-                        </Button>
-                    </WrapPanel>
+                                <Image Width="16px" Source="{StaticResource add_24pxDrawingImage}" />
+                            </Button>
+
+                        </WrapPanel>
+
+
+                        <Label 
+                            Foreground="White"
+                            Grid.Column="1"
+                            Content="Änderungsdatum:" />
+                        <Label 
+                            Foreground="White"
+                            Grid.Column="2"
+                            Uid="lbl_date"
+                            Content="27.01.2020 20:14" />
+                    </Grid>
                 </StackPanel>
             </Controls:ButtonedExGroupBox.InnerContent>
         </Controls:ButtonedExGroupBox>
