@@ -18,7 +18,7 @@ namespace SnippetMan.Classes.Database
 
         public bool OpenConnection()
         {
-            string dbPath = "MyDatabase.SQLite";
+            string dbPath = "SnippetMan.SQLite";
             if (!File.Exists(dbPath))
                 SQLiteConnection.CreateFile(dbPath);
             m_dbConnection = new SQLiteConnection("Data Source=" + dbPath + ";Version=3;");
@@ -174,7 +174,7 @@ namespace SnippetMan.Classes.Database
                         "(:titel, :beschreibung, :creationDate, :lastEditDate, :favorite, :snippetCodeId)"
                     , dict);
 
-                infoToSave.Id = (int)m_dbConnection.LastInsertRowId; // TODO return ist int64
+                infoToSave.Id = (int)m_dbConnection.LastInsertRowId;
             }
 
             saveTagsToSnippetInfo(infoToSave.Tags, infoToSave);
@@ -220,7 +220,7 @@ namespace SnippetMan.Classes.Database
             return selectTag("select * from tag where id = :id", new Dictionary<string, object> { { "id", id } }).First();
         }
 
-        private void saveTagsToSnippetInfo(List<Tag> tags, SnippetInfo snippetInfo) // TODO dont save if link already exists
+        private void saveTagsToSnippetInfo(List<Tag> tags, SnippetInfo snippetInfo) 
         {
             // Delete the existing Tag <-> snippetInfo connections
             execute("delete from tag_snippetInfo where snippetInfoId = :snippetInfoId", new Dictionary<string, object> {
@@ -268,7 +268,7 @@ namespace SnippetMan.Classes.Database
 
         private List<Tag> saveTags(List<Tag> tags)
         {
-            foreach (Tag tag in tags) // TODO prüfen welche Tags wirklich neu sind
+            foreach (Tag tag in tags)
             {
                 tag.Id = saveTag(tag);
             }
@@ -308,7 +308,7 @@ namespace SnippetMan.Classes.Database
                 };
 
                 execute("insert into tag (title,type) values (:title, :type)", dict);
-                return (int)m_dbConnection.LastInsertRowId; // TODO return ist int64
+                return (int)m_dbConnection.LastInsertRowId;
             }
         }
 
@@ -354,7 +354,7 @@ namespace SnippetMan.Classes.Database
                     " values" +
                     " (:imports, :code)", dict);
 
-                infoToSave.Id = (int)m_dbConnection.LastInsertRowId; // TODO return ist int64
+                infoToSave.Id = (int)m_dbConnection.LastInsertRowId;
                 return infoToSave;
             }
         }
@@ -390,7 +390,6 @@ namespace SnippetMan.Classes.Database
                     CreationDate = dr.GetDateTime(3),
                     LastEditDate = dr.GetDateTime(4),
                     Favorite = dr.GetBoolean(5),
-                    //Tags = new List<Tag>() { new Tag() { Title = "C#", Type = TagType.TAG_PROGRAMMING_LANGUAGE } } //TODO: fill with real values //TODO wird das überhaupt gebraucht?
                 };
 
                 snippetInfoList.Add(snippetInfo);
