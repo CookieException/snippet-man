@@ -1,4 +1,4 @@
-﻿ <Window x:Class="SnippetMan.MainWindow"
+﻿<Window x:Class="SnippetMan.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:WatermarkTextBox="clr-namespace:WatermarkControlsLib.Controls;assembly=WatermarkControlsLib"
@@ -75,7 +75,7 @@
             </Button>
 
         </StackPanel>
-        
+
         <!--  Icon/Title  -->
         <StackPanel Name="ProgramIcon"
                     Grid.Row="0"
@@ -88,7 +88,7 @@
 
             <Image Margin="2,0,0,0" Width="24px" Source="{StaticResource icon}" />
             <Label Margin="0,4,0,0" Content="Snippet Man" Foreground="White"/>
-            
+
             <Label Margin="-4,4,0,0" Content="-" Foreground="White"/>
             <Label Name="lbl_title_snippetName" Margin="-4,4,0,0" Content="Snippet Titel" Foreground="White"/>
         </StackPanel>
@@ -128,17 +128,19 @@
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type interface:ITreeNode}"
                                               ItemsSource="{Binding Path=ChildNodes}">
-                        <Grid Width="216"
+                        <Grid Width="232px"
                               Margin="-20,5,0,0">
 
-                            <TreeViewItem HorizontalAlignment="Stretch"
+                            <TreeViewItem HorizontalAlignment="Left"
                                           Foreground="LightGray"
                                           Header="{Binding Path=Title}"
+                                          MaxWidth="176px"
                                           IsHitTestVisible="False" />
+                            
                             <ToggleButton x:Name="btn_like_item"
                                           Width="20"
                                           Height="20"
-                                          Margin="0,0,24,0"
+                                          Margin="0,0,26,0"
                                           HorizontalAlignment="Right"
                                           Background="Transparent"
                                           IsChecked="{Binding Tag.Favorite}"
