@@ -6,7 +6,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Linq;
 using System.Windows.Media;
@@ -124,6 +123,9 @@ namespace SnippetMan
             {
                 lbl_title_snippetName.Content = selectedTab?.Header ?? "";
             }
+
+            // Adjust window title to show currently edited snippet name
+            this.Title = "Snippet Man - " + lbl_title_snippetName.Content;
         }
 
         private void Ti_add_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -186,7 +188,9 @@ namespace SnippetMan
             TabItem tabItem = (TabItem)tbc_pages.SelectedItem;
             tabItem.Header = Title;
 
+            // Adjust window title to show currently edited snippet name
             lbl_title_snippetName.Content = Title;
+            this.Title = "Snippet Man - " + lbl_title_snippetName.Content;
         }
 
         private void SnippetPage_SnippetSaved(SnippetInfo snippetInfo)

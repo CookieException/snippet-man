@@ -149,6 +149,7 @@
   <ItemGroup />
   <ItemGroup>
     <Resource Include="icon.ico" />
+    <Resource Include="Icons\icon.ico" />
     <Content Include="Icons\icon.svg" />
     <Content Include="Icons\add-24px.svg" />
     <Content Include="Icons\close-24px.svg" />

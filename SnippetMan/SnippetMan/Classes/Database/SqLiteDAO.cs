@@ -179,6 +179,7 @@ namespace SnippetMan.Classes.Database
 
             saveTagsToSnippetInfo(infoToSave.Tags, infoToSave);
 
+            infoToSave.LastEditDate = (DateTime)dict["lastEditDate"];
             return infoToSave;
         }
 

@@ -268,7 +268,7 @@ namespace SnippetMan.Controls
             if (si.Tags.Count != 0)
                 combx_Lang.SelectedItem = si.Tags.FirstOrDefault(t => t.Type == TagType.TAG_PROGRAMMING_LANGUAGE);
 
-            
+
             lbl_changeDate.Content = si.LastEditDate.ToString("dd.MM.yyyy H:mm");
 
             importEditor.Text = si.SnippetCode.Imports;
@@ -312,6 +312,9 @@ namespace SnippetMan.Controls
                     snippetInfo = SQLiteDAO.Instance.saveSnippet(snippetInfo) ?? snippetInfo;
                     return snippetInfo;
                 });
+                        
+                // adjust change date to now
+                lbl_changeDate.Content = snippetInfo.LastEditDate.ToString("dd.MM.yyyy H:mm");
             }
             alreadyRunning = false;
 
