@@ -121,7 +121,7 @@
                         <Label 
                             Foreground="White"
                             Grid.Column="1"
-                            Content="Änderungsdatum:" />
+                            Content="Last modified:" Margin="19,0,0,0" />
                         <Label 
                             Foreground="White"
                             Grid.Column="2"
