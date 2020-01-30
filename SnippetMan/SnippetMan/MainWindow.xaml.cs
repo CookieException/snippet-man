@@ -291,7 +291,7 @@ namespace SnippetMan
 
         private bool shouldNodeShow(SnippetInfo s, String filter = "")
         {
-            return filter == "" || s.Titel.Contains(filter) || s.Tags.Any(t => t.Title.Contains(filter));
+            return filter == "" || s.Titel.Contains(filter) || s.Tags.Any(t => t.Title.Contains(filter)) || s.Beschreibung.Contains(filter);
         }
 
         /// <summary>

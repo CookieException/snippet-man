@@ -55,9 +55,9 @@
                             <!--  Tags  -->
                             <ColumnDefinition Width="*" />
                             <!--  Change caption  -->
-                            <ColumnDefinition Width="104px" />
+                            <ColumnDefinition Width="84px" />
                             <!--  Change date  -->
-                            <ColumnDefinition Width="100px" />
+                            <ColumnDefinition Width="102px" />
                         </Grid.ColumnDefinitions>
                         <WrapPanel Uid="wrapP_combx"
                                     HorizontalAlignment="Stretch"
@@ -69,11 +69,34 @@
                             Width="16"
                             Height="16"
                             Margin="0,0,5,3"
-                            Source="{StaticResource code_24pxDrawingImage}" />
+                            Source="{StaticResource code_24pxDrawingImage}" >
+                                <Image.ToolTip>
+                                    <ToolTip>
+                                        <StackPanel Width="Auto">
+                                            <TextBlock Text="Programming Language Tag" FontSize="14"/>
+                                            <Separator/>
+                                            <TextBlock Text="Give this snippet a programming language in the box next to this Icon, e.g. C#."/>
+                                            <TextBlock Text="This is the base for syntax highlighting in the snippets below."/>
+                                        </StackPanel>
+                                    </ToolTip>
+                                </Image.ToolTip>
+                            </Image>
+                            
                             <ComboBox
                             Uid="combx_Lang"
                             IsEditable="True"
-                            IsReadOnly="False" />
+                            IsReadOnly="False" >
+                                <ComboBox.ToolTip>
+                                    <ToolTip>
+                                        <StackPanel Width="Auto">
+                                            <TextBlock Text="Programming language tag" FontSize="14"/>
+                                            <Separator/>
+                                            <TextBlock Text="Give this snippet a programming language, e.g. C#."/>
+                                            <TextBlock Text="This is the base for syntax highlighting in the snippets below."/>
+                                        </StackPanel>
+                                    </ToolTip>
+                                </ComboBox.ToolTip>
+                            </ComboBox>
 
                             <Separator
                             Width="25"
@@ -94,7 +117,7 @@
                             <Image
                             Width="16"
                             Height="16"
-                            Margin="10,0,5,3"
+                            Margin="0,0,5,3"
                             RenderTransformOrigin="0.5,0.5"
                             Source="{StaticResource label_24pxDrawingImage}">
                                 <Image.RenderTransform>
@@ -105,6 +128,16 @@
                                         <TranslateTransform />
                                     </TransformGroup>
                                 </Image.RenderTransform>
+                                <Image.ToolTip>
+                                    <ToolTip>
+                                        <StackPanel Width="Auto">
+                                            <TextBlock Text="Other tags" FontSize="14"/>
+                                            <Separator/>
+                                            <TextBlock Text="Give this snippet other tags, e.g. 'Helper'."/>
+                                            <TextBlock Text="If you search for snippets, the tags are searched for as well!"/>
+                                        </StackPanel>
+                                    </ToolTip>
+                                </Image.ToolTip>
                             </Image>
                             <Button
                             Uid="btn_add_cmbx"
@@ -113,20 +146,29 @@
                             Margin="0,0,10,3"
                             Click="Button_Add_Combx_Clicked">
                                 <Image Width="16px" Source="{StaticResource add_24pxDrawingImage}" />
+
+                                <Button.ToolTip>
+                                    <ToolTip>
+                                        <StackPanel Width="Auto">
+                                            <TextBlock Text="Add a new tag" FontSize="14"/>
+                                            <Separator/>
+                                            <TextBlock Text="Add other tags to this snippet, e.g. 'Helper'."/>
+                                            <TextBlock Text="If you search for snippets, the tags are searched for as well!"/>
+                                        </StackPanel>
+                                    </ToolTip>
+                                </Button.ToolTip>
                             </Button>
-
                         </WrapPanel>
-
 
                         <Label 
                             Foreground="White"
                             Grid.Column="1"
-                            Content="Last modified:" Margin="19,0,0,0" />
+                            Content="Last modified:" Margin="0" />
                         <Label 
                             Foreground="White"
                             Grid.Column="2"
                             Uid="lbl_date"
-                            Content="27.01.2020 20:14" />
+                            Content="-" />
                     </Grid>
                 </StackPanel>
             </Controls:ButtonedExGroupBox.InnerContent>
@@ -159,6 +201,14 @@
                             Uid="copy_t"
                             Width="16px"
                             Source="{StaticResource file_copy_24pxDrawingImage}" />
+
+                        <Button.ToolTip>
+                            <ToolTip>
+                                <StackPanel Width="Auto">
+                                    <TextBlock Text="Copy to clipboard"/>
+                                </StackPanel>
+                            </ToolTip>
+                        </Button.ToolTip>
                     </Button>
                     <Popup
                         Uid="popup_import"
@@ -209,6 +259,14 @@
                         VerticalAlignment="Top"
                         Click="Button_Copy_Clicked">
                         <Image Width="16px" Source="{StaticResource file_copy_24pxDrawingImage}" />
+
+                        <Button.ToolTip>
+                            <ToolTip>
+                                <StackPanel Width="Auto">
+                                    <TextBlock Text="Copy to clipboard"/>
+                                </StackPanel>
+                            </ToolTip>
+                        </Button.ToolTip>
                     </Button>
                     <Popup
                         Uid="popup_code"

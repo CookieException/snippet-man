@@ -103,7 +103,18 @@
                                                Grid.Row="0"
                                                Margin="5,12,5,12"
                                                TextChanged="Tb_search_TextChanged"
-                                               Watermark="Search.." />
+                                               Watermark="Search.." >
+                <WatermarkTextBox:WatermarkTextBox.ToolTip>
+                    <ToolTip>
+                        <StackPanel Width="Auto">
+                            <TextBlock Text="Search for snippet" FontSize="14"/>
+                            <Separator/>
+                            <TextBlock Text="Enter a term to search your database for a specific snippet."/>
+                            <TextBlock Text="Your query will be compared to the title, description and tags of each snippet."/>
+                        </StackPanel>
+                    </ToolTip>
+                </WatermarkTextBox:WatermarkTextBox.ToolTip>
+            </WatermarkTextBox:WatermarkTextBox>
             <TreeView Name="tv_snippetList"
                       Grid.Row="1"
                       Margin="5"
@@ -155,6 +166,17 @@
                                         </Style.Triggers>
                                     </Style>
                                 </ToggleButton.Style>
+
+                                <ToggleButton.ToolTip>
+                                    <ToolTip>
+                                        <StackPanel Width="Auto">
+                                            <TextBlock Text="Mark as favorite" FontSize="14"/>
+                                            <Separator/>
+                                            <TextBlock Text="Add this snippet to your favorized ones."/>
+                                            <TextBlock Text="Favorized snippets will always be at the top of their respective categories."/>
+                                        </StackPanel>
+                                    </ToolTip>
+                                </ToggleButton.ToolTip>
                             </ToggleButton>
                             <Button x:Name="btn_delete_item"
                                     Width="20"
@@ -176,6 +198,16 @@
                                     </Style>
                                 </Button.Style>
                                 <Image Source="{StaticResource close_24pxDrawingImage}" />
+
+                                <Button.ToolTip>
+                                    <ToolTip>
+                                        <StackPanel Width="Auto">
+                                            <TextBlock Text="Delete snippet" FontSize="14"/>
+                                            <Separator/>
+                                            <TextBlock Text="Delete this snippet permanently from the database."/>
+                                        </StackPanel>
+                                    </ToolTip>
+                                </Button.ToolTip>
                             </Button>
                         </Grid>
                     </HierarchicalDataTemplate>
