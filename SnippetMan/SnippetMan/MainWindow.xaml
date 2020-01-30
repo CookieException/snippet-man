@@ -117,8 +117,17 @@
             </WatermarkTextBox:WatermarkTextBox>
             <TreeView Name="tv_snippetList"
                       Grid.Row="1"
-                      Margin="5"
+                      Margin="2"  
+                      VirtualizingStackPanel.IsVirtualizing="True"
+                      VirtualizingStackPanel.VirtualizationMode="Standard"
                       Background="Transparent">
+                
+                <!-- Enabling virtualization increases performance on a higher count of items -->
+                <TreeView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel IsItemsHost="True" />
+                    </ItemsPanelTemplate>
+                </TreeView.ItemsPanel>
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
                         <Setter Property="Margin" Value="5" />
@@ -136,13 +145,13 @@
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type interface:ITreeNode}"
                                               ItemsSource="{Binding Path=ChildNodes}">
-                        <Grid Width="232px"
+                        <Grid Width="222px"
                               Margin="-20,5,0,0">
 
                             <TreeViewItem HorizontalAlignment="Left"
                                           Foreground="LightGray"
                                           Header="{Binding Path=Title}"
-                                          MaxWidth="176px"
+                                          MaxWidth="170px"
                                           IsHitTestVisible="False" />
 
                             <ToggleButton x:Name="btn_like_item"

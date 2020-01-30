@@ -45,11 +45,14 @@ namespace SnippetMan.Controls
             OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         }
 
-        public void setVisibility(Predicate<SnippetNode> visible)
+        public void setVisibility(Predicate<SnippetNode> visible, bool setOnChildNodes = true)
         {
             this.IsVisible = visible(this);
 
             OnPropertyChanged(nameof(IsVisible));
+
+            if (!setOnChildNodes)
+                return;
 
             foreach (SnippetNode child in this.ChildNodes)
                 child.setVisibility(visible);

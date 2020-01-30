@@ -13,6 +13,7 @@ using SnippetMan.Controls;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
 using BlurMessageBox;
+using System.Collections.Generic;
 
 namespace SnippetMan
 {
@@ -21,7 +22,7 @@ namespace SnippetMan
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ObservableCollection<ITreeNode> shownSnippetMetaListGroups = new ObservableCollection<ITreeNode>();
+        private readonly RangeObservableCollection<ITreeNode> shownSnippetMetaListGroups = new RangeObservableCollection<ITreeNode>();
         private const string TITLE_UNNAMED = "Untitled";
 
         public delegate void SnippetSavedHandler(SnippetInfo snippetInfo);
@@ -287,6 +288,13 @@ namespace SnippetMan
 
             foreach (SnippetNode node in shownSnippetMetaListGroups)
                 node.setVisibility(n => n.IsGroup || shouldNodeShow(n.Tag, tb_search.Text));
+
+            // hide empty nodes, e.g. if a search query doesn't match any item in a programming language
+            foreach (SnippetNode node in shownSnippetMetaListGroups)
+            {
+                if (node.ChildNodes.Count(n => n.IsVisible) == 0)
+                    node.setVisibility(n => false);
+            }
         }
 
         private bool shouldNodeShow(SnippetInfo s, String filter = "")
@@ -303,16 +311,24 @@ namespace SnippetMan
             string filter = tb_search.Text;
 
             // Maybe a bit of wait time for the database - thus: asynchronous
-            ObservableCollection<ITreeNode> newList = await Task.Run(() =>
+            List<ITreeNode> newList = await Task.Run(() =>
             {
-                newList = new ObservableCollection<ITreeNode>();
+                newList = new List<ITreeNode>();
                 foreach (SnippetInfo s in SQLiteDAO.Instance.GetSnippetMetaList())
                 {
-                    ITreeNode currentGroup = newList.FirstOrDefault(n => n.Title == s.ProgrammingLanguage);
+                    string groupHeader = s.ProgrammingLanguage;
+
+                    // Name unnamed groups
+                    if (String.IsNullOrEmpty(groupHeader))
+                        groupHeader = TITLE_UNNAMED;
+
+                    ITreeNode currentGroup = newList.FirstOrDefault(n => n.Title == groupHeader);
                     // if a top node contains programming language..
                     if (currentGroup == null)
                     {
-                        currentGroup = new SnippetNode() { Title = s.ProgrammingLanguage, IsGroup = true };
+                        currentGroup = new SnippetNode() { Title = groupHeader, IsGroup = true };
+
+
                         newList.Add(currentGroup);
                     }
 
@@ -326,13 +342,10 @@ namespace SnippetMan
 
                 return newList;
             });
-
-            // clear bound list before refreshing it
-            shownSnippetMetaListGroups.Clear();
-
+            
+            // clear bound list before refreshing it and then
             // refresh it - assignment wouldn't work since the data binding would break
-            foreach (ITreeNode n in newList)
-                shownSnippetMetaListGroups.Add(n);
+            shownSnippetMetaListGroups.AddRange(newList, true);
 
             // after refreshing, lookup if the currently selected tab needs to get a matching partner in the tree view again since all selections are cleared
             Tbc_pages_SelectionChanged(tv_snippetList, null);

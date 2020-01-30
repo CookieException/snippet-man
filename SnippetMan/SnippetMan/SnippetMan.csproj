@@ -86,6 +86,7 @@
     <Compile Include="Controls\ButtonedExGroupBox.xaml.cs">
       <DependentUpon>ButtonedExGroupBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\RangeObservableCollection.cs" />
     <Compile Include="Controls\SnippetPage.xaml.cs">
       <DependentUpon>SnippetPage.xaml</DependentUpon>
     </Compile>
