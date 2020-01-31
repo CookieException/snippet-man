@@ -114,7 +114,7 @@
                             <TextBlock>
                                 <Run Text="Hint: " FontWeight="Bold" />
                                 <Run Text="Start your query with" />
-                                <Run Text=" ^ " FontStyle="Oblique"/>
+                                <Run Text=" ^ " FontWeight="UltraBold"/>
                                 <Run Text="to match nodes" />
                                 <Run Text=" not " FontWeight="Bold" />
                                 <Run Text="containing your query." />

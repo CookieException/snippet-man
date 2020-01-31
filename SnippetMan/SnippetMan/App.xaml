@@ -4,6 +4,7 @@
              xmlns:AvalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:Controls="clr-namespace:SnippetMan.Controls"
              xmlns:WatermarkTextBox="clr-namespace:WatermarkControlsLib.Controls;assembly=WatermarkControlsLib"
+             Startup="Application_Startup"
              Exit="Application_Exit"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
