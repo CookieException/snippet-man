@@ -267,8 +267,30 @@
                     Grid.Column="1"
                     Grid.ColumnSpan="2"
                     Margin="4"
+                    HorizontalContentAlignment="Left"
                     Background="Transparent">
             <TabControl.Resources>
+                <!-- Prevent default behavior of setting the active/selected item always in the last row and filling out the whole width with tab items-->
+                <Style TargetType="TabControl">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabControl">
+                                <Grid SnapsToDevicePixels="true" KeyboardNavigation.TabNavigation="Local" HorizontalAlignment="Stretch">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <WrapPanel x:Name="HeaderPanel" HorizontalAlignment="Stretch" VerticalAlignment="Top" IsItemsHost="true"
+                                               Grid.Row="0" KeyboardNavigation.TabIndex="1" Margin="4,0,0,0"/>
+
+                                    <Border Name="ContentPanel" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Grid.Row="1">
+                                        <ContentPresenter Name="PART_SelectedContentHost" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Margin="{TemplateBinding Padding}" ContentSource="SelectedContent" />
+                                    </Border>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
                 <Style TargetType="{x:Type TabItem}">
                     <Setter Property="Template">
                         <Setter.Value>
@@ -282,12 +304,12 @@
                                             VerticalAlignment="Bottom"
                                             Background="#444"
                                             CornerRadius="8, 8, 0, 0">
-                                        <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                             <ContentPresenter x:Name="ContentSite"
                                                               Width="Auto"
                                                               MaxWidth="222"
                                                               Margin="8,2,8,2"
-                                                              HorizontalAlignment="Left"
+                                                              HorizontalAlignment="Stretch"
                                                               VerticalAlignment="Center"
                                                               ContentSource="Header"
                                                               RecognizesAccessKey="True">
@@ -304,10 +326,10 @@
                                                     Height="20"
                                                     Margin="-4,0,2,0"
                                                     Background="Transparent"
+                                                    HorizontalAlignment="Right"
                                                     Click="TB_del_Btn_Click"
                                                     Visibility="Collapsed">
-                                                <Image Width="16px"
-                                                       Source="{StaticResource close_24pxDrawingImage}" />
+                                                <Image Width="16px" Source="{StaticResource close_24pxDrawingImage}" />
                                             </Button>
                                         </StackPanel>
                                     </Border>
@@ -362,7 +384,7 @@
                         </Hyperlink>
                     </Label>
                 </StackPanel>
-            </TabItem>
+            </TabItem>           
             <TabItem Name="ti_add"
                      IsEnabled="True"
                      PreviewMouseDown="Ti_add_PreviewMouseDown">
