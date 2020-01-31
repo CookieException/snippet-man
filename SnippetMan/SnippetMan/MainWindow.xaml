@@ -111,6 +111,14 @@
                             <Separator/>
                             <TextBlock Text="Enter a term to search your database for a specific snippet."/>
                             <TextBlock Text="Your query will be compared to the title, description and tags of each snippet."/>
+                            <TextBlock>
+                                <Run Text="Hint: " FontWeight="Bold" />
+                                <Run Text="Start your query with" />
+                                <Run Text=" ^ " FontStyle="Oblique"/>
+                                <Run Text="to match nodes" />
+                                <Run Text=" not " FontWeight="Bold" />
+                                <Run Text="containing your query." />
+                            </TextBlock>
                         </StackPanel>
                     </ToolTip>
                 </WatermarkTextBox:WatermarkTextBox.ToolTip>

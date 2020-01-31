@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
 using BlurMessageBox;
 using System.Collections.Generic;
+using SnippetMan.Controls.Utils;
 
 namespace SnippetMan
 {
@@ -299,7 +300,11 @@ namespace SnippetMan
 
         private bool shouldNodeShow(SnippetInfo s, String filter = "")
         {
-            return filter == "" || s.Titel.Contains(filter) || s.Tags.Any(t => t.Title.Contains(filter)) || s.Beschreibung.Contains(filter);
+            bool negate = filter.IsFirstLetter('^');
+            if (negate)
+                filter = filter.Substring(1);
+
+            return (filter == "" || s.Titel.Contains(filter) || s.Tags.Any(t => t.Title.Contains(filter)) || s.Beschreibung.Contains(filter)) ^ negate;
         }
 
         /// <summary>
@@ -334,7 +339,7 @@ namespace SnippetMan
                     // add the new node to that one if it shouldn't be hidden
                     currentGroup.ChildNodes.Add(new SnippetNode() { Title = s.Titel, Tag = s, IsVisible = shouldNodeShow(s, filter) });
                 }
-
+            
                 // sort all group content
                 foreach (ITreeNode group in newList)
                     group.ChildNodes = new ObservableCollection<ITreeNode>(group.ChildNodes.OrderByDescending(node => ((SnippetNode)node).Tag?.Favorite).ThenByDescending(node => ((SnippetNode)node).Tag?.LastEditDate));
