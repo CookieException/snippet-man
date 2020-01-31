@@ -316,17 +316,16 @@ namespace SnippetMan
                 newList = new List<ITreeNode>();
                 foreach (SnippetInfo s in SQLiteDAO.Instance.GetSnippetMetaList())
                 {
-                    string groupHeader = s.ProgrammingLanguage;
+                    ITreeNode currentGroup;
+                    if (String.IsNullOrEmpty(s.ProgrammingLanguage))
+                        currentGroup = newList.FirstOrDefault(n => n.HasEmptyTitle);
+                    else
+                        currentGroup = newList.FirstOrDefault(n => n.Title == s.ProgrammingLanguage);
 
-                    // Name unnamed groups
-                    if (String.IsNullOrEmpty(groupHeader))
-                        groupHeader = TITLE_UNNAMED;
-
-                    ITreeNode currentGroup = newList.FirstOrDefault(n => n.Title == groupHeader);
                     // if a top node contains programming language..
                     if (currentGroup == null)
                     {
-                        currentGroup = new SnippetNode() { Title = groupHeader, IsGroup = true };
+                        currentGroup = new SnippetNode() { Title = s.ProgrammingLanguage, IsGroup = true };
 
 
                         newList.Add(currentGroup);
@@ -342,7 +341,7 @@ namespace SnippetMan
 
                 return newList;
             });
-            
+
             // clear bound list before refreshing it and then
             // refresh it - assignment wouldn't work since the data binding would break
             shownSnippetMetaListGroups.AddRange(newList, true);

@@ -121,7 +121,7 @@
                       VirtualizingStackPanel.IsVirtualizing="True"
                       VirtualizingStackPanel.VirtualizationMode="Standard"
                       Background="Transparent">
-                
+
                 <!-- Enabling virtualization increases performance on a higher count of items -->
                 <TreeView.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -135,8 +135,7 @@
                         <Setter Property="IsExpanded" Value="True" />
 
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsVisible}"
-                                         Value="False">
+                            <DataTrigger Binding="{Binding IsVisible}" Value="False">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -152,7 +151,18 @@
                                           Foreground="LightGray"
                                           Header="{Binding Path=Title}"
                                           MaxWidth="170px"
-                                          IsHitTestVisible="False" />
+                                          IsHitTestVisible="False" >
+
+                                <TreeViewItem.Style>
+                                    <Style TargetType="{x:Type TreeViewItem}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HasEmptyTitle}" Value="True">
+                                                <Setter Property="TextBlock.FontStyle" Value="Italic" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TreeViewItem.Style>
+                            </TreeViewItem>
 
                             <ToggleButton x:Name="btn_like_item"
                                           Width="20"
