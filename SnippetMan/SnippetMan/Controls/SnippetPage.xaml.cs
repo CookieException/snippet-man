@@ -32,17 +32,15 @@ namespace SnippetMan.Controls
         private Label lbl_changeDate;
         private Button btn_copy_import;
         private Button btn_copy_code;
-        private Button btn_add_cmbx;
-        private Button btn_del_cmbx;
-        private WrapPanel wrapP_combx;
         private ComboBox combx_Lang;
         private Popup popup_import;
         private Popup popup_code;
 
-        private List<ComboBox> tagComboBoxes = new List<ComboBox>();
-        private List<ComboBox> comboBoxesLang = new List<ComboBox>();
-
         private IThemedHighlightingManager hlManager = ThemedHighlightingManager.Instance;
+
+        public RangeObservableCollection<Tag> SnippetTags { get; } = new RangeObservableCollection<Tag>();
+
+        public RangeObservableCollection<Tag> ShownSnippetCustomTagPickList { get; private set; } = new RangeObservableCollection<Tag>();
 
         public delegate void TitleChangedHandler(string Title);
         public event TitleChangedHandler TitleChanged;
@@ -72,6 +70,8 @@ namespace SnippetMan.Controls
         public SnippetPage(SnippetInfo si = null)
         {
             InitializeComponent();
+            DataContext = this; // this has to be set manually, otherwise the binding on this instance isn't set
+
             importEditor = (TextEditor)UIHelper.GetByUid(this, "ae_imports");
             codeEditor = (TextEditor)UIHelper.GetByUid(this, "ae_code");
             tb_title = (TextBox)UIHelper.GetByUid(this, "tb_title");
@@ -79,9 +79,6 @@ namespace SnippetMan.Controls
             lbl_changeDate = (Label)UIHelper.GetByUid(this, "lbl_date");
             btn_copy_import = (Button)UIHelper.GetByUid(this, "btn_copy_import");
             btn_copy_code = (Button)UIHelper.GetByUid(this, "btn_copy_code");
-            btn_add_cmbx = (Button)UIHelper.GetByUid(this, "btn_add_cmbx");
-            btn_del_cmbx = (Button)UIHelper.GetByUid(this, "btn_del_cmbx");
-            wrapP_combx = (WrapPanel)UIHelper.GetByUid(this, "wrapP_combx");
             combx_Lang = (ComboBox)UIHelper.GetByUid(this, "combx_Lang");
             popup_import = (Popup)UIHelper.GetByUid(this, "popup_import");
             popup_code = (Popup)UIHelper.GetByUid(this, "popup_code");
@@ -93,7 +90,6 @@ namespace SnippetMan.Controls
             combx_Lang.AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(ComboBox_TextChanged));
 
             combx_Lang.ItemsSource = SQLiteDAO.Instance.GetTags("", TagType.TAG_PROGRAMMING_LANGUAGE);
-            comboBoxesLang.Add(combx_Lang);
 
             hlManager.SetCurrentTheme("VS2019_Dark"); // TODO "{ }" einfärben
 
@@ -107,9 +103,7 @@ namespace SnippetMan.Controls
 
         private void MainWindow_AnySnippetSaved(SnippetInfo snippetInfo)
         {
-            /* if any snippet was saved, chances are that there has a new tag been saved. So: Refresh here */
-
-            /* language tag */
+            /* if any snippet was saved, chances are that there has a new tag been saved. So: Refresh here the one not bound to the list */
 
             // save currently selected language as every database call lateron takes time
             Tag currentLanguage = combx_Lang.SelectedItem as Tag;
@@ -118,40 +112,14 @@ namespace SnippetMan.Controls
             // reset previous selected item
             combx_Lang.SelectedItem = currentLanguage;
 
-            /* other tags */
-
-            // load currently possible tags
-            List<Tag> tagList = SQLiteDAO.Instance.GetTags("", TagType.TAG_WITHOUT_TYPE);
-
-            foreach (ComboBox cbx in tagComboBoxes)
-            {
-                Tag currentTag = cbx.SelectedItem as Tag;
-
-                cbx.ItemsSource = tagList;
-
-                cbx.SelectedItem = currentTag;
-            }
+            ShownSnippetCustomTagPickList.AddRange(SQLiteDAO.Instance.GetTags("", TagType.TAG_WITHOUT_TYPE), true);
         }
 
-        private void ComboBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (handle) handleLanguageChange();
-            handle = true;
-        }
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e) => TitleChanged?.Invoke(((TextBox)sender).Text);
 
-        private bool handle = true;
-        private void Combx_Lang_DropDownClosed(object sender, System.EventArgs e)
-        {
-            if (handle) handleLanguageChange();
-            handle = true;
-        }
-
-        private void Combx_Lang_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ComboBox cmb = sender as ComboBox;
-            handle = !cmb.IsDropDownOpen;
-            handleLanguageChange();
-        }
+        private void ComboBox_TextChanged(object sender, TextChangedEventArgs e) => handleLanguageChange();
+        private void Combx_Lang_DropDownClosed(object sender, System.EventArgs e) => handleLanguageChange();
+        private void Combx_Lang_SelectionChanged(object sender, SelectionChangedEventArgs e) => handleLanguageChange();
 
         private void handleLanguageChange()
         {
@@ -162,11 +130,6 @@ namespace SnippetMan.Controls
 
             importEditor.SyntaxHighlighting = LanguageThemeTranslator.GetHighlighterByLanguageName(hlManager.CurrentTheme, chosenLanguage);
             codeEditor.SyntaxHighlighting = LanguageThemeTranslator.GetHighlighterByLanguageName(hlManager.CurrentTheme, chosenLanguage);
-        }
-
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            TitleChanged?.Invoke(((TextBox)sender).Text);
         }
 
         #region Button Events
@@ -185,42 +148,14 @@ namespace SnippetMan.Controls
             }
         }
 
-        private void Button_Add_Combx_Clicked(object sender, RoutedEventArgs e)
-        {
-            ComboBox comboTag = new ComboBox
-            {
-                Uid = "combx_Tag" + tagComboBoxes.Count,
-                IsReadOnly = false,
-                IsEditable = true
-            };
-
-            Button btn_delete = new Button()
-            {
-                Width = 16,
-                Height = 16,
-                Margin = new Thickness(-8, 0, 10, 3),
-                Tag = comboTag,
-                Foreground = new SolidColorBrush(Colors.White),
-                Content = new Image { Source = (DrawingImage)System.Windows.Application.Current.Resources["remove_24pxDrawingImage"] }
-            };
-
-            btn_delete.Click += Btn_delete_Click;
-
-            comboTag.ItemsSource = SQLiteDAO.Instance.GetTags("", TagType.TAG_WITHOUT_TYPE);
-
-            tagComboBoxes.Add(comboTag);
-
-            wrapP_combx.Children.Remove(btn_add_cmbx);
-            wrapP_combx.Children.Add(comboTag);
-            wrapP_combx.Children.Add(btn_delete);
-            wrapP_combx.Children.Add(btn_add_cmbx);
-        }
+        private void Button_Add_Combx_Clicked(object sender, RoutedEventArgs e) => SnippetTags.Add(Classes.Snippets.Tag.EMPTY);
 
         private void Btn_delete_Click(object sender, RoutedEventArgs e)
         {
-            wrapP_combx.Children.Remove((ComboBox)((Button)sender).Tag);
+            // removing it from tag/cbx list causes the save call to not include the tag
+            SnippetTags.Remove(((Button)sender).DataContext as Tag);
 
-            wrapP_combx.Children.Remove((Button)sender);
+            SaveInfo_Into_DatabaseAsync(ShownSnippet).ConfigureAwait(false);
         }
 
         #endregion Button Events
@@ -229,50 +164,22 @@ namespace SnippetMan.Controls
 
         private void LoadInfo_Into_Control(SnippetInfo si)
         {
+            /* load snippet information */
             tb_title.Text = si.Titel;
             tb_description.Text = si.Beschreibung;
-
-            for (int i = 1; i < si.Tags.Count; i++)
-            {
-                ComboBox comboTag = new ComboBox
-                {
-                    Uid = "combx_Tag" + tagComboBoxes.Count,
-                    IsReadOnly = false,
-                    IsEditable = true
-                };
-
-                comboTag.ItemsSource = SQLiteDAO.Instance.GetTags("", TagType.TAG_WITHOUT_TYPE);
-                comboTag.SelectedItem = si.Tags[i];
-
-                tagComboBoxes.Add(comboTag);
-
-
-                Button btn_delete = new Button()
-                {
-                    Width = 16,
-                    Height = 16,
-                    Margin = new Thickness(-8, 0, 10, 3),
-                    Tag = comboTag,
-                    Foreground = new SolidColorBrush(Colors.White),
-                    Content = new Image { Source = (DrawingImage)System.Windows.Application.Current.Resources["remove_24pxDrawingImage"] }
-                };
-
-                btn_delete.Click += Btn_delete_Click;
-
-                wrapP_combx.Children.Remove(btn_add_cmbx);
-                wrapP_combx.Children.Add(comboTag);
-                wrapP_combx.Children.Add(btn_delete);
-                wrapP_combx.Children.Add(btn_add_cmbx);
-            }
-
-            if (si.Tags.Count != 0)
-                combx_Lang.SelectedItem = si.Tags.FirstOrDefault(t => t.Type == TagType.TAG_PROGRAMMING_LANGUAGE);
 
 
             lbl_changeDate.Content = si.LastEditDate.ToString("dd.MM.yyyy H:mm");
 
             importEditor.Text = si.SnippetCode.Imports;
             codeEditor.Text = si.SnippetCode.Code;
+
+            /* Prepare tag comboboxes */
+            SnippetTags.AddRange(si.Tags.Where(t => t.Type != TagType.TAG_PROGRAMMING_LANGUAGE), true);
+            ShownSnippetCustomTagPickList.AddRange(SQLiteDAO.Instance.GetTags("", TagType.TAG_WITHOUT_TYPE), true);
+
+            if (si.Tags.Count != 0)
+                combx_Lang.SelectedItem = si.Tags.FirstOrDefault(t => t.Type == TagType.TAG_PROGRAMMING_LANGUAGE);
 
             ShownSnippet = si;
 
@@ -284,6 +191,9 @@ namespace SnippetMan.Controls
         private bool alreadyRunning = false;
         private async Task SaveInfo_Into_DatabaseAsync(SnippetInfo snippetInfo)
         {
+            if (tb_title.Text == "")
+                return;
+
             // prevent multiple parallel save operations on the same snippet, but always make sure the latest changes are saved
             // if there was a save request during the current, it will be handled after the current save task
 
@@ -301,8 +211,9 @@ namespace SnippetMan.Controls
 
                 snippetInfo.Titel = tb_title.Text;
                 snippetInfo.Beschreibung = tb_description.Text;
-                snippetInfo.Tags = comboBoxesLang.Select(c => new Tag() { Title = c.Text, Type = TagType.TAG_PROGRAMMING_LANGUAGE }).ToList();
-                snippetInfo.Tags.AddRange(tagComboBoxes.Select(c => new Tag() { Title = c.Text, Type = TagType.TAG_WITHOUT_TYPE }));
+                snippetInfo.Tags = new List<Tag>() { new Tag() { Title = combx_Lang.Text, Type = TagType.TAG_PROGRAMMING_LANGUAGE } };
+
+                snippetInfo.Tags.AddRange(SnippetTags);
                 snippetInfo.SnippetCode = new SnippetCode(null, importEditor.Text, codeEditor.Text);
 
                 // Async because database access can make the gui be stuck for a moment
@@ -312,7 +223,7 @@ namespace SnippetMan.Controls
                     snippetInfo = SQLiteDAO.Instance.saveSnippet(snippetInfo) ?? snippetInfo;
                     return snippetInfo;
                 });
-                        
+
                 // adjust change date to now
                 lbl_changeDate.Content = snippetInfo.LastEditDate.ToString("dd.MM.yyyy H:mm");
             }
@@ -323,8 +234,7 @@ namespace SnippetMan.Controls
 
         private void UserControl_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (tb_title.Text != "")
-                SaveInfo_Into_DatabaseAsync(ShownSnippet).ConfigureAwait(false);
+            SaveInfo_Into_DatabaseAsync(ShownSnippet).ConfigureAwait(false);
         }
 
         #endregion Funktionen zum Interagieren mit der Datenbank

@@ -113,11 +113,12 @@
                                 </Separator.RenderTransform>
                             </Separator>
 
-                            <!--  Margin so gewählt, dass Unterschied zwischen ProgLang und Tags eindeutig wird  -->
+                            <!--  Margin so gewählt, dass Unterschied zwischen ProgLang und Tags eindeutig wird 
+                                  Also: Negative margin here so that the margin of 21 on the wrap panel of the tag box list does work on both the same line and multiple lines-->
                             <Image
                             Width="16"
                             Height="16"
-                            Margin="0,0,5,3"
+                            Margin="0,0,-15,3"
                             RenderTransformOrigin="0.5,0.5"
                             Source="{StaticResource label_24pxDrawingImage}">
                                 <Image.RenderTransform>
@@ -139,6 +140,29 @@
                                     </ToolTip>
                                 </Image.ToolTip>
                             </Image>
+
+                            <!-- Placeholder: Bind to tag list -->
+                            <ItemsControl ItemsSource="{Binding SnippetTags}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal" Margin="21,0,0,0"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <ComboBox Uid="combx_Tag" IsReadOnly="False" IsEditable="True" 
+                                                      ItemsSource="{Binding Path=DataContext.ShownSnippetCustomTagPickList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                                      SelectedItem="{Binding Path=.}"
+                                                      Text="{Binding Path=Title}"
+                                                      />
+                                            <Button Width="16" Height="16" Margin="-8, 0, 10, 3" Foreground="White" Click="Btn_delete_Click">
+                                                <Image Width="16px" Source="{StaticResource remove_24pxDrawingImage}" />
+                                            </Button>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                             <Button
                             Uid="btn_add_cmbx"
                             Width="16"

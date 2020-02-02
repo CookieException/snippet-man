@@ -14,17 +14,15 @@ namespace SnippetMan.Classes.Snippets
 
     public class Tag
     {
+        public static Tag EMPTY = new Tag();
+
         public int? Id { get; set; }
         public TagType Type { get; set; }
         public string Title { get; set; }
         public int? usedXTimes { get; set; }
-        public Tag()
-        {
-        }
-        public Tag(string title)
-        {
-            Title = title;
-        }
+
+        public Tag() { }
+
         public override string ToString()
         {
             return Title;

@@ -233,7 +233,7 @@ namespace SnippetMan.Classes.Database
             // Save connection between tags and snippetInfo
             foreach (Tag tag in tags)
             {
-                if (tag.Title == "" || !tag.Id.HasValue)
+                if (tag == Tag.EMPTY || !tag.Id.HasValue)
                     continue;
 
                 Dictionary<string, object> dict;
@@ -279,7 +279,7 @@ namespace SnippetMan.Classes.Database
 
         private int saveTag(Tag tag)
         {
-            if (tag.Title == "")
+            if (tag == Tag.EMPTY)
                 return -1;
 
 
