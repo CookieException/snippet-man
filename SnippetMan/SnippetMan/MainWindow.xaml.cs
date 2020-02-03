@@ -32,10 +32,7 @@ namespace SnippetMan
         public MainWindow()
         {
             InitializeComponent();
-
-            // Initialize and open database
-            SQLiteDAO.Instance.OpenConnection();
-
+            
             // bind list to tree view 
             tv_snippetList.ItemsSource = shownSnippetMetaListGroups;
 
@@ -259,14 +256,14 @@ namespace SnippetMan
             /* .. and manually delete snippet from tree instead of refreshing the whole tree */
             shownSnippetMetaListGroups.FirstOrDefault(node => node.ChildNodes.Contains(selectedNode)).ChildNodes.Remove(selectedNode);
 
-            SQLiteDAO.Instance.deleteSnippet(selectedNode.Tag);
+            selectedNode.Tag.delete();
         }
 
         private void btn_like_item_Click(object sender, RoutedEventArgs e)
         {
             SnippetNode selectedNode = ((ToggleButton)sender).DataContext as SnippetNode;
             selectedNode.Tag.Favorite = ((ToggleButton)sender).IsChecked ?? false;
-            SQLiteDAO.Instance.saveSnippet(selectedNode.Tag);
+            selectedNode.Tag.save();
 
             refreshNodesAsync().ConfigureAwait(false);
         }
@@ -322,15 +319,15 @@ namespace SnippetMan
                 foreach (SnippetInfo s in SQLiteDAO.Instance.GetSnippetMetaList())
                 {
                     ITreeNode currentGroup;
-                    if (String.IsNullOrEmpty(s.ProgrammingLanguage))
+                    if (String.IsNullOrEmpty(s.LanguageTag.Title))
                         currentGroup = newList.FirstOrDefault(n => n.HasEmptyTitle);
                     else
-                        currentGroup = newList.FirstOrDefault(n => n.Title == s.ProgrammingLanguage);
+                        currentGroup = newList.FirstOrDefault(n => n.Title == s.LanguageTag.Title);
 
                     // if a top node contains programming language..
                     if (currentGroup == null)
                     {
-                        currentGroup = new SnippetNode() { Title = s.ProgrammingLanguage, IsGroup = true };
+                        currentGroup = new SnippetNode() { Title = s.LanguageTag.Title, IsGroup = true };
 
 
                         newList.Add(currentGroup);

@@ -13,10 +13,14 @@ namespace SnippetMan
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(Int32.MaxValue));
+
+            // Initialize and open database
+            SQLiteDAO.Instance.OpenConnection();
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
+            // Cleanup and close database
             SQLiteDAO.Instance.CloseConnection();
         }
 

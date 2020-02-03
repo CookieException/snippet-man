@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using System.Data.SQLite;
 using SnippetMan.Classes.Snippets;
 using System.IO;
@@ -111,13 +108,13 @@ namespace SnippetMan.Classes.Database
 
         public List<SnippetInfo> GetSnippetMetaList()
         {
-            return selectSnippetInfo("select * from snippetInfo").Select((x) => { x.Tags = GetTagsFromSnippetInfo(x); return x; }).ToList();
+            return selectSnippetInfo("select * from snippetInfo").Select((x) => { x.Tags.AddRange(GetTagsFromSnippetInfo(x), true); return x; }).ToList();
         }
 
         public SnippetInfo saveSnippet(SnippetInfo infoToSave)
         {
             // if we save a whole snippet with a code linked to it, we assume they belong together
-            infoToSave.Tags = saveTags(infoToSave.Tags);
+            infoToSave.Tags.AddRange(saveTags(infoToSave.Tags.ToArray()), true);
 
             Dictionary<string, object> dict;
             if (infoToSave.SnippetCode != null)
@@ -221,7 +218,7 @@ namespace SnippetMan.Classes.Database
             return selectTag("select * from tag where id = :id", new Dictionary<string, object> { { "id", id } }).First();
         }
 
-        private void saveTagsToSnippetInfo(List<Tag> tags, SnippetInfo snippetInfo) 
+        private void saveTagsToSnippetInfo(IEnumerable<Tag> tags, SnippetInfo snippetInfo) 
         {
             // Delete the existing Tag <-> snippetInfo connections
             execute("delete from tag_snippetInfo where snippetInfoId = :snippetInfoId", new Dictionary<string, object> {
@@ -231,9 +228,9 @@ namespace SnippetMan.Classes.Database
             execute("BEGIN TRANSACTION");
 
             // Save connection between tags and snippetInfo
-            foreach (Tag tag in tags)
+            foreach (Tag tag in tags.ToArray())
             {
-                if (tag == Tag.EMPTY || !tag.Id.HasValue)
+                if (tag.IsEmpty || !tag.Id.HasValue)
                     continue;
 
                 Dictionary<string, object> dict;
@@ -267,9 +264,9 @@ namespace SnippetMan.Classes.Database
             execute("COMMIT");
         }
 
-        private List<Tag> saveTags(List<Tag> tags)
+        private IEnumerable<Tag> saveTags(IEnumerable<Tag> tags)
         {
-            foreach (Tag tag in tags)
+            foreach (Tag tag in tags.ToArray())
             {
                 tag.Id = saveTag(tag);
             }
@@ -279,9 +276,8 @@ namespace SnippetMan.Classes.Database
 
         private int saveTag(Tag tag)
         {
-            if (tag == Tag.EMPTY)
+            if (tag.IsEmpty)
                 return -1;
-
 
             Tag dbTag;
             if (/*tag.Id.HasValue || */(dbTag = doesTagTitleExist(tag)) != null)

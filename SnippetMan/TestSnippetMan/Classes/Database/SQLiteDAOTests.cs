@@ -55,9 +55,9 @@ namespace SnippetMan.Classes.Database.Tests
             {
                 Titel = "Test Snippet",
                 Beschreibung = "Na ein Test Snippet halt,\nwie immer ohne viel Inhalt!",
-                Tags = tags,
                 SnippetCode = snippetCode
             };
+            snippetInfo.Tags.AddRange(tags, true);
 
             db.saveSnippet(snippetInfo);
 
@@ -143,7 +143,8 @@ namespace SnippetMan.Classes.Database.Tests
             SnippetCode snippetCode = new SnippetCode();
             List<Tag> tags = new List<Tag> { tag };
 
-            SnippetInfo snippetInfo = new SnippetInfo { Tags = tags, SnippetCode = snippetCode };
+            SnippetInfo snippetInfo = new SnippetInfo { SnippetCode = snippetCode };
+            snippetInfo.Tags.AddRange(tags, true);
 
             db.saveSnippet(snippetInfo);
 

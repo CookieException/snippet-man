@@ -8,10 +8,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:SnippetMan.Controls.Utils"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"    
+    xmlns:sm="clr-namespace:SnippetMan.Classes.Snippets;assembly=SnippetMan"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    LostFocus="UserControl_LostFocus"
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -41,14 +41,20 @@
                         MaxLines="1"
                         TextChanged="TextBox_TextChanged"
                         TextWrapping="NoWrap"
-                        Watermark="Title" />
+                        Watermark="Title" 
+                        LostFocus="UserControl_LostFocus"
+                        Text="{Binding Path=ShownSnippet.Titel}"
+                        />
                     <WatermarkTextBox:WatermarkTextBox
                         Uid="tb_description"
                         Margin="0,8"
                         HorizontalAlignment="Stretch"
                         AcceptsReturn="True"
                         TextWrapping="Wrap"
-                        Watermark="Description" />
+                        Watermark="Description"
+                        LostFocus="UserControl_LostFocus"
+                        Text="{Binding Path=ShownSnippet.Beschreibung}"
+                        />
 
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -81,11 +87,17 @@
                                     </ToolTip>
                                 </Image.ToolTip>
                             </Image>
-                            
+
                             <ComboBox
                             Uid="combx_Lang"
                             IsEditable="True"
-                            IsReadOnly="False" >
+                            IsReadOnly="False" 
+                            SelectionChanged="Combx_Lang_SelectionChanged"
+                            DropDownClosed="Combx_Lang_DropDownClosed"
+                            TextBoxBase.TextChanged="ComboBox_TextChanged"
+                            ItemsSource="{Binding Path=ShownSnippetLanguagePickList}"
+                            SelectedItem="{Binding Path=ShownSnippet.LanguageTag}"
+                                >
                                 <ComboBox.ToolTip>
                                     <ToolTip>
                                         <StackPanel Width="Auto">
@@ -142,26 +154,37 @@
                             </Image>
 
                             <!-- Placeholder: Bind to tag list -->
-                            <ItemsControl ItemsSource="{Binding SnippetTags}">
+                            <ItemsControl ItemsSource="{Binding ShownSnippet.Tags}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal" Margin="21,0,0,0"/>
+                                        <WrapPanel Orientation="Horizontal" Margin="21,0,0,0" ></WrapPanel>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <ComboBox Uid="combx_Tag" IsReadOnly="False" IsEditable="True" 
+                                                      LostKeyboardFocus="ComboBox_LostKeyboardFocus"
+                                                      SelectedItem="{Binding Path=., Mode=TwoWay}"
                                                       ItemsSource="{Binding Path=DataContext.ShownSnippetCustomTagPickList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
-                                                      SelectedItem="{Binding Path=.}"
-                                                      Text="{Binding Path=Title}"
-                                                      />
+                                                      Text="{Binding Path=Title}"/>
                                             <Button Width="16" Height="16" Margin="-8, 0, 10, 3" Foreground="White" Click="Btn_delete_Click">
                                                 <Image Width="16px" Source="{StaticResource remove_24pxDrawingImage}" />
                                             </Button>
                                         </StackPanel>
+
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
+
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style TargetType="ContentPresenter">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Type}" Value="{x:Static sm:TagType.TAG_PROGRAMMING_LANGUAGE}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
                             </ItemsControl>
                             <Button
                             Uid="btn_add_cmbx"
@@ -191,8 +214,19 @@
                         <Label 
                             Foreground="White"
                             Grid.Column="2"
-                            Uid="lbl_date"
-                            Content="-" />
+                            Uid="lbl_date">
+
+                            <Label.Style>
+                                <Style TargetType="{x:Type Label}">
+                                    <Setter Property="Content" Value="{Binding Path=ShownSnippet.LastEditDate, StringFormat=dd.MM.yyyy H:mm}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=ShownSnippet.LastEditDate.Ticks}" Value="0">
+                                            <Setter Property="Content" Value="-"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
                     </Grid>
                 </StackPanel>
             </Controls:ButtonedExGroupBox.InnerContent>
@@ -207,7 +241,8 @@
             GroupBox.Foreground="White"
             GroupBox.Header="Imports">
             <Controls:ButtonedExGroupBox.InnerContent>
-                <AvalonEdit:TextEditor Uid="ae_imports" MinHeight="128px" />
+                <AvalonEdit:TextEditor Uid="ae_imports" MinHeight="128px"
+                                       LostFocus="UserControl_LostFocus" />
             </Controls:ButtonedExGroupBox.InnerContent>
             <Controls:ButtonedExGroupBox.HeaderRightHand>
                 <Grid
@@ -268,7 +303,7 @@
             GroupBox.Foreground="White"
             GroupBox.Header="Code">
             <Controls:ButtonedExGroupBox.InnerContent>
-                <AvalonEdit:TextEditor Uid="ae_code" />
+                <AvalonEdit:TextEditor Uid="ae_code" LostFocus="UserControl_LostFocus"/>
             </Controls:ButtonedExGroupBox.InnerContent>
             <Controls:ButtonedExGroupBox.HeaderRightHand>
                 <Grid
