@@ -179,7 +179,6 @@ namespace SnippetMan.Classes.Database
             var tags = selectTag("SELECT * from tag");
             foreach (Tag tag in tags) 
             {
-                Console.WriteLine(tag);
                 if (!existsSnippetToTag(tag))
                     execute("DELETE FROM tag WHERE id = :tagId", new Dictionary<string, object> { { "tagId", tag.Id } });
             }
@@ -391,7 +390,6 @@ namespace SnippetMan.Classes.Database
             dr.Read();
 
             int count = (int)dr.GetInt64(0);
-            Console.WriteLine(count);
             if (count > 0)
                 return true;
             else
