@@ -3,14 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:WatermarkTextBox="clr-namespace:WatermarkControlsLib.Controls;assembly=WatermarkControlsLib"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:interface="clr-namespace:SnippetMan.Interface"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:interface="clr-namespace:SnippetMan.Interface"
         Width="1200"
         Height="800"
         AllowsTransparency="True"
         Background="#2C2C2C"
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterScreen"
+        SizeChanged="Window_SizeChanged"
         WindowStyle="None"
         mc:Ignorable="d">
     <Grid>
@@ -274,7 +275,7 @@
                     Grid.Row="1"
                     Grid.Column="1"
                     Grid.ColumnSpan="2"
-                    Margin="4"
+                    Margin="4,4,2,2"
                     HorizontalContentAlignment="Left"
                     Background="Transparent">
             <TabControl.Resources>
@@ -291,7 +292,7 @@
                                     <WrapPanel x:Name="HeaderPanel" HorizontalAlignment="Stretch" VerticalAlignment="Top" IsItemsHost="true"
                                                Grid.Row="0" KeyboardNavigation.TabIndex="1" Margin="4,0,0,0"/>
 
-                                    <Border Name="ContentPanel" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Grid.Row="1">
+                                    <Border Name="ContentPanel" Background="Transparent" BorderThickness="1" BorderBrush="Gray" Grid.Row="1">
                                         <ContentPresenter Name="PART_SelectedContentHost" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Margin="{TemplateBinding Padding}" ContentSource="SelectedContent" />
                                     </Border>
                                 </Grid>
@@ -376,7 +377,7 @@
                     <Label Margin="0,20,0,0"
                            FontSize="16"
                            FontStyle="Normal">
-                        <Hyperlink NavigateUri="https://github.com/Nockiro/snippet-man"
+                        <Hyperlink NavigateUri="https://github.com/Nockiro/snippet-man/releases"
                                    RequestNavigate="Hyperlink_RequestNavigate">
                             <Hyperlink.Resources>
                                 <Style TargetType="{x:Type Hyperlink}">

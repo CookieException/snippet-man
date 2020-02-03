@@ -32,7 +32,7 @@ namespace SnippetMan
         public MainWindow()
         {
             InitializeComponent();
-            
+
             // bind list to tree view 
             tv_snippetList.ItemsSource = shownSnippetMetaListGroups;
 
@@ -52,27 +52,35 @@ namespace SnippetMan
             refreshNodesAsync().ConfigureAwait(false);
         }
 
-        #region Titlebar
-
-        private void Btn_minapp_Click(object sender, RoutedEventArgs e)
+        // React to maximize event not triggered by maximize button (e.g. drag to the corner of the screen etc.)
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            this.WindowState = WindowState.Minimized;
+            if (e.PreviousSize != new Size())
+                reactToWindowStateChange(this.WindowState);
         }
+
+        private void reactToWindowStateChange(WindowState newState)
+        {
+            if (newState == WindowState.Maximized)
+            {
+                // in maximized mode, WPF forms seem to tend to be slightly too large on windows 10 - thus: increase margin
+                ((FrameworkElement)Content).Margin = new Thickness(8); 
+                btn_toggleapp.Content = new Image { Source = (DrawingImage)Application.Current.Resources["window_restoreDrawingImage"] };
+            }
+            else if (newState == WindowState.Normal) {
+                ((FrameworkElement)Content).Margin = new Thickness(0); // reset previously increased margin
+                btn_toggleapp.Content = new Image { Source = (DrawingImage)Application.Current.Resources["window_maximizeDrawingImage"] };
+            }
+        }
+
+        #region Titlebar
+        private void Btn_minapp_Click(object sender, RoutedEventArgs e) => this.WindowState = WindowState.Minimized;
 
         private void Btn_toggleapp_Click(object sender, RoutedEventArgs e)
         {
-            if (WindowState == WindowState.Normal)
-            {
-                ((FrameworkElement)Content).Margin = new Thickness(8); // in maximized mode, WPF forms seem to tend to be slightly too large - thus: increase margin
-                this.WindowState = WindowState.Maximized;
-                btn_toggleapp.Content = new Image { Source = (DrawingImage)Application.Current.Resources["window_restoreDrawingImage"] };
-            }
-            else
-            {
-                ((FrameworkElement)Content).Margin = new Thickness(0); // reset previously increased margin
-                this.WindowState = WindowState.Normal;
-                btn_toggleapp.Content = new Image { Source = (DrawingImage)Application.Current.Resources["window_maximizeDrawingImage"] };
-            }
+            // switch normal/maximized window state
+            this.WindowState = this.WindowState == WindowState.Normal ? WindowState.Maximized : WindowState.Normal;
+            reactToWindowStateChange(this.WindowState);
         }
 
         private void Btn_closeapp_Click(object sender, RoutedEventArgs e)
@@ -86,7 +94,6 @@ namespace SnippetMan
             if (e.ChangedButton == MouseButton.Left)
                 this.DragMove();
         }
-
         #endregion Titlebar
 
         #region Tab Control
@@ -336,7 +343,7 @@ namespace SnippetMan
                     // add the new node to that one if it shouldn't be hidden
                     currentGroup.ChildNodes.Add(new SnippetNode() { Title = s.Titel, Tag = s, IsVisible = shouldNodeShow(s, filter) });
                 }
-            
+
                 // sort all group content
                 foreach (ITreeNode group in newList)
                     group.ChildNodes = new ObservableCollection<ITreeNode>(group.ChildNodes.OrderByDescending(node => ((SnippetNode)node).Tag?.Favorite).ThenByDescending(node => ((SnippetNode)node).Tag?.LastEditDate));

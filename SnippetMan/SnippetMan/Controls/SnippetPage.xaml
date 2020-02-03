@@ -60,10 +60,8 @@
                         <Grid.ColumnDefinitions>
                             <!--  Tags  -->
                             <ColumnDefinition Width="*" />
-                            <!--  Change caption  -->
-                            <ColumnDefinition Width="84px" />
-                            <!--  Change date  -->
-                            <ColumnDefinition Width="102px" />
+                            <!--  Change caption/date  -->
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <WrapPanel Uid="wrapP_combx"
                                     HorizontalAlignment="Stretch"
@@ -207,26 +205,26 @@
                             </Button>
                         </WrapPanel>
 
-                        <Label 
-                            Foreground="White"
-                            Grid.Column="1"
-                            Content="Last modified:" Margin="0" />
-                        <Label 
-                            Foreground="White"
-                            Grid.Column="2"
-                            Uid="lbl_date">
+                        <StackPanel Orientation="Horizontal" Grid.Column="1">
+                            <Label 
+                                Foreground="White"
+                                Content="Last modified:" Margin="0" />
+                            <Label 
+                                Foreground="White"
+                                Uid="lbl_date" Margin="-5,0,0,0">
 
-                            <Label.Style>
-                                <Style TargetType="{x:Type Label}">
-                                    <Setter Property="Content" Value="{Binding Path=ShownSnippet.LastEditDate, StringFormat=dd.MM.yyyy H:mm}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=ShownSnippet.LastEditDate.Ticks}" Value="0">
-                                            <Setter Property="Content" Value="-"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Label.Style>
-                        </Label>
+                                <Label.Style>
+                                    <Style TargetType="{x:Type Label}">
+                                        <Setter Property="Content" Value="{Binding Path=ShownSnippet.LastEditDate, StringFormat=dd.MM.yyyy H:mm}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=ShownSnippet.LastEditDate.Ticks}" Value="0">
+                                                <Setter Property="Content" Value="-"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+                            </Label>
+                        </StackPanel>
                     </Grid>
                 </StackPanel>
             </Controls:ButtonedExGroupBox.InnerContent>
