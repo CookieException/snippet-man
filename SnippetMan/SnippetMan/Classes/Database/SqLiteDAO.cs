@@ -176,6 +176,14 @@ namespace SnippetMan.Classes.Database
 
             saveTagsToSnippetInfo(infoToSave.Tags, infoToSave);
 
+            var tags = selectTag("SELECT * from tag");
+            foreach (Tag tag in tags) 
+            {
+                Console.WriteLine(tag);
+                if (!existsSnippetToTag(tag))
+                    execute("DELETE FROM tag WHERE id = :tagId", new Dictionary<string, object> { { "tagId", tag.Id } });
+            }
+
             infoToSave.LastEditDate = (DateTime)dict["lastEditDate"];
             return infoToSave;
         }
@@ -185,6 +193,12 @@ namespace SnippetMan.Classes.Database
             SnippetCode dbSnippetCodeToDelete = GetSnippetCode(infoToDelete);
             if (dbSnippetCodeToDelete != null)
                 execute("DELETE FROM snippetCode where snippetCode.id = :snippetCodeId", new Dictionary<string, object> { { "snippetCodeId", dbSnippetCodeToDelete.Id } });
+
+            foreach (Tag tag in infoToDelete.Tags)
+            {
+                if (!existsSnippetToTag(tag))
+                    execute("DELETE FROM tag WHERE id = :tagId", new Dictionary<string, object> { { "tagId", tag.Id } });
+            }
         }
 
         public List<Tag> GetTags(string searchText, TagType tagType)
@@ -364,6 +378,24 @@ namespace SnippetMan.Classes.Database
             foreach (KeyValuePair<string, object> kvp in parameters)
                 command.Parameters.Add(new SQLiteParameter(kvp.Key, kvp.Value));
             command.ExecuteNonQuery();
+        }
+
+        private bool existsSnippetToTag(Tag tag)
+        {
+            string sql = "SELECT count() FROM tag_snippetInfo WHERE tagId = " + tag.Id;
+
+            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+            
+            SQLiteDataReader dr = command.ExecuteReader();
+
+            dr.Read();
+
+            int count = (int)dr.GetInt64(0);
+            Console.WriteLine(count);
+            if (count > 0)
+                return true;
+            else
+                return false;
         }
 
         private List<SnippetInfo> selectSnippetInfo(string sql) => selectSnippetInfo(sql, new Dictionary<string, object>());
