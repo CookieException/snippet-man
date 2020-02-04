@@ -77,7 +77,7 @@
                                 <Image.ToolTip>
                                     <ToolTip>
                                         <StackPanel Width="Auto">
-                                            <TextBlock Text="Programming Language Tag" FontSize="14"/>
+                                            <TextBlock Text="Programming language tag" FontSize="14"/>
                                             <Separator/>
                                             <TextBlock Text="Give this snippet a programming language in the box next to this Icon, e.g. C#."/>
                                             <TextBlock Text="This is the base for syntax highlighting in the snippets below."/>
@@ -165,9 +165,38 @@
                                                       LostKeyboardFocus="ComboBox_LostKeyboardFocus"
                                                       SelectedItem="{Binding Path=., Mode=TwoWay}"
                                                       ItemsSource="{Binding Path=DataContext.ShownSnippetCustomTagPickList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
-                                                      Text="{Binding Path=Title}"/>
+                                                      Text="{Binding Path=Title}">
+                                                <ComboBox.ToolTip>
+                                                    <ToolTip>
+                                                        <StackPanel Width="Auto">
+                                                            <TextBlock Text="Other tags" FontSize="14"/>
+                                                            <Separator/>
+                                                            <TextBlock Text="Enter here another tag, e.g. 'Helper'."/>
+                                                            <TextBlock Text="If you search for snippets, the tags are searched for as well!"/>
+                                                        </StackPanel>
+                                                    </ToolTip>
+                                                </ComboBox.ToolTip>
+                                            </ComboBox>
                                             <Button Width="16" Height="16" Margin="-8, 0, 10, 3" Foreground="White" Click="Btn_delete_Click">
                                                 <Image Width="16px" Source="{StaticResource remove_24pxDrawingImage}" />
+
+                                                <Button.ToolTip>
+                                                    <ToolTip>
+                                                        <StackPanel Width="Auto">
+                                                            <TextBlock Text="Delete a tag" FontSize="14"/>
+                                                            <Separator/>
+                                                            <TextBlock>
+                                                                <Run Text="Delete the tag" />
+                                                                <Run Text="{Binding Path=., Mode=OneWay}"/>
+                                                                <Run Text="with this button" />
+                                                            </TextBlock>
+                                                            <TextBlock>
+                                                                <Run Text="Note: " FontWeight="Bold" />
+                                                                <Run Text="If you delete a tag that is not used anywhere anymore, it get's deleted from the suggestion list." />
+                                                            </TextBlock>
+                                                        </StackPanel>
+                                                    </ToolTip>
+                                                </Button.ToolTip>
                                             </Button>
                                         </StackPanel>
 

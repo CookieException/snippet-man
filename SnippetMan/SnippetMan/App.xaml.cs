@@ -13,7 +13,7 @@ namespace SnippetMan
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(Int32.MaxValue));
-
+            ToolTipService.InitialShowDelayProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(500)); // set's the initial delay in ms
             // Initialize and open database
             SQLiteDAO.Instance.OpenConnection();
         }
