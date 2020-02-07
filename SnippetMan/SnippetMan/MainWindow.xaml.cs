@@ -323,7 +323,7 @@ namespace SnippetMan
             List<ITreeNode> newList = await Task.Run(() =>
             {
                 newList = new List<ITreeNode>();
-                foreach (SnippetInfo s in SQLiteDAO.Instance.GetSnippetMetaList())
+                foreach (SnippetInfo s in App.DatabaseInstance.GetSnippetMetaList())
                 {
                     ITreeNode currentGroup;
                     if (String.IsNullOrEmpty(s.LanguageTag.Title))

@@ -32,9 +32,7 @@ namespace SnippetMan.Controls
         private Popup popup_code;
 
         private readonly IThemedHighlightingManager hlManager = ThemedHighlightingManager.Instance;
-
-        public RangeObservableCollection<Tag> SnippetTags { get; } = new RangeObservableCollection<Tag>();
-
+        
         public RangeObservableCollection<Tag> ShownSnippetCustomTagPickList { get; private set; } = new RangeObservableCollection<Tag>();
         public RangeObservableCollection<Tag> ShownSnippetLanguagePickList { get; private set; } = new RangeObservableCollection<Tag>();
 
@@ -91,8 +89,8 @@ namespace SnippetMan.Controls
         {
             /* if any snippet was saved, chances are that there has a new tag been saved. So: Refresh here the one not bound to the list */
 
-            ShownSnippetCustomTagPickList.AddRange(SQLiteDAO.Instance.GetTags("", TagType.TAG_WITHOUT_TYPE), true);
-            ShownSnippetLanguagePickList.AddRange(SQLiteDAO.Instance.GetTags("", TagType.TAG_PROGRAMMING_LANGUAGE), true);
+            ShownSnippetCustomTagPickList.AddRange(App.DatabaseInstance.GetTags("", TagType.TAG_WITHOUT_TYPE), true);
+            ShownSnippetLanguagePickList.AddRange(App.DatabaseInstance.GetTags("", TagType.TAG_PROGRAMMING_LANGUAGE), true);
         }
 
         private void handleLanguageChange()
@@ -162,8 +160,8 @@ namespace SnippetMan.Controls
             codeEditor.Text = si.SnippetCode.Code;
 
             /* Prepare tag combobox pick possibilities */
-            ShownSnippetCustomTagPickList.AddRange(SQLiteDAO.Instance.GetTags("", TagType.TAG_WITHOUT_TYPE), true);
-            ShownSnippetLanguagePickList.AddRange(SQLiteDAO.Instance.GetTags("", TagType.TAG_PROGRAMMING_LANGUAGE), true);
+            ShownSnippetCustomTagPickList.AddRange(App.DatabaseInstance.GetTags("", TagType.TAG_WITHOUT_TYPE), true);
+            ShownSnippetLanguagePickList.AddRange(App.DatabaseInstance.GetTags("", TagType.TAG_PROGRAMMING_LANGUAGE), true);
 
             // notify the tab control that we have changed the title automatically
             TextBox_TextChanged(ShownSnippet.Titel, null);

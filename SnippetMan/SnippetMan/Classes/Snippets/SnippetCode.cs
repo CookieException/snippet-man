@@ -13,7 +13,7 @@
             Code = code;
         }
 
-        public void CopySnippet()
+        public void copy()
         {
             System.Windows.Clipboard.SetText(Imports + System.Environment.NewLine + Code);
         }

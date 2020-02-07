@@ -47,13 +47,13 @@ namespace SnippetMan.Classes
         public bool Favorite { get; set; }
         public SnippetCode SnippetCode { get; set; }
 
-        public SnippetInfo save() => SQLiteDAO.Instance.saveSnippet(this);
+        public SnippetInfo save() => App.DatabaseInstance.saveSnippet(this);
 
-        public void delete() => SQLiteDAO.Instance.deleteSnippet(this);
+        public void delete() => App.DatabaseInstance.deleteSnippet(this);
 
         public SnippetInfo withSnippetCodeUpdate()
         {
-            SnippetCode = SQLiteDAO.Instance.GetSnippetCode(this);
+            SnippetCode = App.DatabaseInstance.GetSnippetCode(this);
 
             return this;
         }

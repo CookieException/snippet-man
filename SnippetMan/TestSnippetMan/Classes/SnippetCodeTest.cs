@@ -15,7 +15,7 @@ namespace SnippetMan.Classes.Tests
         public void CopySnippetTest()
         {
             SnippetCode sc = new SnippetCode(null, "import", "code");
-            sc.CopySnippet();
+            sc.copy();
 
             Assert.AreEqual("import" + Environment.NewLine + "code", System.Windows.Clipboard.GetText());
         }
@@ -24,7 +24,7 @@ namespace SnippetMan.Classes.Tests
         public void WithEmptyLinesCopySnippetTest()
         {
             SnippetCode sc = new SnippetCode(null, "import" + Environment.NewLine, "code");
-            sc.CopySnippet();
+            sc.copy();
 
             Assert.AreEqual("import" + Environment.NewLine + Environment.NewLine + "code", System.Windows.Clipboard.GetText());
         }

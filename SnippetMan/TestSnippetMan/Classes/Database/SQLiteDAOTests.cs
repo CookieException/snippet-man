@@ -136,7 +136,7 @@ namespace SnippetMan.Classes.Database.Tests
         [TestMethod()]
         public void GetTagsTest()
         {
-            SQLiteDAO db = SQLiteDAO.Instance;
+            IDatabaseDAO db = App.DatabaseInstance;
 
             Tag tag = new Tag { Title = "TestTag", Type = TagType.TAG_WITHOUT_TYPE };
 
