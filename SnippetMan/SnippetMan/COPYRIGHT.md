@@ -10,6 +10,7 @@
 - WatermarkControlsLib by Dirkster99 (https://github.com/Dirkster99/WatermarkControlsLib)
 
 ## CC BY-SA 4.0
+License link: https://creativecommons.org/licenses/by-sa/4.0/
 - Emoji "superhero" by Nadine Bartel (https://openmoji.org/library/#search=hero&emoji=1F9B8)
 
 # License texts
